@@ -1,0 +1,54 @@
+#control_panel{
+    background-color: var(--third);
+    height: 25rem;
+    width: 80vw;
+    margin: 1rem auto;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 20% 80%;
+    grid-template-rows: 15% 70% 15%;
+}
+
+#control_panel_title{
+    grid-column: 1;
+    grid-row: 1;
+}
+
+/* CONTROL PANEL NAV */
+#control_panel_nav{
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.nav_btn{
+    background-color: var(--first);
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+/* GENERAL CONTROL PANEL CONTENT */
+.control_panel_content_box{
+    grid-column: 2;
+    grid-row: 2;
+    height: 100%;
+}
+
+.control_panel_content{
+    background-color: var(--third);
+    margin: 1rem;
+}
+
+/* CONTROL PANEL VIEW */
+#control_panel_views{
+    background-color: var(--first);
+
+}
+
+
+/* CONTROL PANEL EDIT */
+#control_panel_edits{
+    background-color: var(--second);
+}

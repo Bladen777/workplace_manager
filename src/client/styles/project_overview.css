@@ -1,0 +1,63 @@
+#project_overview{
+    width: 80vw;
+    height: 50rem;
+    background-color: var(--third);
+    margin: 1rem auto;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    grid-template-rows: 10% 75% 15%;
+}
+
+#project_overview_title{
+    grid-column: 2;
+    grid-row: 1;
+}
+
+/* GENERAL CONTENT*/
+.project_overview_content_box{
+    margin: 10px;
+}
+
+
+/* PROJECT DEPARTMENT LEGEND */
+#project_department_legend{
+    background-color: var(--second);
+    grid-column: 1;
+    grid-row: 2;
+
+}
+
+/* PIE CHART */
+#pie_chart{
+    grid-column: 2;
+    grid-row: 2;
+    background-color: var(--first);
+    box-sizing: content-box;
+
+}
+
+#pie_chart_graphic{
+    width: 30rem;
+    height: 30rem;
+    border-radius: 50%;
+    background-image: conic-gradient(
+        blue 70deg,
+        red 0 235deg,
+        green 0
+    );
+}
+
+/* BUDGET TRACKER */
+#budget_tracker{
+    background-color: var(--second);
+    grid-column: 3;
+    grid-row: 2;
+}
+
+/* DATE_TRACKER */
+#date_tracker{
+    background-color: var(--second);
+    grid-column: 1/4;
+    grid-row: 3;
+}

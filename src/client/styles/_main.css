@@ -1,0 +1,51 @@
+:root {
+    --primary: #1a1a1a;
+    --primary_accent: #282828;
+    --secondary: #F2F2F2;
+    --first: #8C4A3B;
+    --second: #3C401D;
+    --third:#04BFAD;
+    --hover_link: #8C1EFF;
+    }
+
+
+html{
+    position:relative; 
+    scroll-behavior:smooth;
+    /*scrollbar-gutter: stable;*/
+}
+
+body{
+    background-color: var(--primary);
+}
+
+#root{
+    height: 100%;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+button, input[type=button]{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#animated_outlet{
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100vh - 160px );
+
+}
+
+.section_container{
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 160px );
+    background-color: var(--primary);
+
+}
