@@ -14,6 +14,7 @@ import db from "./local_db.js"
 const app = express();
 env.config();
 const PORT:string = process.env.LOCAL_PORT!;
+app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 db.connect();
@@ -149,9 +150,13 @@ app.get("/is_admin",
     // HAS A NEW, EDIT, AND DELETE OPTIONS
 
     app.post("/client_edit", 
-      async(req, res)=>{
-        
+      async (req, res)=>{
+        console.log("request.body",req.body);
+        const client_name = req.body.name;
+        const client_address = req.body.address;
+        const client_date = req.body.date;
 
+  
       });
 
   // ADD PROJECTS
