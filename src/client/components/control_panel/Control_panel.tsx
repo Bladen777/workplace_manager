@@ -39,7 +39,7 @@ export default function Control_panel() {
     const [edit_section, set_edit_section] = useState<string>("");
 
 
-    function nav_btn_clicked(section:string){
+    function cp_nav_btn_clicked(section:string){
         set_view_section(section);
         set_edit_section("");
     }
@@ -53,36 +53,36 @@ export default function Control_panel() {
     if (user_info.is_admin){
         return (
             
-        <section id="control_panel">
+        <article id="control_panel">
             <h1 id="control_panel_title">Control Panel</h1>
 
             <div id="control_panel_nav">
     
     
                 <button id="projects_btn"
-                        className="nav_btn"
-                        onClick={()=>{nav_btn_clicked("project")}}
+                        className={view_section === "project" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        onClick={()=>{cp_nav_btn_clicked("project")}}
                 >
                     <h3>Projects</h3>
                 </button>
 
                 <button id="clients_btn"
-                        className="nav_btn"
-                        onClick={()=>{nav_btn_clicked("client")}}
+                        className={view_section === "client" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        onClick={()=>{cp_nav_btn_clicked("client")}}
                 >
                     <h3>Clients</h3>
                 </button>
     
                 <button id="employees_btn"
-                        className="nav_btn"
-                        onClick={()=>{nav_btn_clicked("employee")}}
+                        className={view_section === "employee" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        onClick={()=>{cp_nav_btn_clicked("employee")}}
                 >
                     <h3>Employees</h3>
                 </button>
 
                 <button id="departments_btn"
-                        className="nav_btn"
-                        onClick={()=>{nav_btn_clicked("department")}}
+                        className={view_section === "department" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        onClick={()=>{cp_nav_btn_clicked("department")}}
                 >
                     <h3>Departments</h3>
                 </button>
@@ -90,15 +90,20 @@ export default function Control_panel() {
             </div>  
 
             <div id="control_panel_views" className="control_panel_content_box">
-                {view_section == "project" && <Project_view />}
-                {view_section == "client" && <Client_view />}
-                {view_section == "employee" && <Employee_view />}
-                {view_section == "department" && <Department_view />}
-                <button id="add_btn"
-                        onClick={()=>set_edit_section(view_section)}
-                >
-                    Add
-                </button>
+                <div id="cpv_entry_box">
+                    {view_section === "project" && <Project_view />}
+                    {view_section === "client" && <Client_view />}
+                    {view_section === "employee" && <Employee_view />}
+                    {view_section === "department" && <Department_view />}
+                </div>
+                <div id="cpv_btns">
+                    <button id="cpv_edit_btn" className="cpv_btn"
+                    
+                    > Edit </button>
+                    <button id="cpv_add_btn" className="cpv_btn"
+                            onClick={()=>set_edit_section(view_section)}
+                    > New </button>
+                </div>
             </div>
 
             {edit_section !== "" &&
@@ -111,7 +116,7 @@ export default function Control_panel() {
             }
 
         
-        </section>
+        </article>
         
         )
     } 

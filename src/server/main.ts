@@ -147,16 +147,42 @@ app.get("/is_admin",
 
   // ADD CLIENTS
 
+    // GET CLIENTS IN DATABASE
+
+    app.get("/get_clients",
+      async (req, res) => {
+        try {
+          let get_clients = await db.query(
+            "SELECT id, name AS client_name, address AS client_address, TO_CHAR(date_added, 'YYYY/MM/DD') AS client_date FROM clients"
+          )
+          res.send(get_clients.rows);
+        } catch (error) {
+          console.log('Error getting clients from database: ',error);
+        }
+      }
+    )
+
     // HAS A NEW, EDIT, AND DELETE OPTIONS
 
     app.post("/client_edit", 
-      async (req, res)=>{
+      async (req, res) => {
         console.log("request.body",req.body);
+        const method = req.body.method;
         const client_name = req.body.name;
         const client_address = req.body.address;
         const client_date = req.body.date;
 
-  
+        if(method === "add"){
+          try {
+            let new_client_data = await db.query(
+              "INSERT INTO clients(name, address, date_added) VALUES ($1, $2, $3);",
+              [client_name, client_address, client_date]
+            );
+          } catch (error) {
+            console.log('Error adding clients to database: ',error);
+          }
+        }
+        
       });
 
   // ADD PROJECTS

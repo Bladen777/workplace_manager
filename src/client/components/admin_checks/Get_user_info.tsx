@@ -34,7 +34,7 @@ export default async function get_user_info() {
         user_info.is_admin = is_admin;
 
       } catch (error) {
-            console.log('%cError fetching is admin: ', 'background-color:red',error);   
+            console.log('%cError fetching is_admin: ', 'background-color:red',error);   
       }
 
     return user_info;

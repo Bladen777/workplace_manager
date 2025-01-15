@@ -23,10 +23,15 @@
     justify-content: space-between;
 }
 
-.nav_btn{
-    background-color: var(--first);
+.cp_nav_btn{
+    background-color: var(--second);
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
+    height:2rem;
+}
+
+.cp_nav_btn_active{
+    background-color: var(--first);
 }
 
 /* GENERAL CONTROL PANEL CONTENT */
@@ -36,16 +41,57 @@
     height: 100%;
 }
 
-.control_panel_content{
-    background-color: var(--third);
-    margin: 1rem;
-}
-
 /* CONTROL PANEL VIEW */
+/* *** classes and ids with "cpv" are abbreviated for control panel view ****/
 #control_panel_views{
+    padding: 1rem;
     background-color: var(--first);
+    display: grid;
+    grid-template-rows: 80% 20%;
 
 }
+
+#cpv_entry_box{
+    overflow-y: scroll;
+}
+
+.cpv_entry{
+    background-color: var(--third);
+    display: grid;
+    grid-template-rows: 3rem auto;
+    grid-template-columns: auto;
+    padding: 10px;
+
+}
+
+.cpv_entry_odd{
+    background-color: var(--second);
+}
+
+.cpv_entry_title{
+    grid-row: 1;
+}
+
+.cpv_item_box{
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#cpv_btns{
+    grid-row: 2;
+}
+
+.cpv_btn{
+    height: 2rem;
+    width: 3rem;
+    background-color: var(--third);
+    border-radius:10%;
+    padding:10px ;
+    margin: 10px
+}
+
 
 
 /* CONTROL PANEL EDIT */
