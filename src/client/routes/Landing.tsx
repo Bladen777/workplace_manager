@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 
-
+// THE COMPONENT
 export default function Landing() {
   console.log('%cLanding Called', 'background-color:purple',);
 

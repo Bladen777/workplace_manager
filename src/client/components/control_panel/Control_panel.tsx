@@ -12,9 +12,21 @@ import Employee_view from "./control_panel_comps/control_panel_views/Employee_vi
 import Department_view from "./control_panel_comps/control_panel_views/Department_view.js"
 
 import Get_user_info from "../admin_checks/Get_user_info.js"
-import { Types_user_info } from "../admin_checks/Get_user_info.js"
+
 import "../../styles/control_panel.css"
 
+// TYPE DEFINITIONS
+import { Types_user_info } from "../admin_checks/Get_user_info.js"
+export interface Prop_types_control_panel_edit{
+    submit_method:string,
+    item_id:number
+  }
+export interface Prop_types_control_panel_view{
+    item_id:Function
+}
+
+
+// THE COMPONENT
 export default function Control_panel() {
 
 
@@ -33,15 +45,26 @@ export default function Control_panel() {
         console.log("fetched_user_info: ", fetched_user_info); 
     }
 
+    // GETTING THE SELECTED ITEM
+    const [selected_item, set_selected_item]= useState<number>(0);
+
 
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
     const [view_section, set_view_section] = useState<string>("project");
     const [edit_section, set_edit_section] = useState<string>("");
+    const [btn_method, set_btn_method] = useState<string>("");
 
 
     function cp_nav_btn_clicked(section:string){
+        set_selected_item(0)
         set_view_section(section);
         set_edit_section("");
+    }
+
+    function cpv_btn_clicked(btn_clicked:string){
+        console.log("the selected_item: ", selected_item);
+        set_edit_section(view_section);
+        set_btn_method(btn_clicked);
     }
 
 
@@ -91,27 +114,46 @@ export default function Control_panel() {
 
             <div id="control_panel_views" className="control_panel_content_box">
                 <div id="cpv_entry_box">
-                    {view_section === "project" && <Project_view />}
-                    {view_section === "client" && <Client_view />}
-                    {view_section === "employee" && <Employee_view />}
-                    {view_section === "department" && <Department_view />}
+                    {view_section === "project" && <Project_view item_id={set_selected_item} />}
+                    {view_section === "client" && <Client_view item_id={set_selected_item}/>}
+                    {view_section === "employee" && <Employee_view item_id={set_selected_item}/>}
+                    {view_section === "department" && <Department_view item_id={set_selected_item}/>}
                 </div>
                 <div id="cpv_btns">
-                    <button id="cpv_edit_btn" className="cpv_btn"
-                    
-                    > Edit </button>
-                    <button id="cpv_add_btn" className="cpv_btn"
-                            onClick={()=>set_edit_section(view_section)}
+                    <button id="cpv_add_btn" className="control_panel_btn"
+                            onClick={()=>cpv_btn_clicked("add")}
                     > New </button>
+                    {selected_item !== 0 &&
+                    <button id="cpv_edit_btn" className="control_panel_btn"
+                            onClick={()=>cpv_btn_clicked("edit")}
+                    > Edit  </button>
+                    }
+                    
                 </div>
             </div>
 
             {edit_section !== "" &&
             <div id="control_panel_edits" className="control_panel_content_box">
-                {edit_section == "project" && <Project_edit />}
-                {edit_section == "client" && <Client_edit />}
-                {edit_section == "employee" && <Employee_edit />}
-                {edit_section == "department" && <Department_edit />}
+                {edit_section === "project" && 
+                    <Project_edit 
+                        submit_method = {btn_method}
+                        item_id={selected_item}
+                />}
+                {edit_section === "client" && 
+                    <Client_edit 
+                        submit_method = {btn_method}
+                        item_id={selected_item}
+                />}
+                {edit_section === "employee" && 
+                    <Employee_edit 
+                        submit_method = {btn_method}
+                        item_id={selected_item}
+                />}
+                {edit_section === "department" && 
+                    <Department_edit 
+                        submit_method = {btn_method}
+                        item_id={selected_item}        
+                />}
             </div>
             }
 

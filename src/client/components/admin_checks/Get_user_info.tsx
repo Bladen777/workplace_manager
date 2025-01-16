@@ -6,6 +6,8 @@ export interface Types_user_info {
   is_admin: boolean,
 }
 
+
+// THE COMPONENT
 export default async function get_user_info() {
   
   const user_info: Types_user_info  = {

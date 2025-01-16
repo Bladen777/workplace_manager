@@ -1,5 +1,4 @@
 import axios from "axios";
-import { populate } from "dotenv";
 import { useEffect, useState } from "react"
 
 
@@ -15,8 +14,11 @@ export interface Types_client{
     id:number
   }
 
+import { Prop_types_control_panel_view as Prop_types }  from "../../Control_panel.js"
 
-export default function Client_view() {
+
+// THE COMPONENT
+export default function Client_view({item_id}:Prop_types) {
 
   const [clients, set_clients] = useState<Types_client_import[]>([]);
 
@@ -34,9 +36,11 @@ export default function Client_view() {
   } 
 
   function populate_view(item: Types_client_import, index:number){
-    console.log("the current item", item);
       return(
-        <figure className={index % 2 === 0 ? "cpv_entry" : "cpv_entry cpv_entry_odd" } key={item.id}>
+        <figure className={index % 2 === 0 ? "cpv_entry" : "cpv_entry cpv_entry_odd" }
+                key={item.id}
+                onClick={()=>{item_id(item.id)}}
+        >
           <h3 className="cpv_entry_title">{item.client_name}</h3>
           <div className="cpv_item_box">
             <p className="cpv_item">{item.client_address}</p>
@@ -52,9 +56,7 @@ export default function Client_view() {
   },[])
 
   return (
-
         <div>{clients.map(populate_view)}</div>
-
 
   )
 }

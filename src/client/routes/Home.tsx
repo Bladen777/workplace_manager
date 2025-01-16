@@ -6,6 +6,8 @@ import Project_overview from "../components/project_overview/Project_overview.js
 import Control_panel from "../components/control_panel/Control_panel.js"
 import "../styles/home.css"
 
+
+// THE COMPONENT
 export default function Home() {
   console.log('%cHome Started', 'background-color:purple',);
 
