@@ -1,5 +1,5 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 // TYPE DEFINITIONS
 import { Types_client } from "../control_panel_views/Client_view.js";
@@ -73,8 +73,7 @@ export default function Client_edit({submit_method, item_id}:Prop_types) {
   },[])
 
   return (
-    <div id="client_edit" className="cpe_entry_box">
-       Client_edit
+    <div id="client_edit" className="cpe_entry_box">  
       <form id="client_edit_form" className="cpe_form">
         <input  type="text" name="client_name" id="client_name" className="cpe_form_input" placeholder="Name" 
                 value={client_info.client_name} 

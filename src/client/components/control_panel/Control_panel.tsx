@@ -3,13 +3,13 @@ import { useState, useEffect } from "react"
 
 // LOCAL IMPORTS
 import Client_edit from "./control_panel_comps/control_panel_edits/Client_edit.js"
-import Project_edit from "./control_panel_comps/control_panel_edits/Project_edit.js"
 import Employee_edit from "./control_panel_comps/control_panel_edits/Employee_edit.js"
 import Department_edit from "./control_panel_comps/control_panel_edits/Department_edit.js"
 import Client_view from "./control_panel_comps/control_panel_views/Client_view.js"
-import Project_view from "./control_panel_comps/control_panel_views/Project_view.js"
 import Employee_view from "./control_panel_comps/control_panel_views/Employee_view.js"
 import Department_view from "./control_panel_comps/control_panel_views/Department_view.js"
+
+import Control_panel_edit from "./control_panel_comps/control_panel_edits/Control_panel_edit.js"
 
 import Get_user_info from "../admin_checks/Get_user_info.js"
 
@@ -19,7 +19,8 @@ import "../../styles/control_panel.css"
 import { Types_user_info } from "../admin_checks/Get_user_info.js"
 export interface Prop_types_control_panel_edit{
     submit_method:string,
-    item_id:number
+    item_id:number,
+    section_name:string
   }
 export interface Prop_types_control_panel_view{
     item_id:Function
@@ -50,7 +51,7 @@ export default function Control_panel() {
 
 
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
-    const [view_section, set_view_section] = useState<string>("project");
+    const [view_section, set_view_section] = useState<string>("clients");
     const [edit_section, set_edit_section] = useState<string>("");
     const [btn_method, set_btn_method] = useState<string>("");
 
@@ -80,32 +81,24 @@ export default function Control_panel() {
             <h1 id="control_panel_title">Control Panel</h1>
 
             <div id="control_panel_nav">
-    
-    
-                <button id="projects_btn"
-                        className={view_section === "project" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
-                        onClick={()=>{cp_nav_btn_clicked("project")}}
-                >
-                    <h3>Projects</h3>
-                </button>
 
                 <button id="clients_btn"
-                        className={view_section === "client" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
-                        onClick={()=>{cp_nav_btn_clicked("client")}}
+                        className={view_section === "clients" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        onClick={()=>{cp_nav_btn_clicked("clients")}}
                 >
                     <h3>Clients</h3>
                 </button>
     
                 <button id="employees_btn"
-                        className={view_section === "employee" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
-                        onClick={()=>{cp_nav_btn_clicked("employee")}}
+                        className={view_section === "employees" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        onClick={()=>{cp_nav_btn_clicked("employees")}}
                 >
                     <h3>Employees</h3>
                 </button>
 
                 <button id="departments_btn"
-                        className={view_section === "department" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
-                        onClick={()=>{cp_nav_btn_clicked("department")}}
+                        className={view_section === "departments" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        onClick={()=>{cp_nav_btn_clicked("departments")}}
                 >
                     <h3>Departments</h3>
                 </button>
@@ -114,10 +107,9 @@ export default function Control_panel() {
 
             <div id="control_panel_views" className="control_panel_content_box">
                 <div id="cpv_entry_box">
-                    {view_section === "project" && <Project_view item_id={set_selected_item} />}
-                    {view_section === "client" && <Client_view item_id={set_selected_item}/>}
-                    {view_section === "employee" && <Employee_view item_id={set_selected_item}/>}
-                    {view_section === "department" && <Department_view item_id={set_selected_item}/>}
+                    {view_section === "clients" && <Client_view item_id={set_selected_item}/>}
+                    {view_section === "employees" && <Employee_view item_id={set_selected_item}/>}
+                    {view_section === "departments" && <Department_view item_id={set_selected_item}/>}
                 </div>
                 <div id="cpv_btns">
                     <button id="cpv_add_btn" className="control_panel_btn"
@@ -127,6 +119,7 @@ export default function Control_panel() {
                     <button id="cpv_edit_btn" className="control_panel_btn"
                             onClick={()=>cpv_btn_clicked("edit")}
                     > Edit  </button>
+
                     }
                     
                 </div>
@@ -134,28 +127,37 @@ export default function Control_panel() {
 
             {edit_section !== "" &&
             <div id="control_panel_edits" className="control_panel_content_box">
-                {edit_section === "project" && 
-                    <Project_edit 
-                        submit_method = {btn_method}
-                        item_id={selected_item}
-                />}
-                {edit_section === "client" && 
+                <h3>{btn_method === "add" ? "Add" : "Edit"} clients</h3>
+                {/*}
+                {edit_section === "clients" && 
                     <Client_edit 
                         submit_method = {btn_method}
                         item_id={selected_item}
+                        section_name = {edit_section}
                 />}
-                {edit_section === "employee" && 
+                {edit_section === "employees" && 
                     <Employee_edit 
                         submit_method = {btn_method}
                         item_id={selected_item}
+                        section_name = {edit_section}
                 />}
-                {edit_section === "department" && 
+                {edit_section === "departments" && 
                     <Department_edit 
                         submit_method = {btn_method}
-                        item_id={selected_item}        
+                        item_id={selected_item}
+                        section_name = {edit_section}        
                 />}
+
+                */}
+                <Control_panel_edit 
+                submit_method = {btn_method}
+                item_id = {selected_item}
+                section_name = {edit_section}
+            />
             </div>
             }
+
+            
 
         
         </article>

@@ -114,6 +114,94 @@ app.get("/is_admin",
 
 // *** SQL DATABASE START ***
 
+
+  // GENERAL HTTP REQUESTS, FOR CLIENTS, EMPOYEES, AND DEPARTMENTS
+  app.post("/get_columns",
+    async (req, res) => {
+
+      try {
+        const response = await db.query(
+          "SELECT column_name FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id';",
+          [req.body.table_name]
+        );
+        res.send(response.rows);
+      } catch (error) {
+        console.log('Error getting columns for a table from database: ',error);
+      }
+
+    }
+  )
+
+  app.post("/get_form_info",
+    async (req, res) => {
+      try {
+        const response = await db.query(
+          `SELECT * FROM ${req.body.table_name} WHERE id=$1 AND NOT ;`,
+          [req.body.id]
+        );
+        res.send(response.rows);
+      } catch (error) {
+        console.log('Error getting existing info from a table: ',error);
+      }
+
+    }
+  )
+
+  app.post("/edit_form_data",
+    async (req, res) => {
+      const submit_method = req.body.submit_method;
+      const submit_data = req.body.submit_data;
+      const column_names = req.body.column_names
+      console.log("the recieved data: ", submit_data);
+      console.log("the recieved column names: ", column_names);
+
+      interface Types_map_item{
+        column_name:string
+      }
+
+      let name_values = "";
+      let name_columns = "";
+
+      function string_data(){
+        column_names.map((item:Types_map_item, index:number) => {
+          console.log("the current item: ", item.column_name);
+          if(submit_data[item.column_name] !== ""){
+            if(index === 0){
+              name_columns += item.column_name;
+              name_values += submit_data[item.column_name];
+            } else {
+              name_columns += ", " + item.column_name;
+              name_values += ", " + submit_data[item.column_name];
+            }
+          }
+        })
+  
+      }
+
+      string_data();
+     
+      console.log("the name_columns: ", name_columns)
+      console.log("the name_values: ", name_values)
+      if( name_values !== ""){
+        if(submit_method === "add"){
+          try {
+            const response = await db.query(
+              `INSERT INTO ${req.body.table_name}(${name_columns}) VALUES(${name_values});`
+            )
+            res.send(`successfully ${submit_method}ed`);
+          } catch (error) {
+            console.log('Error editing data in a table: ',error);
+          }
+        } else if(submit_method === "edit"){
+
+
+        
+        }
+      }
+      
+    }
+  )
+
   // ADD EMPOYEES
 
     // HAS A NEW, EDIT, AND DELETE OPTIONS

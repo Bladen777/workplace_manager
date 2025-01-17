@@ -31,7 +31,7 @@ date_added date
 
 CREATE TABLE projects(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-client_id int REFERENCES clients(id), 
+client_name varchar(255) REFERENCES clients(name), 
 production_budget decimal(15,2),
 project_address varchar(255),
 shipping_address varchar(255),

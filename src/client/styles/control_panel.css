@@ -53,7 +53,7 @@
 }
 
 #cpv_entry_box{
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .cpv_entry{
@@ -99,13 +99,21 @@
 /* CONTROL PANEL EDIT */
 #control_panel_edits{
     display: grid;
-    grid-template-rows: 80% 20%;
+    grid-template-rows: 10% 70% 20%;
+    grid-column: 100%;
 }
 
 .cpe_form{
     grid-row: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+}
+
+#cpe_form{
+    grid-row: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; 
 }
 
 .cpe_form_input{

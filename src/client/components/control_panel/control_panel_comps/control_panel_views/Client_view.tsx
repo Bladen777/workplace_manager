@@ -8,11 +8,11 @@ export interface Types_client{
   client_name: string,
   client_address: string,
   client_date: string,
-  }
+  };
 
   interface Types_client_import extends Types_client{
     id:number
-  }
+  };
 
 import { Prop_types_control_panel_view as Prop_types }  from "../../Control_panel.js"
 
