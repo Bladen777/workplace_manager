@@ -9,7 +9,7 @@ import "../styles/home.css"
 
 // THE COMPONENT
 export default function Home() {
-  console.log('%cHome Started', 'background-color:purple',);
+  console.log('%cHome Called', 'background-color:purple',);
 
 
   const [admin, set_admin] = useState<boolean>(true);

@@ -1,36 +1,31 @@
 import { useState, useEffect } from "react"
 
-
 // LOCAL IMPORTS
-import Client_edit from "./control_panel_comps/control_panel_edits/Client_edit.js"
-import Employee_edit from "./control_panel_comps/control_panel_edits/Employee_edit.js"
-import Department_edit from "./control_panel_comps/control_panel_edits/Department_edit.js"
-import Client_view from "./control_panel_comps/control_panel_views/Client_view.js"
-import Employee_view from "./control_panel_comps/control_panel_views/Employee_view.js"
-import Department_view from "./control_panel_comps/control_panel_views/Department_view.js"
-
-import Control_panel_edit from "./control_panel_comps/control_panel_edits/Control_panel_edit.js"
-
-import Get_user_info from "../admin_checks/Get_user_info.js"
-
+import Control_panel_view from "./control_panel_comps/Control_panel_view.js"
+import Control_panel_edit from "./control_panel_comps/Control_panel_edit.js"
 import "../../styles/control_panel.css"
 
+// CUSTOM HOOKS
+import useGetUserInfo from "./control_panel_comps/hooks/useGetUserInfo.js"
+
 // TYPE DEFINITIONS
-import { Types_user_info } from "../admin_checks/Get_user_info.js"
+import { Types_user_info } from "./control_panel_comps/hooks/useGetUserInfo.js"
 export interface Prop_types_control_panel_edit{
     submit_method:string,
     item_id:number,
     section_name:string
   }
 export interface Prop_types_control_panel_view{
+    section_name:string,
     item_id:Function
 }
 
 
 // THE COMPONENT
 export default function Control_panel() {
+    console.log('%cControl_panel Called', 'background-color:darkorchid',);
 
-
+    const fetched_user_info:Types_user_info = useGetUserInfo(); 
     // GETTING AND SETTING CURRENT USER INFO
     const [user_info, set_user_info] = useState<Types_user_info>({
         email: "",
@@ -38,10 +33,9 @@ export default function Control_panel() {
     })
 
     async function assign_user_info(){
-        const fetched_user_info = await Get_user_info();
         set_user_info({
-            email:fetched_user_info?.email!,
-            is_admin:fetched_user_info?.is_admin!
+            email:fetched_user_info.email,
+            is_admin:fetched_user_info.is_admin
         })
         console.log("fetched_user_info: ", fetched_user_info); 
     }
@@ -72,8 +66,9 @@ export default function Control_panel() {
     // THINGS TO DO ON INITIAL RENDER
     useEffect(()=>{
      assign_user_info();
-    },[])
+    },[fetched_user_info])
 
+    console.log("the selected_item: ", selected_item);
     if (user_info.is_admin){
         return (
             
@@ -107,9 +102,15 @@ export default function Control_panel() {
 
             <div id="control_panel_views" className="control_panel_content_box">
                 <div id="cpv_entry_box">
+                    {/* 
                     {view_section === "clients" && <Client_view item_id={set_selected_item}/>}
                     {view_section === "employees" && <Employee_view item_id={set_selected_item}/>}
                     {view_section === "departments" && <Department_view item_id={set_selected_item}/>}
+                    */}
+                    <Control_panel_view 
+                        item_id={set_selected_item}
+                        section_name={view_section}
+                    />
                 </div>
                 <div id="cpv_btns">
                     <button id="cpv_add_btn" className="control_panel_btn"
@@ -119,7 +120,11 @@ export default function Control_panel() {
                     <button id="cpv_edit_btn" className="control_panel_btn"
                             onClick={()=>cpv_btn_clicked("edit")}
                     > Edit  </button>
-
+                    }
+                    {selected_item !== 0 &&
+                    <button id="cpv_delete_btn" className="control_panel_btn"
+                            onClick={()=>cpv_btn_clicked("delete")}
+                    > Delete  </button>
                     }
                     
                 </div>
@@ -127,39 +132,14 @@ export default function Control_panel() {
 
             {edit_section !== "" &&
             <div id="control_panel_edits" className="control_panel_content_box">
-                <h3>{btn_method === "add" ? "Add" : "Edit"} clients</h3>
-                {/*}
-                {edit_section === "clients" && 
-                    <Client_edit 
-                        submit_method = {btn_method}
-                        item_id={selected_item}
-                        section_name = {edit_section}
-                />}
-                {edit_section === "employees" && 
-                    <Employee_edit 
-                        submit_method = {btn_method}
-                        item_id={selected_item}
-                        section_name = {edit_section}
-                />}
-                {edit_section === "departments" && 
-                    <Department_edit 
-                        submit_method = {btn_method}
-                        item_id={selected_item}
-                        section_name = {edit_section}        
-                />}
-
-                */}
+                <h3>{btn_method === "add" ? "Add" : "Edit"} {edit_section}</h3>
                 <Control_panel_edit 
                 submit_method = {btn_method}
                 item_id = {selected_item}
                 section_name = {edit_section}
             />
             </div>
-            }
-
-            
-
-        
+            }        
         </article>
         
         )

@@ -14,6 +14,7 @@ interface Props{
 
 // THE COMPONENT
 export default function Project_overview({admin}:Props) {
+  console.log('%cProject_overview Called', 'background-color:darkorchid',);
 
   // Need data from departments table 
   // Need data from employee budget table

@@ -61,7 +61,6 @@ db.connect();
       // NEW USER
         // open a form to set their name 
         // also set admin value to zero
-      console.log("BLAH")
       const email: string = profile.email;
       return done(null, email); 
     }
@@ -116,91 +115,139 @@ app.get("/is_admin",
 
 
   // GENERAL HTTP REQUESTS, FOR CLIENTS, EMPOYEES, AND DEPARTMENTS
+  app.post("/get_table_info",
+    async (req, res) => {
+      const sort_field = req.body.sort_field ? req.body.sort_field : "*";
+      const table_name = req.body.table_name;
+      const filter_name = req.body.filter_name;
+      const filter_item = req.body.filter_item;
+      const order_item = req.body.order_item; 
+
+      let search_condition = "";
+      if(filter_name){
+        search_condition = `WHERE ${filter_name}=${filter_item}`
+      };
+
+      let order_condition = "";
+      if(order_item){
+        order_condition = `ORDER BY ${order_item}`
+      };
+
+      try {
+        const response = await db.query(
+          `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
+        )
+        res.send(response.rows);
+      } catch (error) {
+        console.log(`Error getting infomation from ${table_name} : `,error);
+      }
+    }
+  );
+
+
   app.post("/get_columns",
     async (req, res) => {
-
+      const table_name = req.body.table_name
       try {
         const response = await db.query(
-          "SELECT column_name FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id';",
-          [req.body.table_name]
+          "SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id';",
+          [table_name]
         );
         res.send(response.rows);
       } catch (error) {
-        console.log('Error getting columns for a table from database: ',error);
+        console.log(`Error getting columns for ${table_name} from database: `,error);
       }
 
     }
-  )
+  );
 
-  app.post("/get_form_info",
-    async (req, res) => {
-      try {
-        const response = await db.query(
-          `SELECT * FROM ${req.body.table_name} WHERE id=$1 AND NOT ;`,
-          [req.body.id]
-        );
-        res.send(response.rows);
-      } catch (error) {
-        console.log('Error getting existing info from a table: ',error);
-      }
 
-    }
-  )
 
   app.post("/edit_form_data",
     async (req, res) => {
+      const table_name = req.body.table_name;
+      const filter_name = req.body.filter_name;
+      const filter_item = req.body.filter_item;
       const submit_method = req.body.submit_method;
       const submit_data = req.body.submit_data;
-      const column_names = req.body.column_names
-      console.log("the recieved data: ", submit_data);
-      console.log("the recieved column names: ", column_names);
+      const column_names = req.body.db_column_info;
 
-      interface Types_map_item{
-        column_name:string
-      }
+      console.log("the recieved data: ", submit_data, "\n",
+                  "the recieved column names: ", column_names, "\n",
+                  "the submit_method: ", submit_method
+      );
 
+      let search_condition;
+      if(filter_name){
+        search_condition = `WHERE ${filter_name}=${filter_item}`
+      };
       let name_values = "";
       let name_columns = "";
+      let edit_values = "";
 
+      // function to find the data to be added and create a string for the db query
       function string_data(){
-        column_names.map((item:Types_map_item, index:number) => {
-          console.log("the current item: ", item.column_name);
-          if(submit_data[item.column_name] !== ""){
-            if(index === 0){
-              name_columns += item.column_name;
-              name_values += submit_data[item.column_name];
+        column_names.map((item:{column_name:string}) => {
+          const column = item.column_name
+          const data_value = submit_data[column];
+          // path if add is the method
+          if (submit_method === "add"){
+            if (data_value !== ""){
+              if (name_values === ""){
+                name_columns += column;
+                name_values += `'${data_value}'`;
+              } else {
+                name_columns += ', ' + column;
+                name_values += `, '${data_value}'`;
+              }
+            }
+          // path if edit is the method
+          } else if (submit_method === "edit"){
+            if(edit_values === ""){
+              edit_values += `${column} = '${data_value}'`;
             } else {
-              name_columns += ", " + item.column_name;
-              name_values += ", " + submit_data[item.column_name];
+              edit_values += `, ${column} = '${data_value}'`;
             }
           }
         })
-  
-      }
+      };
+
+      console.log("the name_columns: ", name_columns);
+      console.log("the name_values: ", name_values);
+      console.log("the edit_values: ", edit_values);
 
       string_data();
-     
-      console.log("the name_columns: ", name_columns)
-      console.log("the name_values: ", name_values)
-      if( name_values !== ""){
-        if(submit_method === "add"){
+      if(submit_method === "add"){
+        try {
+          const response = await db.query(
+            `INSERT INTO ${table_name}(${name_columns}) VALUES(${name_values});`
+          )
+          res.send(`successfully ${submit_method}ed`);
+        } catch (error) {
+          console.log(`Error adding data to ${table_name}: `,error);
+        }
+      } else if(submit_method === "edit"){
+        try {
+          const response = await db.query(
+            `UPDATE ${table_name} SET ${edit_values} ${search_condition};`,
+          );
+        } catch (error) {
+          console.log(`Error editing data in ${table_name}: `,error);
+        } 
+      }else if (submit_method === "delete"){
           try {
             const response = await db.query(
-              `INSERT INTO ${req.body.table_name}(${name_columns}) VALUES(${name_values});`
-            )
-            res.send(`successfully ${submit_method}ed`);
+              `DELETE FROM ${table_name} ${search_condition};`
+            );
           } catch (error) {
-            console.log('Error editing data in a table: ',error);
+            console.log(`Error deleting data in ${table_name}: `,error);
           }
-        } else if(submit_method === "edit"){
-
-
-        
-        }
       }
-      
     }
-  )
+  );
+
+
+
 
   // ADD EMPOYEES
 
