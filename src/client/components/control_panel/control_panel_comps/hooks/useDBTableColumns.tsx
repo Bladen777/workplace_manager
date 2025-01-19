@@ -1,21 +1,21 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // TYPE DEFINITIONS 
-interface Types_column_info{
+export interface Types_column_info{
     column_name: string;
     is_nullable: string;
     input_type: string;
 };
 
-interface Types_form_data{
+export interface Types_form_data{
     [key:string]: string;
 }
 
 
 // THE COMPONENT
 export default function useDBTableColumns(section_name:string) {
-    console.log('%cControl_panel_db_calls Called', 'background-color:darkorchid',);
+    console.log(`%cuseDBTableColumns Called for ${section_name}`, 'background-color:darkorchid',);
 
     const [db_column_info, set_db_column_info] = useState<Types_column_info[]>([]);
     const [form_data, set_form_data] = useState<Types_form_data>({});
@@ -26,7 +26,6 @@ export default function useDBTableColumns(section_name:string) {
             const response = await axios.post("/get_columns",{
                 table_name: section_name
             })
-            console.log("the get columns",response.data);
 
             // set input types
             const column_info = response.data.map((item:Types_column_info, index:number) => {
@@ -46,12 +45,13 @@ export default function useDBTableColumns(section_name:string) {
                     item.input_type = input_type;
                     return(item);
             })
-            set_db_column_info(column_info);
-
+            
             // set initial form_data
             response.data.map((item:Types_column_info, index:number) => {
                 const item_name:string = item.column_name;
                 form_data[item_name] = "";  
+
+            set_db_column_info(column_info);
             });
         } catch (error) {
             console.log('%cError getting db columns: ', 'background-color:darkred',error);   
@@ -61,7 +61,8 @@ export default function useDBTableColumns(section_name:string) {
 
     useEffect(()=>{
         get_db_columns();
-    },[section_name])
+    },[])
+
 
     return({
         db_column_info: db_column_info,

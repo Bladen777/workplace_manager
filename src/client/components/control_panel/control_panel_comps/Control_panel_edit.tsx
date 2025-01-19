@@ -8,15 +8,8 @@ import useDBTableColumns from "./hooks/useDBTableColumns.js";
 // TYPE DEFINITIONS 
 import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 
-interface Types_column_info{
-    column_name: string;
-    is_nullable: string;
-    input_type: string;
-};
-
-interface Types_form_data{
-    [key:string]: string;
-}
+import { Types_column_info } from "./hooks/useDBTableColumns.js";
+import { Types_form_data } from "./hooks/useDBTableColumns.js";
 
 
 // THE COMPONENT

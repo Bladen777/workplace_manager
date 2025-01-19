@@ -1,4 +1,8 @@
-import { useLocation, Link } from "react-router-dom";
+import {  Link } from "react-router-dom";
+
+// LOCAL IMPORTS
+
+import "../styles/landing.css"
 
 // THE COMPONENT
 export default function Landing() {
@@ -10,11 +14,11 @@ export default function Landing() {
   return (
     <>
       <h1>Landing</h1>
-      <div>
-        <a href="/auth/google">
-          <button><p>Login</p></button>
-        </a>
-      </div>
+      <button id="google_login_btn" >
+            <a  id="googel_login_link" href='/auth/google'>
+                Login with Google
+            </a>  
+        </button>
       <Link
       to={"/default"}
       >

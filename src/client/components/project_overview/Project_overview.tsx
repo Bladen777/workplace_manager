@@ -7,13 +7,8 @@ import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import "../../styles/project_overview.css"
 
 
-// TYPE DEFINITIONS
-interface Props{
-  admin:boolean
-}
-
 // THE COMPONENT
-export default function Project_overview({admin}:Props) {
+export default function Project_overview() {
   console.log('%cProject_overview Called', 'background-color:darkorchid',);
 
   // Need data from departments table 

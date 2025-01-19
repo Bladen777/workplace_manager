@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 
 // LOCAL IMPORTS
 import Control_panel_view from "./control_panel_comps/Control_panel_view.js"
 import Control_panel_edit from "./control_panel_comps/Control_panel_edit.js"
 import "../../styles/control_panel.css"
 
-// CUSTOM HOOKS
-import useGetUserInfo from "./control_panel_comps/hooks/useGetUserInfo.js"
+import { Use_Context_User_Info } from "../user_info/Context_user_info.js"
 
 // TYPE DEFINITIONS
-import { Types_user_info } from "./control_panel_comps/hooks/useGetUserInfo.js"
+import { Types_user_info } from "../user_info/Context_user_info.js"
 export interface Prop_types_control_panel_edit{
     submit_method:string,
     item_id:number,
@@ -25,24 +24,11 @@ export interface Prop_types_control_panel_view{
 export default function Control_panel() {
     console.log('%cControl_panel Called', 'background-color:darkorchid',);
 
-    const fetched_user_info:Types_user_info = useGetUserInfo(); 
     // GETTING AND SETTING CURRENT USER INFO
-    const [user_info, set_user_info] = useState<Types_user_info>({
-        email: "",
-        is_admin: false
-    })
-
-    async function assign_user_info(){
-        set_user_info({
-            email:fetched_user_info.email,
-            is_admin:fetched_user_info.is_admin
-        })
-        console.log("fetched_user_info: ", fetched_user_info); 
-    }
+    const user_info = useContext<Types_user_info>(Use_Context_User_Info);
 
     // GETTING THE SELECTED ITEM
     const [selected_item, set_selected_item]= useState<number>(0);
-
 
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
     const [view_section, set_view_section] = useState<string>("clients");
@@ -61,13 +47,7 @@ export default function Control_panel() {
         set_edit_section(view_section);
         set_btn_method(btn_clicked);
     }
-
-
-    // THINGS TO DO ON INITIAL RENDER
-    useEffect(()=>{
-     assign_user_info();
-    },[fetched_user_info])
-
+    
     console.log("the selected_item: ", selected_item);
     if (user_info.is_admin){
         return (
@@ -102,11 +82,6 @@ export default function Control_panel() {
 
             <div id="control_panel_views" className="control_panel_content_box">
                 <div id="cpv_entry_box">
-                    {/* 
-                    {view_section === "clients" && <Client_view item_id={set_selected_item}/>}
-                    {view_section === "employees" && <Employee_view item_id={set_selected_item}/>}
-                    {view_section === "departments" && <Department_view item_id={set_selected_item}/>}
-                    */}
                     <Control_panel_view 
                         item_id={set_selected_item}
                         section_name={view_section}

@@ -10,9 +10,11 @@ const AnimatedOutlet = () => {
   const element = useOutlet();
 
   return (
-    <AnimatePresence mode="sync" initial={false}>
-        {element && React.cloneElement(element, { key: location.pathname })}
-    </AnimatePresence>
+    <div id="animated_outlet">
+      <AnimatePresence mode="sync" initial={false}>
+          {element && React.cloneElement(element, { key: location.pathname })}
+      </AnimatePresence>
+    </div>
   );
 };
 

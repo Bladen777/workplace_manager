@@ -74,8 +74,6 @@ db.connect();
     cb(null, user!);
   });
 
-  
-
 
 // *** LOGIN END *** 
 
@@ -95,20 +93,17 @@ app.get("/user_info",
     console.log("cookie data: ", req.cookies);
     */
 
+    const admin = 1;
+
     console.log("the req.user: ", req.user);
+    const user_info = {
+      email:req.user,
+      is_admin: admin
+    }
 
-    res.send(req.user);
+    res.send(user_info);
   }
 );
-
-app.get("/is_admin",
-  (req, res) => {
-    
-    res.send("1");
-  }
-);
-
-
 
 
 // *** SQL DATABASE START ***
