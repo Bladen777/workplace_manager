@@ -3,42 +3,26 @@ import { useEffect, useRef, useState } from "react";
 
 // CUSTOM HOOKS
 import useDBTableColumns from "./hooks/useDBTableColumns.js";
+import useGetTableData from "./hooks/useGetTableData.js";
 
 // TYPE DEFINITIONS 
 import { Prop_types_control_panel_view as Prop_types} from "../Control_panel.js"
 
 import { Types_column_info } from "./hooks/useDBTableColumns.js";
 
-
-
 // THE COMPONENT
 export default function Control_panel_view({ section_name, item_id}:Prop_types) {
-    console.log(`%cControl_panel_view Called for ${section_name}`, 'background-color:darkorchid',);
+    console.log(`%cControl_panel_view Called for ${section_name}`, 'background-color:darkorchid');
 
-    const get_initial_info = useDBTableColumns(section_name);
+    const initial_info = useDBTableColumns(section_name);
 
-    const [db_column_info, set_db_column_info] = useState<Types_column_info[]>([]);
-    const [table_data, set_table_data] = useState<any>([]);
+    const db_column_info_ref = useRef<Types_column_info[]>([]);
+    db_column_info_ref.current = initial_info.db_column_info;
+    const db_column_info = db_column_info_ref.current;
 
-
-    async function get_table_data(){
-        try {
-            const response = await axios.post("/get_table_info",{
-                table_name: section_name,
-                order_item: "id"
-            })
-            const data = response.data;
-            console.log("the data gathered: ", data)
-            set_table_data(data);
-
-        } catch (error) {
-            console.log(`%cError getting ${section_name}`, 'background-color:darkred',error);
-        }
-        
-    }
+    const table_data = useGetTableData({section_name, order_item:"id"});
 
 
-    
     function populate_view(table_item:any, index:number){
         let entry_name;
         const entry_item = db_column_info.map((item:Types_column_info, index:number) => {
@@ -46,11 +30,12 @@ export default function Control_panel_view({ section_name, item_id}:Prop_types) 
        
             if(column_name.includes("name")){
                 entry_name = table_item[column_name]
+            } else if(column_name.includes("color")){
+                return(<div key={index} className="color_id" style={{backgroundColor:`${table_item[column_name]}`}}></div>)
             } else{
                 return(<p key={index}>{table_item[column_name]}</p>)
             }
         })  
-
 
         return(
             <figure className={index % 2 === 0 ? "cpv_entry" : "cpv_entry cpv_entry_odd" }
@@ -65,19 +50,14 @@ export default function Control_panel_view({ section_name, item_id}:Prop_types) 
 
     
     useEffect(() => {
-        console.log('%cget_initial_info changed', 'background-color:blue', get_initial_info);
-        set_db_column_info(get_initial_info.db_column_info);
     },[table_data])
-
-    useEffect(() => {
-        console.log(`%cThe section name has changed`, 'background-color:green');
-        get_table_data();
-    },[section_name])
 
     
         return(
             <div>
-                {table_data.map(populate_view)}
+                {table_data &&
+                table_data.map(populate_view)
+                }
             </div>
         )
 }

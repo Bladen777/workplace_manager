@@ -10,13 +10,16 @@ import { Types_user_info } from "../user_info/Context_user_info.js";
 // THE COMPONENT
 export default function useGetUserInfo() {
 
+  
+
   let values:Types_user_info = {
     email: "",
     is_admin: false
   };
 
+   // Update_Context for user info
+   const update_user_info = Update_Context_User_Info(values);
 
-  
   async function get_info(){
   // FIND CURRENT USER
     try {
@@ -39,8 +42,6 @@ export default function useGetUserInfo() {
           }
 
           update_user_info(values);
-          //Update_Context_User_Info(values);
-
 
     } catch (error) {
       console.log('%cError fetching user info: ', 'background-color:darkred',error);    
@@ -50,5 +51,5 @@ export default function useGetUserInfo() {
     get_info()
   },[])
 
-  const update_user_info = Update_Context_User_Info(values);
+ 
 }

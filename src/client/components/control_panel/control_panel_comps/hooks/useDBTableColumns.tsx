@@ -1,4 +1,5 @@
 import axios from "axios";
+import { section } from "framer-motion/client";
 import { useEffect, useRef, useState } from "react";
 
 // TYPE DEFINITIONS 
@@ -12,16 +13,23 @@ export interface Types_form_data{
     [key:string]: string;
 }
 
+export interface Types_initial_data{
+    db_column_info:Types_column_info[],
+    initial_form_data:Types_form_data
+}
+
 
 // THE COMPONENT
 export default function useDBTableColumns(section_name:string) {
-    console.log(`%cuseDBTableColumns Called for ${section_name}`, 'background-color:darkorchid',);
+   
 
     const [db_column_info, set_db_column_info] = useState<Types_column_info[]>([]);
     const [form_data, set_form_data] = useState<Types_form_data>({});
     
+
     // INITIAL FUNCTION TO GATHER THE DATA FROM DATABASE REQUIRED TO CREATE FORMS
     async function get_db_columns() {
+        console.log(`%cSection Name changed to ${section_name}, useDBTableColumns data changed`, 'background-color:cornflowerblue');
         try {
             const response = await axios.post("/get_columns",{
                 table_name: section_name
@@ -29,39 +37,35 @@ export default function useDBTableColumns(section_name:string) {
 
             // set input types
             const column_info = response.data.map((item:Types_column_info, index:number) => {
-                const item_name = item.column_name
+                const item_name:string = item.column_name
                 let input_type;
+                let initial_item_value = "";
                     if(item_name.includes("date")){
                         input_type = "date"
                     } else if (item_name.includes("admin")) {
                         input_type = "checkbox"
                     } else if (item_name.includes("color")) {
-                        input_type = "color"
+                        input_type = "color";
+                        initial_item_value = "#F1F1F1"
                     } else if (item_name.includes("order")){
                         input_type = "range";
                     } else {
                         input_type = "text"
                     }; 
                     item.input_type = input_type;
+                    form_data[item_name] = initial_item_value; 
                     return(item);
             })
-            
-            // set initial form_data
-            response.data.map((item:Types_column_info, index:number) => {
-                const item_name:string = item.column_name;
-                form_data[item_name] = "";  
-
             set_db_column_info(column_info);
-            });
+            
         } catch (error) {
-            console.log('%cError getting db columns: ', 'background-color:darkred',error);   
+            console.log(`%cError getting db columns: ${error} `, 'background-color:darkred');   
         }
-        console.log("Getting the db_column_info finished")
     }
 
     useEffect(()=>{
         get_db_columns();
-    },[])
+    },[section_name])
 
 
     return({

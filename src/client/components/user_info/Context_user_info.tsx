@@ -8,8 +8,6 @@ export interface Types_user_info {
 
 const initial_user_info = {email:"", is_admin:false};
 
-
-
 export const Use_Context_User_Info = createContext<Types_user_info>(initial_user_info);
 
 const Update_Context = createContext<(values:Types_user_info) => void>(() => {});

@@ -1,99 +1,50 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 // CUSTOM HOOKS
 import useDBTableColumns from "./hooks/useDBTableColumns.js";
+import useGetTableData from "./hooks/useGetTableData.js";
 
 // TYPE DEFINITIONS 
 import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 
 import { Types_column_info } from "./hooks/useDBTableColumns.js";
 import { Types_form_data } from "./hooks/useDBTableColumns.js";
+import Department_order from "./control_panel_edits/Department_order.js";
 
 
 // THE COMPONENT
 export default function Control_panel_edit({submit_method, item_id, section_name}:Prop_types) {
-    console.log('%cControl_panel_edit Called', 'background-color:darkorchid',);
-
-    const get_initial_info = useDBTableColumns(section_name);
     
-    const [db_column_info, set_db_column_info] = useState<Types_column_info[]>([]);
-    const [form_data, set_form_data] = useState<Types_form_data>({});
+
+    const initial_info = useDBTableColumns(section_name,);
+
+    const db_column_info_ref = useRef<Types_column_info[]>([]);
+    db_column_info_ref.current = initial_info.db_column_info;
+    const db_column_info = db_column_info_ref.current;
+
+    
+    const table_data = useGetTableData({section_name, filter_name:"id", filter_item:item_id, }); 
+    
+
+    const [form_data, set_form_data] = useState<Types_form_data>(initial_info.initial_form_data);
     const [status_message, set_status_message] = useState<string>("");
 
-
-    // INITIAL FUNCTION TO GATHER THE DATA FROM DATABASE REQUIRED TO CREATE FORMS
-    async function get_db_columns() {
-        set_form_data(get_initial_info.initial_form_data);
-        set_db_column_info(get_initial_info.db_column_info);
-    }
-
-    // GET EXISTING FORM INFORMATION FROM THE DATABASE AND ADD IT TO THE FORM
-    async function get_form_info(){
-        try {
-            const response = await axios.post("/get_table_info",{
-                table_name: section_name,
-                filter_name: "id",
-                filter_item: item_id
-            })
-            const data = response.data[0];
-            console.log("the existing data: ", data);
-            console.log("the current db_column_info: ", db_column_info);
-            console.log("the current form_data: ", form_data );
-
-            db_column_info.map((item:Types_column_info) => {
-                const column_name = item.column_name;
-                let data_value = data[column_name];
-               
-                if(data[column_name]){
-                    if(column_name.includes("date")){
-                        data_value = `${data_value.slice(0,10)}`;
-                    };
-                    console.log("the current column: ", column_name, "\n",  
-                                "the current item: ", data_value);
-                    set_form_data(prev_state => {
-                        return{
-                        ...prev_state,
-                        [column_name]: data_value
-                        }
-                    });
-                }
-            });
-            
-        } catch (error) {
-            console.log('%cError getting existing info: ', 'background-color:darkred',error); 
-        }
-    }
-
-    // GET THE INFOMATION FOR SETTING A RANGE INPUT 
-    async function get_table_range(item_name:string){
-        try {
-            const response = await axios.post("/get_table_info", {
-                table_name: section_name,
-                sort_field: item_name
-                }
-            )
-            const data:number = response.data.length + 1;
-            console.log("the table range: ", data)
-            return data
-        } catch (error) {
-            console.log('%cError getting table range: ', 'background-color:darkred',error);
-        }  
-    }
 
     // CREATE THE INPUTS FOR THE FORM BASED ON DATABASE COLUMN NAMES
     function create_inputs(item: Types_column_info, index:number) {
         const item_name:string = item.column_name;
         const input_type = item.input_type;
         const item_string = item_name.replace("_"," ");
+        const form_value = form_data[item_name] ? form_data[item_name] : "";
         return(
             <div className="cpe_form_input"  key={index}>
                 <p>{item_string}</p>
                 <input
                 type={input_type}
                 placeholder={item_string}
-                value={form_data[item_name]}
+                value={form_value}
                 name={item_name}
                 onChange={(e)=>{set_form_data({...form_data, [item_name]: e.target.value})}}
                 // for range inputs
@@ -163,22 +114,20 @@ export default function Control_panel_edit({submit_method, item_id, section_name
     }
 
 
-    
     useEffect(()=>{
-        get_db_columns();
-    },[get_initial_info])
+        console.log(`%cControl_panel_edit Called for ${section_name}`, 'background-color:darkorchid');
+    },[])
     
-
     useEffect(() =>{
         if(submit_method !== "add"){
-            get_form_info();
+            set_form_data(table_data[0]);
           };
-    },[db_column_info])
+    },[table_data])
 
     return (
         <figure>
             <form id="cpe_form">
-            {db_column_info.map(create_inputs)}
+            {section_name === "departments" ? <Department_order /> : form_data && db_column_info.map(create_inputs)}
             <button id="client_edit_done" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
             </form>
             {status_message !== "" &&

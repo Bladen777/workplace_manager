@@ -5,19 +5,33 @@ import env from "dotenv";
 import passport from "passport";
 import {Strategy as GoogleStrategy} from "passport-google-oauth2";
 import bodyParser from "body-parser";
-import pg from "pg"
 
-// LOCAL IMPORTS
-import db from "./local_db.js"
+// DATABASE IMPORTS
+import {local_db} from "./local_db.js"
+import { render_db } from "./render_db.js";
 
 
-const app = express();
-env.config();
-const PORT:string = process.env.LOCAL_PORT!;
-app.use(express.json());
-app.use(bodyParser.urlencoded({extended: true}));
+// *** INITIAL SET UPS ***
+  const app = express();
+  env.config();
+  const PORT:string = process.env.LOCAL_PORT!;
+  app.use(express.json());
+  app.use(bodyParser.urlencoded({extended: true}));
 
-db.connect();
+
+// *** CONNECT TO DATABASE ***
+  let db;
+  if(local_db){ 
+    db = local_db;
+  } else {
+    db = render_db;
+  };
+  
+  try {
+    db.connect();
+  } catch (error) {
+    console.log(`Error a suitable Database does not exist: `,error);
+  }
 
 
 
@@ -84,15 +98,6 @@ app.get("/user_info",
 
   (req, res) => {
 
-    /* TESTING PASSPORT VALUES
-    const test_user = passport.session();
-    console.log("the test user?: ", test_user);
-
-    console.log("session info: ", req.session.id)
-
-    console.log("cookie data: ", req.cookies);
-    */
-
     const admin = 1;
 
     console.log("the req.user: ", req.user);
@@ -132,7 +137,25 @@ app.get("/user_info",
         const response = await db.query(
           `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
         )
-        res.send(response.rows);
+
+        const data = response.rows;
+        // convert sent dates to proper format
+        data.map((item, index:number) => {
+          const data_keys = Object.keys(item);
+          data_keys.findIndex((key_name:string, key_index:number) => {
+            if(key_name.includes("date")){
+              const target_value = data[index][data_keys[key_index]];
+              if(target_value !== null){
+                const converted_date = target_value.toLocaleDateString();
+                data[index][data_keys[key_index]] = converted_date;
+              }
+            }
+          })
+        });  
+
+        res.send(data);
+
+        //console.log("the response: ", response.rows)
       } catch (error) {
         console.log(`Error getting infomation from ${table_name} : `,error);
       }
