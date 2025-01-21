@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { Update_Context_User_Info } from '../user_info/Context_user_info.js';
+import { Use_Context_User_Info } from '../user_info/Context_user_info.js';
 
 // TYPE DEFINITIONS
 import { Types_user_info } from "../user_info/Context_user_info.js";
@@ -18,7 +18,7 @@ export default function useGetUserInfo() {
   };
 
    // Update_Context for user info
-   const update_user_info = Update_Context_User_Info(values);
+   const update_user_info = useContext(Use_Context_User_Info).update_func;
 
   async function get_info(){
   // FIND CURRENT USER

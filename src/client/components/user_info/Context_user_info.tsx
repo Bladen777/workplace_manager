@@ -1,34 +1,37 @@
-import { Children, createContext, useContext, useState, ReactNode } from "react"
+import { createContext, useContext, useState, ReactNode } from "react"
 
 // TYPE DEFINITIONS
 export interface Types_user_info {
-    email: string,
-    is_admin: boolean,
+    email: string
+    is_admin: boolean
   }
+
+  interface Types_context{
+    update_func:Function,
+    show_context: Types_user_info
+}
 
 const initial_user_info = {email:"", is_admin:false};
 
-export const Use_Context_User_Info = createContext<Types_user_info>(initial_user_info);
+// The Value to use
+export const Use_Context_User_Info = createContext<Types_context>({update_func:()=>{},show_context:initial_user_info});
 
-const Update_Context = createContext<(values:Types_user_info) => void>(() => {});
-
-export function Update_Context_User_Info({email, is_admin}:Types_user_info){
-    return useContext(Update_Context);
+export function Update_Context_User_Info(user_info:string){
+    return useContext(Use_Context_User_Info).update_func;
 }
 
+// The Component returned 
 export function Provide_Context_User_Info({children}:{children:ReactNode}) {
 
-    const[user_info, set_user_info] = useState<Types_user_info>(initial_user_info)
+    const [user_info, set_user_info] = useState<Types_user_info>(initial_user_info)
 
-    function update_user_info(values:Types_user_info){
-        set_user_info(values)
+    function change_user_info(value:Types_user_info){
+            set_user_info(value)
     }
 
   return (
-    <Use_Context_User_Info.Provider value={user_info}>
-        <Update_Context.Provider value={update_user_info}>
+    <Use_Context_User_Info.Provider value={{update_func:change_user_info, show_context: user_info }}>
         {children}
-        </Update_Context.Provider>
     </Use_Context_User_Info.Provider>
   )
 }

@@ -1,9 +1,11 @@
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 // CUSTOM HOOKS
 import useDBTableColumns from "./hooks/useDBTableColumns.js";
 import useGetTableData from "./hooks/useGetTableData.js";
+
+// CONTEXT IMPORTS
+import { Use_Context_Section_Name } from "../Context_section_name.js";
 
 // TYPE DEFINITIONS 
 import { Prop_types_control_panel_view as Prop_types} from "../Control_panel.js"
@@ -11,7 +13,12 @@ import { Prop_types_control_panel_view as Prop_types} from "../Control_panel.js"
 import { Types_column_info } from "./hooks/useDBTableColumns.js";
 
 // THE COMPONENT
-export default function Control_panel_view({ section_name, item_id}:Prop_types) {
+export default function Control_panel_view({item_id}:Prop_types) {
+    
+
+    const section_name = useContext(Use_Context_Section_Name).show_context;
+
+    console.log("THE VIEW PAGE SECTION_NAME: ", section_name);
     console.log(`%cControl_panel_view Called for ${section_name}`, 'background-color:darkorchid');
 
     const initial_info = useDBTableColumns(section_name);

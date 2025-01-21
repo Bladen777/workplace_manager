@@ -1,22 +1,26 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 
 // CUSTOM HOOKS
 import useDBTableColumns from "./hooks/useDBTableColumns.js";
 import useGetTableData from "./hooks/useGetTableData.js";
 
+// CONTEXT IMPORTS
+import { Use_Context_Section_Name } from "../Context_section_name.js";
+
 // TYPE DEFINITIONS 
 import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 
 import { Types_column_info } from "./hooks/useDBTableColumns.js";
 import { Types_form_data } from "./hooks/useDBTableColumns.js";
-import Department_order from "./control_panel_edits/Department_order.js";
+import Order_shift from "./control_panel_edits/Order_shift.js";
 
 
 // THE COMPONENT
-export default function Control_panel_edit({submit_method, item_id, section_name}:Prop_types) {
+export default function Control_panel_edit({submit_method, item_id}:Prop_types) {
     
+    const section_name = useContext(Use_Context_Section_Name).show_context;
 
     const initial_info = useDBTableColumns(section_name,);
 
@@ -127,9 +131,8 @@ export default function Control_panel_edit({submit_method, item_id, section_name
     return (
         <figure>
             <form id="cpe_form">
-            
             {
-            section_name === "departments" ? <Department_order /> : form_data && db_column_info.map(create_inputs)
+            section_name === "departments" ? <Order_shift /> : form_data && db_column_info.map(create_inputs)
             }
             <button id="client_edit_done" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
             </form>

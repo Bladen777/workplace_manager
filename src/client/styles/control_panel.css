@@ -131,14 +131,17 @@
 
 /* DEPARTMENT EDIT */
 #department_elements{
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 100%;
 }
 
 .department_element{
     background-color: var(--third);
     height: 4rem;
     width: 8rem;
+    grid-column: 1;
+    margin: 5px;
 }
 
 .grab_box{
