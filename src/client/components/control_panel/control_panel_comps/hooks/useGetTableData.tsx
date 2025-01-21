@@ -47,7 +47,6 @@ export default function useGetTableData({ section_name,  sort_field, filter_name
       get_form_info()
     },[section_name])
 
-    console.log(`%cThe sent data: `, 'background-color:',form_data);
   return form_data;
 }
 

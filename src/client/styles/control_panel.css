@@ -128,3 +128,24 @@
 .success_message{
     grid-row: 2;
 }
+
+/* DEPARTMENT EDIT */
+#department_elements{
+    display: flex;
+    flex-direction: column;
+}
+
+.department_element{
+    background-color: var(--third);
+    height: 4rem;
+    width: 8rem;
+}
+
+.grab_box{
+    background-color: var(--second);
+    height: 2rem;
+    width: 2rem;
+    text-align: center;
+    cursor: pointer;
+    
+}

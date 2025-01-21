@@ -127,7 +127,10 @@ export default function Control_panel_edit({submit_method, item_id, section_name
     return (
         <figure>
             <form id="cpe_form">
-            {section_name === "departments" ? <Department_order /> : form_data && db_column_info.map(create_inputs)}
+            
+            {
+            section_name === "departments" ? <Department_order /> : form_data && db_column_info.map(create_inputs)
+            }
             <button id="client_edit_done" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
             </form>
             {status_message !== "" &&
