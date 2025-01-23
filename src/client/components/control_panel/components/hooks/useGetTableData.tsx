@@ -44,7 +44,9 @@ export default function useGetTableData({ section_name,  sort_field, filter_name
     };
 
     useEffect(() =>{
-      get_form_info()
+        if(section_name !== ""){
+            get_form_info()
+        }
     },[section_name])
 
   return form_data;

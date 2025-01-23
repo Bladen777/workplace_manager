@@ -3,17 +3,17 @@ import { useContext, useEffect, useRef, useState } from "react";
 
 
 // CUSTOM HOOKS
-import useDBTableColumns from "./hooks/useDBTableColumns.js";
 import useGetTableData from "./hooks/useGetTableData.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Section_Name } from "../Context_section_name.js";
+import { Use_Context_Section_Name } from "../context/Context_section_name.js";
+import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 
 // TYPE DEFINITIONS 
-import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
+import { Prop_types_control_panel_edit as Prop_types} from "../control_panel.js"
 
-import { Types_column_info } from "./hooks/useDBTableColumns.js";
-import { Types_form_data } from "./hooks/useDBTableColumns.js";
+import { Types_column_info } from "../context/Context_db_table_info.js";
+import { Types_form_data } from "../context/Context_db_table_info.js";
 import Order_shift from "./control_panel_edits/Order_shift.js";
 
 
@@ -22,17 +22,13 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
     
     const section_name = useContext(Use_Context_Section_Name).show_context;
 
-    const initial_info = useDBTableColumns(section_name,);
+    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
+    const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
 
-    const db_column_info_ref = useRef<Types_column_info[]>([]);
-    db_column_info_ref.current = initial_info.db_column_info;
-    const db_column_info = db_column_info_ref.current;
-
-    
-    const table_data = useGetTableData({section_name, filter_name:"id", filter_item:item_id, }); 
+    const table_data = useGetTableData({section_name: section_name, filter_name:"id", filter_item: item_id, }); 
     
 
-    const [form_data, set_form_data] = useState<Types_form_data>(initial_info.initial_form_data);
+    const [form_data, set_form_data] = useState<Types_form_data>(initial_form_data);
     const [status_message, set_status_message] = useState<string>("");
 
 

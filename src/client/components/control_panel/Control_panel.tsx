@@ -1,18 +1,18 @@
 import { useState, useEffect, useContext } from "react"
 
 // LOCAL IMPORTS
-import Control_panel_view from "./control_panel_comps/Control_panel_view.js"
-import Control_panel_edit from "./control_panel_comps/Control_panel_edit.js"
+import Control_panel_view from "./components/Control_panel_view.js"
+import Control_panel_edit from "./components/Control_panel_edit.js"
 import "../../styles/control_panel.css"
 
 
 // CONTEXT IMPORTS
 import { Use_Context_User_Info } from "../user_info/Context_user_info.js"
-import { Use_Context_Section_Name } from "./Context_section_name.js"
+import { Use_Context_Section_Name } from "./context/Context_section_name.js"
+import { Use_Context_Table_Info } from "./context/Context_db_table_info.js"
 
 
 // TYPE DEFINITIONS
-import { Types_user_info } from "../user_info/Context_user_info.js"
 export interface Prop_types_control_panel_edit{
     submit_method:string
     item_id:number
@@ -34,21 +34,19 @@ export default function Control_panel() {
     const [selected_item, set_selected_item]= useState<number>(0);
 
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
-    const [view_section, set_view_section] = useState<string>("clients");
+    const initial_section = "clients";
+    const [view_section, set_view_section] = useState<string>(initial_section);
     const [edit_section, set_edit_section] = useState<string>("");
     const [btn_method, set_btn_method] = useState<string>("");
 
     // UPDATING SECTION_NAME CONTEXT
-
-
     const new_section_name = useContext(Use_Context_Section_Name).update_func;
-    
- 
+    const new_table_data = useContext(Use_Context_Table_Info).update_func;
 
     
-
     function cp_nav_btn_clicked(section:string){
-        new_section_name(section)
+        new_table_data(section);
+        new_section_name(section);
         set_selected_item(0);
         set_view_section(section);
         set_edit_section("");
@@ -62,7 +60,8 @@ export default function Control_panel() {
     console.log("the selected_item: ", selected_item);
 
     useEffect(() =>{
-      new_section_name(view_section)
+      new_section_name(initial_section);
+      new_table_data(initial_section);
     },[])
 
 

@@ -98,7 +98,7 @@ app.get("/user_info",
 
   (req, res) => {
 
-    const admin = 1;
+    const admin = true;
 
     console.log("the req.user: ", req.user);
     const user_info = {
@@ -133,33 +133,35 @@ app.get("/user_info",
         order_condition = `ORDER BY ${order_item}`
       };
 
-      try {
-        const response = await db.query(
-          `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
-        )
-
-        const data = response.rows;
-        // convert sent dates to proper format
-        data.map((item, index:number) => {
-          const data_keys = Object.keys(item);
-          data_keys.findIndex((key_name:string, key_index:number) => {
-            if(key_name.includes("date")){
-              const target_value = data[index][data_keys[key_index]];
-              if(target_value !== null){
-                const converted_date = target_value.toLocaleDateString();
-                data[index][data_keys[key_index]] = converted_date;
+        try {
+    
+          const response = await db.query(
+            `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
+          )
+        
+          const data = response.rows;
+          // convert sent dates to proper format
+          data.map((item, index:number) => {
+            const data_keys = Object.keys(item);
+            data_keys.findIndex((key_name:string, key_index:number) => {
+              if(key_name.includes("date")){
+                const target_value = data[index][data_keys[key_index]];
+                if(target_value !== null){
+                  const converted_date = target_value.toLocaleDateString();
+                  data[index][data_keys[key_index]] = converted_date;
+                }
               }
-            }
-          })
-        });  
+            })
+          });  
 
-        res.send(data);
+          res.send(data);
 
-        //console.log("the response: ", response.rows)
-      } catch (error) {
-        console.log(`Error getting infomation from ${table_name} : `,error);
+          //console.log("the response: ", response.rows)
+        } catch (error) {
+          console.log(`Error getting infomation from ${table_name} : `,error);
+        }
       }
-    }
+    
   );
 
 
@@ -302,68 +304,7 @@ app.get("/user_info",
 
     // GET CLIENTS IN DATABASE
 
-    app.get("/get_clients",
-      async (req, res) => {
-        try {
-          let get_clients = await db.query(
-            "SELECT id, name AS client_name, address AS client_address, TO_CHAR(date_added, 'YYYY/MM/DD') AS client_date FROM clients ORDER BY id;"
-          )
-          res.send(get_clients.rows);
-        } catch (error) {
-          console.log('Error getting clients from database: ',error);
-        }
-      }
-    )
-
-    app.post("/get_specific_client",
-      async (req, res) => {
-    
-        try {
-          let get_specific_client = await db.query(
-            "SELECT id, name AS client_name, address AS client_address, TO_CHAR(date_added, 'YYYY-MM-DD') AS client_date FROM clients WHERE id=$1;",
-            [req.body.client_id]
-          );
-          res.send(get_specific_client.rows);
-        } catch (error) {
-          console.log('Error getting specific client from database: ',error);
-        }
-      }
-    )
-
     // HAS A NEW, EDIT, AND DELETE OPTIONS
-
-    app.post("/client_edit", 
-      async (req, res) => {
-        console.log("request.body",req.body);
-        const item_id = req.body.id;
-        const method = req.body.method;
-        const client_name = req.body.name;
-        const client_address = req.body.address;
-        const client_date = req.body.date;
-
-        if(method === "add"){
-          try {
-            let new_client_data = await db.query(
-              "INSERT INTO clients(name, address, date_added) VALUES ($1, $2, $3);",
-              [client_name, client_address, client_date]
-            );
-          } catch (error) {
-            console.log('Error adding clients to database: ',error);
-          }
-        } else if( method === "edit"){
-          try {
-            let edit_client_data = await db.query(
-              "UPDATE clients SET name = $1, address = $2, date_added = $3 WHERE id=$4;",
-              [client_name, client_address, client_date, item_id]
-            );
-          } catch (error) {
-            console.log('Error editing clients in the database: ',error);
-          }
-        }
-
-        res.send(`${client_name} successfully ${method}ed`);
-        
-      });
 
   // ADD PROJECTS
 

@@ -1,34 +1,27 @@
 import { useContext, useEffect, useRef, useState } from "react";
 
 // CUSTOM HOOKS
-import useDBTableColumns from "./hooks/useDBTableColumns.js";
 import useGetTableData from "./hooks/useGetTableData.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Section_Name } from "../Context_section_name.js";
+import { Use_Context_Section_Name } from "../context/Context_section_name.js";
+import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 
 // TYPE DEFINITIONS 
-import { Prop_types_control_panel_view as Prop_types} from "../Control_panel.js"
+import { Prop_types_control_panel_view as Prop_types} from "../control_panel.js"
 
-import { Types_column_info } from "./hooks/useDBTableColumns.js";
+import { Types_column_info } from "../context/Context_db_table_info.js";
 
 // THE COMPONENT
 export default function Control_panel_view({item_id}:Prop_types) {
     
 
     const section_name = useContext(Use_Context_Section_Name).show_context;
-
-    console.log("THE VIEW PAGE SECTION_NAME: ", section_name);
     console.log(`%cControl_panel_view Called for ${section_name}`, 'background-color:darkorchid');
 
-    const initial_info = useDBTableColumns(section_name);
+    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
 
-    const db_column_info_ref = useRef<Types_column_info[]>([]);
-    db_column_info_ref.current = initial_info.db_column_info;
-    const db_column_info = db_column_info_ref.current;
-
-    const table_data = useGetTableData({section_name, order_item:"id"});
-
+    const table_data = useGetTableData({section_name: section_name, order_item:"id"});
 
     function populate_view(table_item:any, index:number){
         let entry_name;
@@ -54,10 +47,6 @@ export default function Control_panel_view({item_id}:Prop_types) {
             </figure>
         ) 
       }
-
-    
-    useEffect(() => {
-    },[table_data])
 
     
         return(
