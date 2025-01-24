@@ -128,7 +128,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
         <figure>
             <form id="cpe_form">
             {
-            section_name === "departments" ? <Order_shift /> : form_data && db_column_info.map(create_inputs)
+            section_name === "departments" ? <Order_shift element_names = "cp_departments" /> : form_data && db_column_info.map(create_inputs)
             }
             <button id="client_edit_done" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
             </form>

@@ -1,8 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 
-
 // CUSTOM HOOKS
-
 import useGetTableData from "../hooks/useGetTableData.js";
 
 // CONTEXT IMPORTS
@@ -14,80 +12,55 @@ interface Types_mouse_event{
     screenY:number
 }
 
-interface Types_selected_ele{
-    name: string
-    index: number
-}
-
 interface Types_pos{
     x: number
     y: number
 }
 
-interface Types_ele_shift{
-    top_ele: number
-    bottom_ele: number
-}
-
-interface Types_ele_shift_amt extends Types_ele_shift{
-    target_ele: number
-}
-
-interface Types_shift_number{
-    up:number,
-    down: number
+interface Types_selected_ele_pos{
+    start: number,
+    adjust: number
 }
 
 import { Types_form_data } from "../../context/Context_db_table_info.js";
 
 // THE COMPONENT
-export default function Order_shift() {
+export default function Order_shift({element_names}:{element_names:string}) {
 
 const section_name = useContext(Use_Context_Section_Name).show_context;
-console.log(`%cSECTION NAME:`, 'background-color:red', section_name);
+
 const initial_table_data:Types_form_data[] = useGetTableData({section_name: section_name, order_item: "id"});
-
 const [table_data, set_table_data] = useState<Types_form_data[]>([]);
-const track_table_data = useRef<Types_form_data[]>([])
 
-const current_ele = useRef<HTMLDivElement | null>(null);
-
-
-
-// element styling
+const current_ele_div_ref = useRef<HTMLDivElement | null>(null);
+ 
 const pos_track = useRef<boolean>(false);
-const [selected_ele, set_selected_ele] = useState<Types_selected_ele>({name:"", index:0});
-
-const ele_shift_targets = useRef<Types_ele_shift>({top_ele:0, bottom_ele:0})
-const ele_shift_amt = useRef<Types_ele_shift_amt>({top_ele:0, bottom_ele:0, target_ele:0})
-const shift_number = useRef<Types_shift_number>({up:0, down:0})
-
+const [selected_ele_name, set_selected_ele_name] = useState<string>("");
+const selected_ele_pos = useRef<Types_selected_ele_pos>({start:0, adjust:0})
+const shift_ele_direction = useRef<string>("")
 const start_pos = useRef<Types_pos>({x:0, y:0});
-const [ele_pos, set_ele_pos] = useState<Types_pos>({x:0, y:0}); 
 
+const [ele_pos, set_ele_pos] = useState<Types_pos>({x:0, y:0}); 
 const mouse_x= useRef<number>();
 const mouse_y = useRef<number>();
 
-
     function element_clicked(method:string, key_name:string, index:number){
-        //console.log(`%cDepartment element_clicked ${method}`, 'background-color:', );
         if(method === "down"){
-            console.log("mouse down started")
-
-            set_selected_ele({name:key_name, index: index});
+            
             start_pos.current = {x: mouse_x.current!, y: mouse_y.current!}
             pos_track.current = true;
-            
+            selected_ele_pos.current = {start: index , adjust: index};
+            set_selected_ele_name(key_name);
         }else {
-            console.log("mouse up started")
-            
+            const new_table_data:Types_form_data[] = [...table_data];
+            new_table_data.splice(selected_ele_pos.current.start, 1);
+            new_table_data.splice(selected_ele_pos.current.adjust, 0, table_data[index] );
             pos_track.current = false;
-            set_table_data(track_table_data.current!);
-            ele_shift_targets.current = {top_ele:0, bottom_ele:0}
-            ele_shift_amt.current = {top_ele:0, bottom_ele:0, target_ele:0}
-            shift_number.current = {up:0, down:0};
+            shift_ele_direction.current = "";
             set_ele_pos({x:0, y:0});
-            
+            set_selected_ele_name("");
+            set_table_data(new_table_data);
+          
         }
     }
 
@@ -96,98 +69,94 @@ const mouse_y = useRef<number>();
         mouse_x.current = event.screenX;
         mouse_y.current = event.screenY;
         if(pos_track.current === true){
-            const move_x = event.screenX! - start_pos.current.x!
-            const move_y = event.screenY! - start_pos.current.y! 
 
-            const current_ele_height:number = current_ele.current!.clientHeight;
+            let move_x = event.screenX! - start_pos.current.x!
+            let move_y = event.screenY! - start_pos.current.y! 
+            const current_ele_height:number = current_ele_div_ref.current!.offsetHeight;
+            const ele_margin:number = Number(window.getComputedStyle(current_ele_div_ref.current!).getPropertyValue('margin-top').replace(/[^0-9]/g , ''));
+            const ele_size = current_ele_height + ele_margin*2;
+            
+            function check_to_shift(){ 
+                if (move_y > ele_size && selected_ele_pos.current.adjust < table_data.length){
+                    // move index down
+                    selected_ele_pos.current.adjust ++ ;
+                } else if (ele_size + move_y <= 0  && selected_ele_pos.current.adjust !== 0){
+                    //move index up
+                    selected_ele_pos.current.adjust -- ;
+                } else {
+                    return
+                };
+                start_pos.current = {x: mouse_x.current!, y: mouse_y.current!}
+                move_x = 0;
+                move_y = 0;
 
-            const ele_current_index = selected_ele.index - shift_number.current.up + shift_number.current.down;
-            console.log(`%cThe ele_current_index:  `, 'background-color:olive', ele_current_index );
-            if (move_y > current_ele_height && ele_current_index !== table_data.length -1){
-                // move index down
-                shift_ele("down")
-            } else if (current_ele_height + move_y <= 0  && ele_current_index !== 0){
-                //move index up
-                shift_ele("up")
-            } else {
-                set_ele_pos({x: move_x, y: move_y});
-            }
+                if(selected_ele_pos.current.adjust > selected_ele_pos.current.start){
+                    shift_ele_direction.current = "down";
+                } else if (selected_ele_pos.current.adjust < selected_ele_pos.current.start){
+                    shift_ele_direction.current = "up";
+                } else {
+                    shift_ele_direction.current = "";
+                    return
+                };
+                console.log("the Size of the element: ", current_ele_height);
+                console.log("the Size of the element margin: ", ele_margin);
+                console.log(`%c selected_ele_name:  `, 'background-color:olive', selected_ele_name); 
+                console.log(`%c Move element up`, 'background-color:blue', selected_ele_pos.current);
+                console.log(`%c Shift is: `, 'background-color:darkblue', shift_ele_direction.current );
+            }  
+            check_to_shift();
+            set_ele_pos({x: move_x, y: move_y});
         }
     }
-
-    function shift_ele(direction:string){
-        
-        
-        const new_table_data:Types_form_data[] = [...track_table_data.current];
-        const selected_ele_data = table_data[selected_ele.index];
-        let ele_shift:number = 0;
-
-        const ele_current_index = selected_ele.index - shift_number.current.up + shift_number.current.down;
-        const target_ele = selected_ele.index; 
-        console.log(`%c The Selected Ele is: `, 'background-color:', selected_ele );
-        console.log(`%c The target_ele is: `, 'background-color:', ele_current_index );
-        
-        start_pos.current = {x: mouse_x.current!, y: mouse_y.current!}
-      
-        ele_shift_targets.current = {top_ele:ele_current_index - 1 ,bottom_ele:ele_current_index + 1}
-        if (direction === "down" ){
-            console.log(`%c Move Index Down: `, 'background-color:brown', );
-            shift_number.current.down ++;
-            ele_shift = ele_current_index + shift_number.current.down;
-            ele_shift_amt.current = {top_ele:0, bottom_ele: -shift_number.current.down, target_ele: shift_number.current.down}
-        } else if (direction === "up") {
-            console.log(`%c Move Index Up: `, 'background-color:brown', );
-            shift_number.current.up ++;
-            ele_shift = ele_current_index - shift_number.current.up;
-            ele_shift_amt.current = {top_ele: shift_number.current.up, bottom_ele:0, target_ele: -shift_number.current.up}
-        } 
-
-            new_table_data.splice(ele_current_index, 1);
-            new_table_data.splice(ele_shift,0, selected_ele_data);
-            track_table_data.current = new_table_data;
-            set_ele_pos({x: 0, y: 0});
- 
-   }
 
     function create_inputs(item:Types_form_data, index:number){
         let key_name = `dep_ele_${index}`
         const row = index + 1;
-        //console.log("the item data: ", item)
-        //console.log("the table data: ", table_data.findIndex())
-
+        const item_name_index:string | undefined = (Object.keys(item)).find((key_name: string) => {
+            if(key_name.includes("name")){
+                return key_name;
+            } 
+        });
         return(
             <div
-                ref={key_name === selected_ele.name ? current_ele : undefined }
+                ref={key_name === selected_ele_name ? current_ele_div_ref : undefined }
                 key={key_name}
-                className="department_element"
+                className={`o_shift_element ${element_names}_o_shift_element`}
                 onMouseMove={(e)=>{track_mouse(e)}}
 
                 style={{
-                    transform: `translate(${key_name === selected_ele.name && `${ele_pos.x}px , ${ele_pos.y}px`})`,
+                    transform: `translate(${
+                        key_name === selected_ele_name ? 
+                        `${ele_pos.x}px , ${ele_pos.y}px`:
+                        `0px , 0px`
+                    })`,
                     gridRow: `${
                         // element above adjustments
-                        index === ele_shift_targets.current.top_ele ? 
-                        row + ele_shift_amt.current.top_ele : 
+                        shift_ele_direction.current === "up" && index < selected_ele_pos.current.start && index >= selected_ele_pos.current.adjust 
+                        ? row + 1 
+                        : 
                         // element below adjustments
-                        index === ele_shift_targets.current.bottom_ele ? 
-                        row + ele_shift_amt.current.bottom_ele :
+                        shift_ele_direction.current === "down" && index > selected_ele_pos.current.start && index <= selected_ele_pos.current.adjust 
+                        ? row - 1 
+                        : 
                         // target element adjustments
-                        index === selected_ele.index ?
-                        row + ele_shift_amt.current.target_ele :
+                        key_name === selected_ele_name 
+                        ? selected_ele_pos.current.adjust + 1 
+                        : 
                         row
                     }`,
-                    zIndex: `${key_name === selected_ele.name  ? 99 : 1}`
+                    zIndex: `${key_name === selected_ele_name  ? 99 : 1}`
                 }}    
             >
                 <div 
-                    className="grab_box"
+                    className={`o_shift_grab_box ${element_names}_o_shift_grab_box`}
                     onMouseDown={()=>{element_clicked("down", key_name, index)}} 
                     onMouseUp={()=>{pos_track.current && element_clicked("up","", index )}}
                     onMouseOut={()=>{pos_track.current && element_clicked("out", "", index)}}     
                 >
                     O
                 </div>
-                    {item.department_name}
+                    {item[item_name_index!]}
                 
             </div>
         )
@@ -195,11 +164,10 @@ const mouse_y = useRef<number>();
 
     useEffect(() =>{
       set_table_data(initial_table_data);
-      track_table_data.current = initial_table_data;
     },[initial_table_data]);
 
   return (
-    <figure id="department_elements">
+    <figure id={`${element_names}_o_shift_box`} className="o_shift_box">
         {table_data && table_data.map(create_inputs)}
     </figure>
   )

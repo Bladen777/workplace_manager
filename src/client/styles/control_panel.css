@@ -130,13 +130,14 @@
 }
 
 /* DEPARTMENT EDIT */
-#department_elements{
+#cp_departments_o_shift_box{
     display: grid;
     grid-template-rows: auto;
     grid-template-columns: 100%;
+    user-select: none;
 }
 
-.department_element{
+.cp_departments_o_shift_element{
     background-color: var(--third);
     height: 4rem;
     width: 8rem;
@@ -144,7 +145,7 @@
     margin: 5px;
 }
 
-.grab_box{
+.cp_departments_o_shift_grab_box{
     background-color: var(--second);
     height: 2rem;
     width: 2rem;
