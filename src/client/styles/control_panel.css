@@ -43,9 +43,15 @@
     padding: 1rem;
 }
 
+.control_panel_entry{
+    display: grid;
+    grid-template-rows: 3rem auto;
+    grid-template-columns: auto;
+    padding: 10px;
+}
+
 /* CONTROL PANEL VIEW */
 /* *** classes and ids with "cpv" are abbreviated for control panel view ****/
-/* *** classes and ids with "cpe" are abbreviated for control panel edit ****/
 #control_panel_views{
     display: grid;
     grid-template-rows: 80% 20%;
@@ -58,10 +64,6 @@
 
 .cpv_entry{
     background-color: var(--third);
-    display: grid;
-    grid-template-rows: 3rem auto;
-    grid-template-columns: auto;
-    padding: 10px;
     cursor: pointer;
 
 }
@@ -102,6 +104,7 @@
 
 
 /* CONTROL PANEL EDIT */
+/* *** classes and ids with "cpe" are abbreviated for control panel edit ****/
 #control_panel_edits{
     display: grid;
     grid-template-rows: 10% 70% 20%;

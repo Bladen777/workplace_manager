@@ -126,6 +126,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
             ? <Order_shift 
                 element_names = {`cp_${section_name}`}
                 send_form_data = {set_form_data} 
+                submit_method = {submit_method}
             /> 
             : form_data && db_column_info.map(create_inputs)
             }

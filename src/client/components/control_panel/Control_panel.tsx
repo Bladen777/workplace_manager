@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext } from "react"
 
-// LOCAL IMPORTS
+// COMPONENT IMPORTS
 import Control_panel_view from "./components/Control_panel_view.js"
 import Control_panel_edit from "./components/Control_panel_edit.js"
-import "../../styles/control_panel.css"
 
+// STYLE IMPORTS
+import "../../styles/control_panel.css"
 
 // CONTEXT IMPORTS
 import { Use_Context_User_Info } from "../user_info/Context_user_info.js"
@@ -35,8 +36,7 @@ export default function Control_panel() {
     const [selected_item, set_selected_item]= useState<number>(0);
 
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
-    const initial_section = "clients";
-    const [view_section, set_view_section] = useState<string>(initial_section);
+    const [view_section, set_view_section] = useState<string>("");
     const [edit_section, set_edit_section] = useState<string>("");
     const [btn_method, set_btn_method] = useState<string>("");
     const [view_order_key, set_view_order_key] = useState<string>("");
@@ -63,8 +63,12 @@ export default function Control_panel() {
     console.log("the selected_item: ", selected_item);
 
     useEffect(() =>{
-      new_section_name(initial_section);
-      new_table_data(initial_section);
+        (async()=>{
+            const initial_section = "clients";
+            await new_section_name(initial_section);
+            await new_table_data(initial_section);
+            set_view_section(initial_section);
+        })();
     },[])
 
 
@@ -75,7 +79,6 @@ export default function Control_panel() {
             <h1 id="control_panel_title">Control Panel</h1>
 
             <div id="control_panel_nav">
-
                 <button id="clients_btn"
                         className={view_section === "clients" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
                         onClick={()=>{cp_nav_btn_clicked("clients")}}
@@ -96,11 +99,11 @@ export default function Control_panel() {
                 >
                     <h3>Departments</h3>
                 </button>
-
             </div>  
 
             <div id="control_panel_views" className="control_panel_content_box">
                 <div id="cpv_entry_box">
+
                     <Control_panel_view 
                         item_id={set_selected_item}
                         view_order_key= {view_order_key}

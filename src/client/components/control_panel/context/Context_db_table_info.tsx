@@ -9,7 +9,8 @@ export interface Types_column_info{
 };
 
 export interface Types_form_data{
-  [key:string]: string;
+   id?:number;
+  [key:string]: string | number | undefined;
 }
 
 export interface Types_initial_data{

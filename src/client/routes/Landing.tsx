@@ -1,7 +1,6 @@
 import {  Link } from "react-router-dom";
 
-// LOCAL IMPORTS
-
+// STYLE IMPORTS
 import "../styles/landing.css"
 
 // THE COMPONENT

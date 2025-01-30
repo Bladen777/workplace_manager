@@ -1,5 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
 
+// COMPONENT IMPORTS
+import Control_panel_entries from "../Control_panel_entries.js";
+
 // CUSTOM HOOKS
 import useGetTableData from "../hooks/useGetTableData.js";
 
@@ -179,8 +182,9 @@ const mouse_y = useRef<number>();
                 >
                     O
                 </div>
-                    {item[item_name_key!]}
-                
+                <Control_panel_entries 
+                    table_item={item}
+                />   
             </figure>
         )
     }

@@ -1,4 +1,4 @@
-// LOCAL IMPORTS
+// COMPONENT IMPORTS
 import Home from "./Home.js";
 import Landing from "./Landing.js";
 import Default from "./Defualt.js";
