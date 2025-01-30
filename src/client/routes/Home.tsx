@@ -5,7 +5,7 @@ import { useContext } from "react";
 
 // LOCAL IMPORTS
 import Project_overview from "../components/project_overview/Project_overview.js"
-import Control_panel from "../components/control_panel/control_panel.js"
+import Control_panel from "../components/control_panel/Control_panel.js"
 import useGetUserInfo from "../components/user_info/useGetUserInfo.js";
 import { Use_Context_User_Info } from "../components/user_info/Context_user_info.js";
 

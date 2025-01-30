@@ -5,6 +5,7 @@ import env from "dotenv";
 import passport from "passport";
 import {Strategy as GoogleStrategy} from "passport-google-oauth2";
 import bodyParser from "body-parser";
+import pg from "pg"
 
 // DATABASE IMPORTS
 import {local_db} from "./local_db.js"
@@ -20,7 +21,7 @@ import { render_db } from "./render_db.js";
 
 
 // *** CONNECT TO DATABASE ***
-  let db;
+  let db: pg.Client | pg.Pool;
   if(local_db){ 
     db = local_db;
   } else {
@@ -32,8 +33,6 @@ import { render_db } from "./render_db.js";
   } catch (error) {
     console.log(`Error a suitable Database does not exist: `,error);
   }
-
-
 
 // *** LOGIN START ***
   app.use(session({
@@ -95,9 +94,7 @@ import { render_db } from "./render_db.js";
 
 
 app.get("/user_info",
-
   (req, res) => {
-
     const admin = true;
 
     console.log("the req.user: ", req.user);
@@ -110,7 +107,6 @@ app.get("/user_info",
   }
 );
 
-
 // *** SQL DATABASE START ***
 
 
@@ -118,23 +114,21 @@ app.get("/user_info",
   app.post("/get_table_info",
     async (req, res) => {
       const sort_field = req.body.sort_field ? req.body.sort_field : "*";
-      const table_name = req.body.table_name;
-      const filter_name = req.body.filter_name;
-      const filter_item = req.body.filter_item;
-      const order_item = req.body.order_item; 
+      const table_name: string = req.body.table_name;
+      const filter_key: string = req.body.filter_key;
+      const filter_item: string = req.body.filter_item;
+      const order_key: string = req.body.order_key; 
 
       let search_condition = "";
-      if(filter_name){
-        search_condition = `WHERE ${filter_name}=${filter_item}`
+      if(filter_key){
+        search_condition = `WHERE ${filter_key}=${filter_item}`
       };
 
       let order_condition = "";
-      if(order_item){
-        order_condition = `ORDER BY ${order_item}`
+      if(order_key){
+        order_condition = `ORDER BY ${order_key}`
       };
-
         try {
-    
           const response = await db.query(
             `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
           )
@@ -185,31 +179,50 @@ app.get("/user_info",
 
   app.post("/edit_form_data",
     async (req, res) => {
-      const table_name = req.body.table_name;
-      const filter_name = req.body.filter_name;
-      const filter_item = req.body.filter_item;
-      const submit_method = req.body.submit_method;
-      const submit_data = req.body.submit_data;
-      const column_names = req.body.db_column_info;
+      interface Types_entry_item{
+        [key:string]: string;
+      }
 
-      console.log("the recieved data: ", submit_data, "\n",
-                  "the recieved column names: ", column_names, "\n",
+      interface Types_table_data{
+        search_condition: string;
+        name_values:string;
+        name_columns:string;
+        edit_values:string;
+      }
+
+      const table_name: string = req.body.table_name;
+      const filter_key: string = req.body.filter_key;
+      const filter_item: string = req.body.filter_item;
+      const submit_method: string = req.body.submit_method;
+      const submit_data: Types_entry_item | Types_entry_item[] = req.body.submit_data;
+      const column_names: {column_name:string}[]  = req.body.db_column_info;
+
+  
+
+      console.log("the recieved data: ", submit_data,"\n",
+                  "the recieved column names: ", column_names,"\n",
                   "the submit_method: ", submit_method
       );
 
-      let search_condition;
-      if(filter_name){
-        search_condition = `WHERE ${filter_name}=${filter_item}`
-      };
-      let name_values = "";
-      let name_columns = "";
-      let edit_values = "";
+    
 
       // function to find the data to be added and create a string for the db query
-      function string_data(){
+      function string_data(entry_item:Types_entry_item, entry_filter_item:string){
+        let search_condition = "";
+        let name_values = "";
+        let name_columns = "";
+        let edit_values = "";
+
+        // Set the Search Condition
+        if(filter_key){
+          search_condition = `WHERE ${filter_key}=${entry_filter_item}`
+        };
+
+        // Define Key, Value pairs as strings
         column_names.map((item:{column_name:string}) => {
-          const column = item.column_name
-          const data_value = submit_data[column];
+          const column = item.column_name;
+          const data_value = entry_item[column];
+
           // path if add is the method
           if (submit_method === "add"){
             if (data_value !== ""){
@@ -227,42 +240,68 @@ app.get("/user_info",
               edit_values += `${column} = '${data_value}'`;
             } else {
               edit_values += `, ${column} = '${data_value}'`;
-            }
-          }
-        })
+            };
+          };
+        });
+        return {
+          search_condition: search_condition,
+          name_values: name_values,
+          name_columns: name_columns,
+          edit_values: edit_values
+        }
       };
 
-      console.log("the name_columns: ", name_columns);
-      console.log("the name_values: ", name_values);
-      console.log("the edit_values: ", edit_values);
-
-      string_data();
-      if(submit_method === "add"){
-        try {
-          const response = await db.query(
-            `INSERT INTO ${table_name}(${name_columns}) VALUES(${name_values});`
-          )
-          res.send(`successfully ${submit_method}ed`);
-        } catch (error) {
-          console.log(`Error adding data to ${table_name}: `,error);
-        }
-      } else if(submit_method === "edit"){
-        try {
-          const response = await db.query(
-            `UPDATE ${table_name} SET ${edit_values} ${search_condition};`,
+      async function access_db(table_data:Types_table_data){
+ 
+        if(submit_method === "add"){
+          console.log(
+            "the name_columns: ", table_data.name_columns,'\n',
+             "the name_values: ", table_data.name_values,'\n',
           );
-        } catch (error) {
-          console.log(`Error editing data in ${table_name}: `,error);
-        } 
-      }else if (submit_method === "delete"){
           try {
             const response = await db.query(
-              `DELETE FROM ${table_name} ${search_condition};`
-            );
+              `INSERT INTO ${table_name}(${table_data.name_columns}) VALUES(${table_data.name_values});`
+            )
+     
           } catch (error) {
-            console.log(`Error deleting data in ${table_name}: `,error);
+            console.log(`Error adding data to ${table_name}: `,error);
           }
+        } else if(submit_method === "edit"){
+          console.log(
+            "the edit_values: ", table_data.edit_values,'\n',
+            "the search_condition: ", table_data.search_condition
+          );
+          try {
+            const response = await db.query(
+              `UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition};`,
+            );
+
+          } catch (error) {
+            console.log(`Error editing data in ${table_name}: `,error);
+            res.send(`Error editing data in ${table_name}: ${error}`);
+          } 
+        }else if (submit_method === "delete"){
+            try {
+              const response = await db.query(
+                `DELETE FROM ${table_name} ${table_data.search_condition};`
+              );
+              res.send(`successfully ${submit_method}ed`);
+            } catch (error) {
+              console.log(`Error deleting data in ${table_name}: `,error);
+            }
+        }
       }
+
+      if(Array.isArray(submit_data)){
+        submit_data.map((item:Types_entry_item)=>{
+          const table_data:Types_table_data = string_data(item, item[filter_key]);
+          access_db(table_data);
+        });
+      } else {
+        const table_data:Types_table_data = string_data(submit_data, filter_item);
+        access_db(table_data);
+      }
+
     }
   );
 

@@ -10,7 +10,7 @@ import { Use_Context_Section_Name } from "../context/Context_section_name.js";
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 
 // TYPE DEFINITIONS 
-import { Prop_types_control_panel_edit as Prop_types} from "../control_panel.js"
+import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 
 import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
@@ -25,7 +25,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
 
-    const table_data = useGetTableData({section_name: section_name, filter_name:"id", filter_item: item_id, }); 
+    const table_data = useGetTableData({section_name: section_name, filter_key:"id", filter_item: item_id}); 
     
 
     const [form_data, set_form_data] = useState<Types_form_data>(initial_form_data);
@@ -47,15 +47,8 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                 value={form_value}
                 name={item_name}
                 onChange={(e)=>{set_form_data({...form_data, [item_name]: e.target.value})}}
-                // for range inputs
-                min="1"
-                max="2"
-
                 />
-                <p>{input_type === "range" &&
-                    form_data[item_name]
-                    }
-                </p>
+      
             </div>
         )
     }
@@ -100,13 +93,14 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
             try {
                 const response = await axios.post("/edit_form_data",{
                     table_name: section_name,
-                    filter_name: "id",
+                    filter_key: "id",
                     filter_item: item_id,
                     submit_method: submit_method,
                     db_column_info: db_column_info, 
                     submit_data: form_data
                 })
                 console.log("The success_message: ",response.data)
+                set_status_message(response.data)
 
             } catch (error) {
                 console.log('%cError posting info to database: ', 'background-color:darkred',error); 
@@ -128,7 +122,12 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
         <figure>
             <form id="cpe_form">
             {
-            section_name === "departments" ? <Order_shift element_names = "cp_departments" /> : form_data && db_column_info.map(create_inputs)
+            db_column_info[0].input_type === "order" 
+            ? <Order_shift 
+                element_names = {`cp_${section_name}`}
+                send_form_data = {set_form_data} 
+            /> 
+            : form_data && db_column_info.map(create_inputs)
             }
             <button id="client_edit_done" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
             </form>

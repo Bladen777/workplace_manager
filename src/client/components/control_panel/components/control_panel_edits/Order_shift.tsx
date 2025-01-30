@@ -5,31 +5,40 @@ import useGetTableData from "../hooks/useGetTableData.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_Section_Name } from "../../context/Context_section_name.js";
+import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
 
 // TYPE DEFINITIONS
+interface Types_props{
+    element_names: string;
+    send_form_data: Function;
+    submit_method: string;
+}
+
 interface Types_mouse_event{
-    screenX:number
-    screenY:number
+    screenX:number;
+    screenY:number;
 }
 
 interface Types_pos{
-    x: number
-    y: number
+    x: number;
+    y: number;
 }
 
 interface Types_selected_ele_pos{
-    start: number,
-    adjust: number
+    start: number;
+    adjust: number;
 }
 
 import { Types_form_data } from "../../context/Context_db_table_info.js";
 
 // THE COMPONENT
-export default function Order_shift({element_names}:{element_names:string}) {
+export default function Order_shift({element_names, send_form_data, submit_method}:Types_props) {
 
 const section_name = useContext(Use_Context_Section_Name).show_context;
 
-const initial_table_data:Types_form_data[] = useGetTableData({section_name: section_name, order_item: "id"});
+const db_column_names = useContext(Use_Context_Table_Info).show_context.db_column_info.map((item)=>item.column_name);
+
+const initial_table_data:Types_form_data[] = useGetTableData({section_name: section_name, order_key: "order"});
 const [table_data, set_table_data] = useState<Types_form_data[]>([]);
 
 const current_ele_div_ref = useRef<HTMLDivElement | null>(null);
@@ -52,16 +61,29 @@ const mouse_y = useRef<number>();
             selected_ele_pos.current = {start: index , adjust: index};
             set_selected_ele_name(key_name);
         }else {
-            const new_table_data:Types_form_data[] = [...table_data];
-            new_table_data.splice(selected_ele_pos.current.start, 1);
-            new_table_data.splice(selected_ele_pos.current.adjust, 0, table_data[index] );
+            const new_table_data = adjust_table_data(index)
             pos_track.current = false;
             shift_ele_direction.current = "";
             set_ele_pos({x:0, y:0});
             set_selected_ele_name("");
             set_table_data(new_table_data);
-          
         }
+    }
+
+    function adjust_table_data(index:number){
+        const new_table_data:Types_form_data[] = [...table_data];
+        new_table_data.splice(selected_ele_pos.current.start, 1);
+        new_table_data.splice(selected_ele_pos.current.adjust, 0, table_data[index]);
+        new_table_data.map((item, index)=>{
+            const item_order_key:string | undefined = (Object.keys(item)).find((key_name: string) => {
+                if(key_name.includes("order")){
+                    return key_name;
+                } 
+            });
+            item[item_order_key!] =`${index + 1}`;
+        })
+        console.log(`%cnew_table_data: `, 'background-color:olive',new_table_data );
+        return new_table_data;
     }
 
     function track_mouse(event:Types_mouse_event){
@@ -110,15 +132,16 @@ const mouse_y = useRef<number>();
     }
 
     function create_inputs(item:Types_form_data, index:number){
+        console.log("the current item: ", item);
         let key_name = `dep_ele_${index}`
         const row = index + 1;
-        const item_name_index:string | undefined = (Object.keys(item)).find((key_name: string) => {
+        const item_name_key:string | undefined = db_column_names.find((key_name: string) => {
             if(key_name.includes("name")){
                 return key_name;
             } 
         });
         return(
-            <div
+            <figure
                 ref={key_name === selected_ele_name ? current_ele_div_ref : undefined }
                 key={key_name}
                 className={`o_shift_element ${element_names}_o_shift_element`}
@@ -156,9 +179,18 @@ const mouse_y = useRef<number>();
                 >
                     O
                 </div>
-                    {item[item_name_index!]}
+                    {item[item_name_key!]}
                 
-            </div>
+            </figure>
+        )
+    }
+
+    function new_input(){
+        const new_input_object = {
+            
+        }
+        return(
+            <div></div>
         )
     }
 
@@ -166,9 +198,14 @@ const mouse_y = useRef<number>();
       set_table_data(initial_table_data);
     },[initial_table_data]);
 
+    useEffect(() =>{
+      send_form_data(table_data)
+    },[table_data]);
+
   return (
     <figure id={`${element_names}_o_shift_box`} className="o_shift_box">
         {table_data && table_data.map(create_inputs)}
+        {submit_method === "add" && new_input()}
     </figure>
   )
 }

@@ -13,13 +13,13 @@ export interface Types_form_data{
 }
 
 export interface Types_initial_data{
-  db_column_info:Types_column_info[],
-  initial_form_data:Types_form_data
+  db_column_info:Types_column_info[];
+  initial_form_data:Types_form_data;
 }
 
 interface Types_context{
-    update_func:Function,
-    show_context:Types_initial_data
+    update_func:Function;
+    show_context:Types_initial_data;
 }
 
 const initial_values = {
@@ -56,7 +56,7 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
                       input_type = "color";
                       initial_item_value = "#F1F1F1"
                   } else if (item_name.includes("order")){
-                      input_type = "range";
+                      input_type = "order";
                   } else {
                       input_type = "text"
                   }; 

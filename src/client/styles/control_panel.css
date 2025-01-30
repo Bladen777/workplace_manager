@@ -140,7 +140,7 @@
 .cp_departments_o_shift_element{
     background-color: var(--third);
     height: 4rem;
-    width: 8rem;
+    width: 15rem;
     grid-column: 1;
     margin: 5px;
 }

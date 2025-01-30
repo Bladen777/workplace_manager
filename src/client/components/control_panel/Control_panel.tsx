@@ -14,12 +14,13 @@ import { Use_Context_Table_Info } from "./context/Context_db_table_info.js"
 
 // TYPE DEFINITIONS
 export interface Prop_types_control_panel_edit{
-    submit_method:string
-    item_id:number
-    section_name:string
+    submit_method: string;
+    item_id: number;
+    section_name: string;
   }
 export interface Prop_types_control_panel_view{
-    item_id:Function
+    item_id: Function;
+    view_order_key: string;
 }
 
 
@@ -38,18 +39,20 @@ export default function Control_panel() {
     const [view_section, set_view_section] = useState<string>(initial_section);
     const [edit_section, set_edit_section] = useState<string>("");
     const [btn_method, set_btn_method] = useState<string>("");
+    const [view_order_key, set_view_order_key] = useState<string>("");
 
     // UPDATING SECTION_NAME CONTEXT
     const new_section_name = useContext(Use_Context_Section_Name).update_func;
     const new_table_data = useContext(Use_Context_Table_Info).update_func;
 
     
-    function cp_nav_btn_clicked(section:string){
-        new_table_data(section);
-        new_section_name(section);
+    async function cp_nav_btn_clicked(section:string, view_order_id?:string){
+        await new_table_data(section);
+        await new_section_name(section);
         set_selected_item(0);
         set_view_section(section);
         set_edit_section("");
+        set_view_order_key(view_order_id ? view_order_id : "");
     }
 
     function cpv_btn_clicked(btn_clicked:string){
@@ -89,7 +92,7 @@ export default function Control_panel() {
 
                 <button id="departments_btn"
                         className={view_section === "departments" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
-                        onClick={()=>{cp_nav_btn_clicked("departments")}}
+                        onClick={()=>{cp_nav_btn_clicked("departments", "order")}}
                 >
                     <h3>Departments</h3>
                 </button>
@@ -100,6 +103,7 @@ export default function Control_panel() {
                 <div id="cpv_entry_box">
                     <Control_panel_view 
                         item_id={set_selected_item}
+                        view_order_key= {view_order_key}
                     />
                 </div>
                 <div id="cpv_btns">
