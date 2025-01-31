@@ -4,6 +4,9 @@ import { useState, useEffect, useContext } from "react";
 // CONTEXT IMPORTS
 import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
 
+// STYLE IMPORTS
+import { log_colors } from "../../../../styles/log_colors.js";
+
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../context/Context_db_table_info.js";
 
@@ -30,7 +33,7 @@ export default function useGetTableData({ section_name,  sort_field, filter_key,
 
     // GET EXISTING FORM INFORMATION FROM THE DATABASE AND ADD IT TO THE FORM
     async function get_form_info(){
-        console.log(`%cSection Name changed to ${section_name}, useGetTableData data changed`, 'background-color:cornflowerblue');
+        console.log(`%c HOOK `, `background-color:${log_colors.hook}`, `useGetTableData`);
         try {
             const response = await axios.post("/get_table_info",{
                 table_name: section_name,
@@ -40,7 +43,7 @@ export default function useGetTableData({ section_name,  sort_field, filter_key,
                 order_key: order_id_key ? order_id_key :"id" 
             })
             const data = response.data;
-            console.log(`%cThe current data: `, 'background-color:', data);
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for ${section_name} `, '\n' , data);
             set_form_data(data);
             
         } catch (error) {

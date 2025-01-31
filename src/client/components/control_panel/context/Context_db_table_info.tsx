@@ -1,6 +1,9 @@
 import { createContext, ReactNode, useState } from "react"
 import axios from "axios";
 
+// STYLE IMPORTS
+import { log_colors } from "../../../styles/log_colors.js";
+
 // TYPE DEFINITIONS
 export interface Types_column_info{
   column_name: string;
@@ -38,7 +41,7 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
 
       // INITIAL FUNCTION TO GATHER THE DATA FROM DATABASE REQUIRED TO CREATE FORMS
     async function change_table_info(section_name:string) {
-      console.log(`%cSection Name changed to ${section_name}, useDBTableColumns data changed`, 'background-color:cornflowerblue');
+      console.log(`%c CONTEXT `, `background-color:${log_colors.context}`, `db_table_info for ${section_name}`);
       try {
           const response = await axios.post("/get_columns",{
               table_name: section_name

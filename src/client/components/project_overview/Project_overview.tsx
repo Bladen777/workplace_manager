@@ -1,15 +1,18 @@
 
 
-// LOCAL IMPORTS
+// COMPONENT IMPORTS
 import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
 import Date_tracker from "./project_overview_comps/Date_tracker.js"
+
+// STYLE IMPORTS 
 import "../../styles/project_overview.css"
+import { log_colors } from "../../styles/log_colors.js";
 
 
 // THE COMPONENT
 export default function Project_overview() {
-  console.log('%cProject_overview Called', 'background-color:darkorchid',);
+  console.log(`%c COMPONENT `, `background-color:${log_colors.component}`, `Project_overview`);
 
   // Need data from departments table 
   // Need data from employee budget table

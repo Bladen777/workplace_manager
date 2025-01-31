@@ -1,6 +1,6 @@
 import "../styles/footer.css"
 export default function Footer() {
-    console.log('%cFooter Called', 'background-color:purple',);
+  console.log('%c COMPONENT ', 'background-color:darkorchid', "Footer");
   return (
     <footer>Footer</footer>
   )

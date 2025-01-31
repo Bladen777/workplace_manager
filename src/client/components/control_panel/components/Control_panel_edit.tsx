@@ -1,6 +1,9 @@
 import axios from "axios";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+// COMPONENT IMPORTS
+import Order_shift from "./control_panel_edits/Order_shift.js";
+import New_control_panel_entry from "./control_panel_edits/New_control_panel_entry.js";
 
 // CUSTOM HOOKS
 import useGetTableData from "./hooks/useGetTableData.js";
@@ -14,11 +17,13 @@ import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 
 import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
-import Order_shift from "./control_panel_edits/Order_shift.js";
+
+// STYLE IMPORTS
+import { log_colors } from "../../../styles/log_colors.js";
 
 
 // THE COMPONENT
-export default function Control_panel_edit({submit_method, item_id}:Prop_types) {
+export default function Control_panel_edit({submit_method, item_id, section_nav}:Prop_types) {
     
     const section_name = useContext(Use_Context_Section_Name).show_context;
 
@@ -27,31 +32,9 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
 
     const table_data = useGetTableData({section_name: section_name, filter_key:"id", filter_item: item_id}); 
     
-
     const [form_data, set_form_data] = useState<Types_form_data>(initial_form_data);
     const [status_message, set_status_message] = useState<string>("");
 
-
-    // CREATE THE INPUTS FOR THE FORM BASED ON DATABASE COLUMN NAMES
-    function create_inputs(item: Types_column_info, index:number) {
-        const item_name:string = item.column_name;
-        const input_type = item.input_type;
-        const item_string = item_name.replace("_"," ");
-        const form_value = form_data[item_name] ? form_data[item_name] : "";
-        return(
-            <div className="cpe_form_input"  key={index}>
-                <p>{item_string}</p>
-                <input
-                type={input_type}
-                placeholder={item_string}
-                value={form_value}
-                name={item_name}
-                onChange={(e)=>{set_form_data({...form_data, [item_name]: e.target.value})}}
-                />
-      
-            </div>
-        )
-    }
 
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
     function check_empty_input(){
@@ -101,15 +84,15 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                 })
                 console.log("The success_message: ",response.data)
                 set_status_message(response.data)
+                section_nav(section_name);
 
             } catch (error) {
                 console.log('%cError posting info to database: ', 'background-color:darkred',error); 
             }
     }
 
-
     useEffect(()=>{
-        console.log(`%cControl_panel_edit Called for ${section_name}`, 'background-color:darkorchid');
+        console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit`);
     },[])
     
     useEffect(() =>{
@@ -119,25 +102,29 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
     },[table_data])
 
     return (
-        <figure>
-            <form id="cpe_form">
+        <article id="control_panel_edits" className="control_panel_content_box">
+            <h3>{submit_method === "add" ? "Add" : "Edit"} {section_name}</h3>
             {
-            db_column_info[0].input_type === "order" 
-            ? <Order_shift 
-                element_names = {`cp_${section_name}`}
-                send_form_data = {set_form_data} 
-                submit_method = {submit_method}
-            /> 
-            : form_data && db_column_info.map(create_inputs)
+                db_column_info[0].input_type === "order" 
+                ? <Order_shift 
+                    element_names = {`cp_${section_name}`}
+                    send_form_data = {set_form_data} 
+                    submit_method = {submit_method}
+                /> 
+                : form_data && 
+                    <New_control_panel_entry 
+                        form_data={form_data}
+                        send_form_data={set_form_data}
+                    />
             }
+            
             <button id="client_edit_done" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
-            </form>
             {status_message !== "" &&
                 <div>
                     <h3>{status_message}</h3>
                 </div>
             }
             
-        </figure>
+        </article>
     )
 }

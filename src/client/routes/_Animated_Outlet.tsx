@@ -2,9 +2,12 @@ import React from "react";
 import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
+// STYLE IMPORTS
+import { log_colors } from "../styles/log_colors.js";
+
 
 const AnimatedOutlet = () => {
-    console.log('%cAnimated Outlet Called', 'background-color:purple',);
+  console.log(`%c COMPONENT `, `background-color:${log_colors.component}`, `Animated_Outlet`);
 
   const location = useLocation();
   const element = useOutlet();

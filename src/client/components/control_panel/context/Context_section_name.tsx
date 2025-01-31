@@ -1,7 +1,7 @@
+import { createContext, useContext, ReactNode, useState } from "react"
 
-import { createContext, ReactNode, useContext, useState } from "react"
-
-import { Use_Context_Table_Info } from "./Context_db_table_info.js"
+// STYLE IMPORTS
+import { log_colors } from "../../../styles/log_colors.js";
 
 // TYPE DEFINITIONS
 
@@ -16,13 +16,12 @@ export const Use_Context_Section_Name = createContext<Types_context>({update_fun
 // The Component returned 
 export function Provide_Context_Section_Name({children}:{children:ReactNode}) {
 
-    const [section_name, set_section_name] = useState<string>("")
-    //const new_table_data = useContext(Use_Context_Table_Info).update_func;
 
-    function change_section_name(value:string){
-      console.log(`%cSection name update called for: `, 'background-color:blue',value );
-            //new_table_data(value);
-            set_section_name(value);
+    const [section_name, set_section_name] = useState<string>("")
+
+   async function change_section_name(value:string){
+      console.log(`%c CONTEXT `, `background-color:${log_colors.context}`, `section_name changed to ${value}`);
+      set_section_name(value);
     }
 
   return (

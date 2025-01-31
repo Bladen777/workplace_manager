@@ -1,7 +1,6 @@
 import { useContext} from "react";
 
 // CONTEXT IMPORTS
-import { Use_Context_Section_Name } from "../context/Context_section_name.js";
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 
 // TYPE DEFINITIONS 
@@ -9,12 +8,9 @@ import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
 
 
-
+// THE COMPONENT
 export default function Control_panel_entries({table_item}:{table_item:Types_form_data}) {
-    const section_name = useContext(Use_Context_Section_Name).show_context;
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
-    console.log(`%cControl_panel_entries Called for ${section_name}`, 'background-color:darkorchid');
-    console.log("table_item: ", table_item);
 
         let entry_name;
         const entry_item = db_column_info.map((item:Types_column_info, table_index:number) => {

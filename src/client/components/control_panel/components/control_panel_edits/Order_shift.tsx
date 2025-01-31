@@ -189,14 +189,6 @@ const mouse_y = useRef<number>();
         )
     }
 
-    function new_input(){
-        const new_input_object = {
-            
-        }
-        return(
-            <div></div>
-        )
-    }
 
     useEffect(() =>{
       set_table_data(initial_table_data);
@@ -209,7 +201,6 @@ const mouse_y = useRef<number>();
   return (
     <figure id={`${element_names}_o_shift_box`} className="o_shift_box">
         {table_data && table_data.map(create_inputs)}
-        {submit_method === "add" && new_input()}
     </figure>
   )
 }

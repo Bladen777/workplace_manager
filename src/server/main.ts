@@ -265,6 +265,7 @@ app.get("/user_info",
      
           } catch (error) {
             console.log(`Error adding data to ${table_name}: `,error);
+            res.send(`Error adding data in ${table_name}: ${error}`);
           }
         } else if(submit_method === "edit"){
           console.log(
@@ -285,9 +286,9 @@ app.get("/user_info",
               const response = await db.query(
                 `DELETE FROM ${table_name} ${table_data.search_condition};`
               );
-              res.send(`successfully ${submit_method}ed`);
             } catch (error) {
               console.log(`Error deleting data in ${table_name}: `,error);
+              res.send(`Error deleting data in ${table_name}: ${error}`);
             }
         }
       }
@@ -296,10 +297,12 @@ app.get("/user_info",
         submit_data.map((item:Types_entry_item)=>{
           const table_data:Types_table_data = string_data(item, item[filter_key]);
           access_db(table_data);
+          res.send(`successfully ${submit_method}ed`);
         });
       } else {
         const table_data:Types_table_data = string_data(submit_data, filter_item);
         access_db(table_data);
+        res.send(`successfully ${submit_method}ed`);
       }
 
     }
