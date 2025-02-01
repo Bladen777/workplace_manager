@@ -2,6 +2,8 @@ import {  Link } from "react-router-dom";
 
 // STYLE IMPORTS
 import "../styles/landing.css"
+
+// LOG STYLE IMPORTS
 import { log_colors } from "../styles/log_colors.js";
 
 // THE COMPONENT

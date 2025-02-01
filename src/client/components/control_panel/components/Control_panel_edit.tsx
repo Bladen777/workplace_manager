@@ -12,14 +12,16 @@ import useGetTableData from "./hooks/useGetTableData.js";
 import { Use_Context_Section_Name } from "../context/Context_section_name.js";
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 
+// LOG STYLE IMPORTS
+import { log_colors } from "../../../styles/log_colors.js";
+
 // TYPE DEFINITIONS 
 import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 
 import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
 
-// STYLE IMPORTS
-import { log_colors } from "../../../styles/log_colors.js";
+
 
 
 // THE COMPONENT

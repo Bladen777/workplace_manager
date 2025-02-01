@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useState } from "react"
 import axios from "axios";
 
-// STYLE IMPORTS
+// LOG STYLE IMPORTS
 import { log_colors } from "../../../styles/log_colors.js";
 
 // TYPE DEFINITIONS

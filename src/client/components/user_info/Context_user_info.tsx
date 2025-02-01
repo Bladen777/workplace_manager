@@ -1,6 +1,7 @@
+import axios from "axios";
 import { createContext, useContext, useState, ReactNode } from "react"
 
-// STYLE IMPORTS
+// LOG STYLE IMPORTS
 import { log_colors } from "../../styles/log_colors.js";
 
 // TYPE DEFINITIONS
@@ -14,6 +15,8 @@ export interface Types_user_info {
     show_context: Types_user_info
 }
 
+
+
 const initial_user_info = {email:"wait", is_admin:false};
 
 // The Value to use
@@ -24,10 +27,21 @@ export function Provide_Context_User_Info({children}:{children:ReactNode}) {
 
     const [user_info, set_user_info] = useState<Types_user_info>(initial_user_info)
 
-    function change_user_info(value:Types_user_info){
-      console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for user_info`,  value);
-            set_user_info(value)
-    }
+    async function change_user_info(){
+        try {
+          const response = await axios.get("/user_info");
+          const data = response.data;
+          console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for user_info`, data);
+              set_user_info({
+                email: data.email,
+                is_admin: data.is_admin
+              })
+    
+        } catch (error) {
+          console.log('%cError fetching user info: ', 'background-color:darkred',error);    
+        }
+      }
+
     
   return (
     <Use_Context_User_Info.Provider value={{update_func:change_user_info, show_context: user_info }}>
