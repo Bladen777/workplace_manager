@@ -17,8 +17,10 @@ import { Types_form_data } from "../context/Context_db_table_info.js";
 // LOG STYLE IMPORTS
 import { log_colors } from "../../../styles/log_colors.js";
 
+
 // THE COMPONENT
 export default function Control_panel_view({ edit_btn_clicked}:Prop_types) {
+    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_view`);
     const section_name = useContext(Use_Context_Section_Name).show_context;
 
     const [view_order_key, set_view_order_key] = useState<string>();

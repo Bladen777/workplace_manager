@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState } from "react"
+import { createContext,  ReactNode, useState } from "react"
 
 // STYLE IMPORTS
 import { log_colors } from "../../../styles/log_colors.js";
@@ -15,12 +15,11 @@ export const Use_Context_Section_Name = createContext<Types_context>({update_fun
 
 // The Component returned 
 export function Provide_Context_Section_Name({children}:{children:ReactNode}) {
-
-
+  
     const [section_name, set_section_name] = useState<string>("")
 
     function change_section_name(value:string){
-      console.log(`%c CONTEXT `, `background-color:${log_colors.context}`, `section_name changed to ${value}`);
+      console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `section_name changed to ${value}`);
       set_section_name(value);
     }
 

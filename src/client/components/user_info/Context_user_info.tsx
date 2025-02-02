@@ -31,7 +31,7 @@ export function Provide_Context_User_Info({children}:{children:ReactNode}) {
         try {
           const response = await axios.get("/user_info");
           const data = response.data;
-          console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for user_info`, data);
+          console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`,`for user_info`, data);
               set_user_info({
                 email: data.email,
                 is_admin: data.is_admin

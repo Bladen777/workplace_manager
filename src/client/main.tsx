@@ -5,10 +5,6 @@ import {
   RouterProvider
 } from "react-router-dom"
 
-// CONTEXT IMPORTS
-import { Provide_Context_Click_Location } from "./components/context/Context_click_location.js";
-
-
 // ROUTE IMPORTS
 import _Routes from "./routes/_Routes.js"
 import Error_Page from "./routes/Error_Page.js"
@@ -32,8 +28,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root") as HTMLElement).render(
   //<React.StrictMode>
-    <Provide_Context_Click_Location>
       <RouterProvider router={router}/>
-    </Provide_Context_Click_Location>
   //</React.StrictMode>,
 );

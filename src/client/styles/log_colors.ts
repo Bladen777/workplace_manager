@@ -1,7 +1,7 @@
 export const log_colors = {
     route: "purple",
     component: "darkorchid",
-    sub_component: "blueviolet",
+    sub_component: "darkslateblue",
     context: "rebeccapurple",
     hook: "mediumslateblue",
     memo: "darkblue",

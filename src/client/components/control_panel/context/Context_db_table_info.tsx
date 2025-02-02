@@ -41,7 +41,7 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
 
       // INITIAL FUNCTION TO GATHER THE DATA FROM DATABASE REQUIRED TO CREATE FORMS
     async function change_table_info(section_name:string) {
-      console.log(`%c CONTEXT `, `background-color:${log_colors.context}`, `db_table_info for ${section_name}`);
+      console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `db_table_info for ${section_name}`);
       try {
           const response = await axios.post("/get_columns",{
               table_name: section_name
