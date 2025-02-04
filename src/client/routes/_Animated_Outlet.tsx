@@ -3,7 +3,7 @@ import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 // STYLE IMPORTS
-import { log_colors } from "../styles/log_colors.js";
+import { log_colors } from "../styles/_log_colors.js";
 
 
 const AnimatedOutlet = () => {
@@ -13,11 +13,9 @@ const AnimatedOutlet = () => {
   const element = useOutlet();
 
   return (
-    <main id="animated_outlet">
       <AnimatePresence mode="sync" initial={false}>
           {element && React.cloneElement(element, { key: location.pathname })}
       </AnimatePresence>
-    </main>
   );
 };
 

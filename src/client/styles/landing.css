@@ -1,3 +1,44 @@
+#landing_page{
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+}
+
+#landing_page > *{
+    margin: 1em auto;
+    
+}
+
+/* LANDING PAGE HERO */
+#landing_hero{
+    background-color: var(--third);
+    width: 100%;
+    height: 20em;
+}
+
+
+/* LANDING PAGE LOGIN */
+#landing_google_login{
+    display: flex;
+    background-color: var(--third);
+    width: 30%;
+    height: 10em;
+}
+
 #google_login_btn{
-    color: var(--third);
+    border: 0.25em solid var(--second);
+    border-radius: 1em;
+    background-color: var(--first);
+    width: 11em;
+    height: 3em;
+
+    margin: auto;
+
+}
+
+/* LANDING PAGE ABOUT */
+#landing_about{
+    background-color: var(--third);
+    width: 50%;
+    height: 20em;
 }

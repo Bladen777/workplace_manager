@@ -1,29 +1,45 @@
 import axios from "axios";
-import { useState, useEffect, useContext } from "react";
+import { createContext, useContext, useState, ReactNode } from "react"
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
+import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
+import { Use_Context_Section_Name } from "./Context_section_name.js";
 
 // LOG STYLE IMPORTS
-import { log_colors } from "../../../../styles/log_colors.js";
+import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../context/Context_db_table_info.js";
+import { Types_form_data } from "../context/Context_db_table_info.js";
+
+
+  interface Types_context{
+    update_func:Function,
+    show_context: Types_form_data[]
+}
 
 export interface Types_get_table_data {
-    section_name: string;
     sort_field?: string;
     filter_key?: string;
     filter_item?: string | number;
     order_key?: string;
 }
 
-export default function useGetTableData({ section_name,  sort_field, filter_key, filter_item, order_key }:Types_get_table_data) {
-    
+
+
+const initial_table_data = [{}];
+
+// The Value to use
+export const Use_Context_Table_Data = createContext<Types_context>({update_func:()=>{},show_context:initial_table_data});
+
+// The Component returned 
+export function Provide_Context_Table_Data({children}:{children:ReactNode}) {
+
+    const section_name = useContext(Use_Context_Section_Name).show_context;
     const [form_data, set_form_data] = useState<Types_form_data[]>([]);
     const db_column_names = useContext(Use_Context_Table_Info).show_context.db_column_info.map((item)=>item.column_name);
 
-    function find_order_id_key(){
+    // change order key based on section name if no order key was specified
+    function find_order_id_key(order_key: string | undefined){
             let key:string = "id";
 
             if(!order_key){
@@ -46,9 +62,9 @@ export default function useGetTableData({ section_name,  sort_field, filter_key,
     }
     
     // GET EXISTING FORM INFORMATION FROM THE DATABASE AND ADD IT TO THE FORM
-    async function get_form_info(){
-        const order_id_key:string = find_order_id_key();
-        console.log(`%c HOOK `, `background-color:${log_colors.hook}`, `useGetTableData order_id_key: `, order_id_key);
+    async function get_form_info({sort_field, filter_key, filter_item, order_key }:Types_get_table_data){
+        const order_id_key:string = find_order_id_key(order_key);
+        console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `change table data be from `,section_name);
         try {
             const response = await axios.post("/get_table_info",{
                 table_name: section_name,
@@ -58,7 +74,7 @@ export default function useGetTableData({ section_name,  sort_field, filter_key,
                 order_key: order_id_key
             })
             const data = response.data;
-            console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for ${section_name} `, '\n' , data);
+            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for ${section_name} `, '\n' , data);
             set_form_data(data);
             
         } catch (error) {
@@ -66,14 +82,10 @@ export default function useGetTableData({ section_name,  sort_field, filter_key,
         }
     };
 
-    useEffect(() =>{
-        if(section_name !== ""){
-            get_form_info()
-        }
-    },[section_name, order_key])
-
-    return form_data;
     
+  return (
+    <Use_Context_Table_Data.Provider value={{update_func:get_form_info, show_context: form_data }}>
+        {children}
+    </Use_Context_Table_Data.Provider>
+  )
 }
-
-

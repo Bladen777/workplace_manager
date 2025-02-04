@@ -1,7 +1,6 @@
 header{
     background-color: var(--third);
-    height:4rem;
     width: 100%;
     position: relative;
-    top: 0px;
+    top: 0;
 }

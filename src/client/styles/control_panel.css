@@ -1,12 +1,12 @@
 #control_panel{
     background-color: var(--third);
-    height: 25rem;
+    height: 25em;
     width: 80vw;
-    margin: 1rem auto;
-    padding: 10px;
+    margin: 1em auto;
+    padding: 1em;
     display: grid;
     grid-template-columns: 20% 80%;
-    grid-template-rows: 15% 70% 15%;
+    grid-template-rows: 15% 80% 5%;
 }
 
 #control_panel_title{
@@ -25,9 +25,9 @@
 
 .cp_nav_btn{
     background-color: var(--second);
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-    height:2rem;
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+    height:2.5em;
 }
 
 .cp_nav_btn_active{
@@ -35,38 +35,50 @@
 }
 
 /* GENERAL CONTROL PANEL CONTENT */
-.control_panel_content_box{
+.control_panel_action_box{
     background-color: var(--first);
     grid-column: 2;
     grid-row: 2;
+    display: grid;
+    grid-template-rows:auto auto 3em;
     height: 100%;
-    padding: 1rem;
+    padding: 1em;
+}
+
+.cp_content_box{
+    grid-row: 2;
+    overflow-y: auto;
 }
 
 .control_panel_entry{
     display: grid;
-    grid-template-rows: 3rem auto;
+    grid-template-rows: 3em auto;
     grid-template-columns: auto;
-    padding: 10px;
+    padding: 1em;
+}
+
+.cp_utility_bar{
+    display: flex;
+    flex-direction: row;
+    grid-row: 3;
+    padding: 0.5em;
+}
+
+.control_panel_btn{
+    height: 100%;
+    min-width: 4em;
+    background-color: var(--third);
+    border-radius: 0.25em;
+    margin:0 1em;
 }
 
 .color_id{
-    width: 3rem;
-    height: 3rem;
+    width: 3em;
+    height: 3em;
 }
 
 /* CONTROL PANEL VIEW */
 /* *** classes and ids with "cpv" are abbreviated for control panel view ****/
-#control_panel_views{
-    display: grid;
-    grid-template-rows: 80% 20%;
-
-}
-
-#cpv_entry_box{
-    overflow-y: auto;
-}
-
 .cpv_entry{
     background-color: var(--third);
     cursor: pointer;
@@ -77,38 +89,10 @@
     background-color: var(--second);
 }
 
-.cpv_entry_title{
-    grid-row: 1;
-}
-
-.cpv_item_box{
-    grid-row: 2;
-    display: flex;
-    flex-direction: column;
-}
-
-
-#cpv_btns{
-    display: flex;
-    flex-direction: row;
-    grid-row: 2;
-}
-
-.control_panel_btn{
-    height: 2rem;
-    min-width: 3rem;
-    background-color: var(--third);
-    border-radius:3px;
-    padding:10px ;
-    margin: 10px
-}
-
 #cpv_sort_btn{
     position: relative;
-
-    margin: 10px 10px 10px auto;
-    height: 2rem;
-    min-width: 3rem;
+    margin: 0 1em 0 auto;
+    min-width:3em;
 }
 
 #cpv_sort_btn > .control_panel_btn{
@@ -116,74 +100,76 @@
 }
 
 #cpv_sort_options > .control_panel_btn{
-    margin: 5px;
+    margin: 0.5em;
 }
 
 #cpv_sort_options{
     position: absolute;
     bottom: 0;
     right: 0;
-    max-height: 10rem;
+    max-height: 10em;
     background-color: var(--second);
     display: flex;
     flex-direction: column;
 }
 
 
-
-
-
 /* CONTROL PANEL EDIT */
 /* *** classes and ids with "cpe" are abbreviated for control panel edit ****/
-#control_panel_edits{
+#control_panel_edits > h3{
+    grid-row: 1;
+}
+
+#cp_input_box{
     display: grid;
     grid-template-rows: 10% 70% 20%;
     grid-column: 100%;
-}
-
-.cpe_form{
-    grid-row: 1;
-    display: flex;
-    flex-direction: row;
-}
-
-#cpe_form{
-    grid-row: 2;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap; 
 }
 
 .cpe_form_input{
     margin: 10px;
 }
 
-.success_message{
-    grid-row: 2;
+#cpe_form{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; 
 }
 
-/* DEPARTMENT EDIT */
-#cp_departments_o_shift_box{
+
+/* ORDER SHIFT */
+.o_shift_box{
+    overflow-y: auto;
     display: grid;
     grid-template-rows: auto;
-    grid-template-columns: 20% 80%;
     user-select: none;
 }
 
-.cp_departments_o_shift_element{
+.o_shift_ele{
     background-color: var(--third);
-    height: 4rem;
-    width: 15rem;
+    display: flex;
+    height: 4em;
     grid-column: 0;
-    margin: 5px;
+    margin: 0.5em 0;
+    padding: 0.5em;
 }
 
-.cp_departments_o_shift_grab_box{
+.o_shift_ele > * {
+    margin: 0 0.5em;
+}
+
+.o_shift_grab_box{
     background-color: var(--second);
-    height: 2rem;
-    width: 2rem;
+    height: 100%;
+    width: 3em;
     text-align: center;
-    cursor: pointer;
-    
+    cursor: pointer;   
+}
+
+/* DEPARTMENT EDIT */
+.cp_departments_o_shift_ele{
+display: flex;
+flex-direction: row;
+height: 5em;
 }
 

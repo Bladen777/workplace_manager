@@ -4,7 +4,7 @@ import {  Link } from "react-router-dom";
 import "../styles/landing.css"
 
 // LOG STYLE IMPORTS
-import { log_colors } from "../styles/log_colors.js";
+import { log_colors } from "../styles/_log_colors.js";
 
 // THE COMPONENT
 export default function Landing() {
@@ -14,18 +14,29 @@ export default function Landing() {
     this_location: 0,
   }
   return (
-    <>
-      <h1>Landing</h1>
+    <main id="landing_page" className="main_page">
+
+      <section id="landing_hero">
+        <h1>Landing</h1>
+        <div id="landing_hero_banner">Landing Hero Banner</div>
+      </section>
+
+      <section id="landing_google_login">
       <button id="google_login_btn" >
             <a  id="googel_login_link" href='/auth/google'>
                 Login with Google
             </a>  
-        </button>
-      <Link
-      to={"/default"}
-      >
-        <h1>Default</h1>
-      </Link>
-  </>
+      </button>
+      </section>
+      
+
+      <section id="landing_about">
+        <h2> Landing About</h2>
+        <div id="landing_about_content">
+          about the landing
+        </div>
+      </section>
+
+  </main>
   )
 }

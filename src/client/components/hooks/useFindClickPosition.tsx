@@ -2,7 +2,7 @@
 import { createContext, ReactNode, useEffect, useRef, useState } from "react"
 
 // LOG STYLE IMPORTS
-import { log_colors } from "../../styles/log_colors.js";
+import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 interface Types_props{
@@ -48,5 +48,6 @@ export default function useFindClickPosition() {
             };
         };
     };
-return (track_click)
+    
+return track_click;
 }

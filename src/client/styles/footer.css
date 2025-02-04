@@ -1,7 +1,6 @@
 footer{
     background-color: var(--third);
-    height:4rem;
     width: 100%;
     position: relative;
-    bottom:0px;
+    bottom:0;
 }

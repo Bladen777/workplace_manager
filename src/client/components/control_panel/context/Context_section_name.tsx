@@ -1,7 +1,7 @@
 import { createContext,  ReactNode, useState } from "react"
 
 // STYLE IMPORTS
-import { log_colors } from "../../../styles/log_colors.js";
+import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 

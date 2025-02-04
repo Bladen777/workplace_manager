@@ -7,12 +7,12 @@ import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 
 // LOG STYLE IMPORTS
-import { log_colors } from "../../../styles/log_colors.js";
+import { log_colors } from "../../../styles/_log_colors.js";
 
 
 // THE COMPONENT
 export default function Control_panel_sort_button({change_sort}:{change_sort:Function}) {
-    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_sort_btn`);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_sort_btn`);
     
     
     const [clicked, set_clicked] = useState<boolean>(false)
@@ -37,13 +37,13 @@ export default function Control_panel_sort_button({change_sort}:{change_sort:Fun
             </button>
         )
     }
-
-    function update_func(value:boolean){
-        value && set_clicked(false);
-    }
-
+    
     useEffect(() =>{
-        clicked && track_click({active: true, ele_pos:options_menu_ref.current?.getBoundingClientRect(), update_func})
+        clicked && track_click({
+            active: true, 
+            ele_pos:options_menu_ref.current?.getBoundingClientRect(), 
+            update_func:(value:boolean)=>{value && set_clicked(false)}
+        })
     },[clicked])
 
 

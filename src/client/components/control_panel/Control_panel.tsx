@@ -7,12 +7,13 @@ import Control_panel_edit from "./components/Control_panel_edit.js"
 // CONTEXT IMPORTS
 import { Use_Context_Section_Name } from "./context/Context_section_name.js"
 import { Use_Context_Table_Info } from "./context/Context_db_table_info.js"
+import { Provide_Context_Table_Data } from "./context/Context_get_table_data.js"
 
 // STYLE IMPORTS
 import "../../styles/control_panel.css"
 
 // LOG STYLE IMPORTS
-import { log_colors } from "../../styles/log_colors.js"
+import { log_colors } from "../../styles/_log_colors.js"
 
 // TYPE DEFINITIONS
 export interface Prop_types_control_panel_edit{
@@ -39,14 +40,15 @@ export default function Control_panel() {
     const [btn_method, set_btn_method] = useState<string>("");
 
 
-    // UPDATING SECTION_NAME CONTEXT
-    const new_section_name = useContext(Use_Context_Section_Name).update_func;
-    const new_table_data = useContext(Use_Context_Table_Info).update_func;
+    // UPDATING CONTEXT
+    const update_section_name = useContext(Use_Context_Section_Name).update_func;
+    const update_table_info = useContext(Use_Context_Table_Info).update_func;
+
 
     async function cp_nav_btn_clicked(section:string){
-        if(section !== view_section){
-            await new_table_data(section)
-            await new_section_name(section);
+        if(section !== view_section || edit_section){
+            await update_table_info(section)
+            await update_section_name(section);
             set_selected_item(0);
             set_view_section(section);
             set_edit_section(false);
@@ -61,8 +63,8 @@ export default function Control_panel() {
 
     useEffect(() =>{
         (async()=>{
-            await new_section_name(initial_section);
-            await new_table_data(initial_section);
+            await update_section_name(initial_section);
+            await update_table_info(initial_section);
             set_view_section(initial_section);
         })();
     },[])
@@ -94,18 +96,20 @@ export default function Control_panel() {
                 </button>
             </div>  
 
-            {!edit_section && view_section &&
-                <Control_panel_view 
-                    edit_btn_clicked = {cpv_btn_clicked}
-                />   
-            }
-            {edit_section &&
-                <Control_panel_edit 
-                    submit_method = {btn_method}
-                    item_id = {selected_item}
-                    section_nav = {cp_nav_btn_clicked}
-            />
-            }        
+            <Provide_Context_Table_Data>
+                {!edit_section && view_section &&
+                    <Control_panel_view 
+                        edit_btn_clicked = {cpv_btn_clicked}
+                    />   
+                }
+                {edit_section &&
+                    <Control_panel_edit 
+                        submit_method = {btn_method}
+                        item_id = {selected_item}
+                        section_nav = {cp_nav_btn_clicked}
+                />
+                }      
+            </Provide_Context_Table_Data>  
         </section>
     );
 

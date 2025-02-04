@@ -28,10 +28,10 @@ export default function Control_panel_entries({table_item}:{table_item:Types_for
         });
 
         return(
-            <div className="control_panel_entry">
+            <>
                 <h3>{entry_name}</h3>
                 {entry_item}
-            </div>
+            </>
         ); 
       
 }

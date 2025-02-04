@@ -13,7 +13,7 @@ import { Provide_Context_Table_Info } from "../components/control_panel/context/
 import "../styles/home.css"
 
 // LOG STYLE IMPORTS
-import { log_colors } from "../styles/log_colors.js";
+import { log_colors } from "../styles/_log_colors.js";
 
 // THE COMPONENT
 export default function Home() {
