@@ -23,9 +23,8 @@ import { Types_form_data } from "../context/Context_db_table_info.js";
 
 // THE COMPONENT
 export default function Control_panel_edit({submit_method, item_id, section_nav}:Prop_types) {
-    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit`);
-
     const section_name = useContext(Use_Context_Section_Name).show_context;
+    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `, section_name);
 
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;

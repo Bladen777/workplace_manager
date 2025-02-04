@@ -20,8 +20,8 @@ import { log_colors } from "../../../styles/_log_colors.js";
 
 // THE COMPONENT
 export default function Control_panel_view({ edit_btn_clicked}:Prop_types) {
-    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_view`);
     const section_name = useContext(Use_Context_Section_Name).show_context;
+    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_view for`, section_name);
 
     const [view_order_key, set_view_order_key] = useState<string>();
     const update_table_data = useContext(Use_Context_Table_Data).update_func;
@@ -83,10 +83,13 @@ export default function Control_panel_view({ edit_btn_clicked}:Prop_types) {
         )
     },[selected_entry])
 
+
     useMemo(()=>{
         //set_view_order_key("")
-         update_table_data({section_name: section_name, order_key:view_order_key})
-    },[section_name])
+         update_table_data({order_key:view_order_key})
+    },[view_order_key,section_name])
+
+
 
 
 

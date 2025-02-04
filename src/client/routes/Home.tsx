@@ -28,12 +28,12 @@ export default function Home() {
   if(user_info.email !== "wait"){
     return (
       <>
-          <Project_overview />
-          <Provide_Context_Section_Name>
-            <Provide_Context_Table_Info>  
-              {user_info.is_admin && <Control_panel />}
-            </Provide_Context_Table_Info>
+        <Project_overview />
+        <Provide_Context_Table_Info> 
+          <Provide_Context_Section_Name> 
+            {user_info.is_admin && <Control_panel />}
           </Provide_Context_Section_Name>
+        </Provide_Context_Table_Info>
       </>
     )
   }

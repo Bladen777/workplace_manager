@@ -18,6 +18,7 @@ import { Types_form_data } from "../context/Context_db_table_info.js";
 }
 
 export interface Types_get_table_data {
+    section_name?: string;
     sort_field?: string;
     filter_key?: string;
     filter_item?: string | number;
@@ -34,12 +35,12 @@ export const Use_Context_Table_Data = createContext<Types_context>({update_func:
 // The Component returned 
 export function Provide_Context_Table_Data({children}:{children:ReactNode}) {
 
-    const section_name = useContext(Use_Context_Section_Name).show_context;
+    const context_section_name = useContext(Use_Context_Section_Name).show_context;
     const [form_data, set_form_data] = useState<Types_form_data[]>([]);
     const db_column_names = useContext(Use_Context_Table_Info).show_context.db_column_info.map((item)=>item.column_name);
 
     // change order key based on section name if no order key was specified
-    function find_order_id_key(order_key: string | undefined){
+    function find_order_id_key(section_name:string ,order_key: string | undefined){
             let key:string = "id";
 
             if(!order_key){
@@ -54,6 +55,8 @@ export function Provide_Context_Table_Data({children}:{children:ReactNode}) {
             }
 
             db_column_names.find((key_name)=>{
+
+
                 if(key_name.includes(key)){
                     key = key_name;
                 } 
@@ -62,9 +65,10 @@ export function Provide_Context_Table_Data({children}:{children:ReactNode}) {
     }
     
     // GET EXISTING FORM INFORMATION FROM THE DATABASE AND ADD IT TO THE FORM
-    async function get_form_info({sort_field, filter_key, filter_item, order_key }:Types_get_table_data){
-        const order_id_key:string = find_order_id_key(order_key);
-        console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `change table data be from `,section_name);
+    async function get_form_info({section_name, sort_field, filter_key, filter_item, order_key }:Types_get_table_data){
+        if(!section_name){section_name = context_section_name};
+        const order_id_key:string = find_order_id_key(section_name, order_key);
+        console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `change table data be from`,section_name, `by order of`, order_id_key);
         try {
             const response = await axios.post("/get_table_info",{
                 table_name: section_name,
