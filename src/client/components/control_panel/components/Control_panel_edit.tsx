@@ -22,7 +22,7 @@ import { Types_form_data } from "../context/Context_db_table_info.js";
 
 
 // THE COMPONENT
-export default function Control_panel_edit({submit_method, item_id, section_nav}:Prop_types) {
+export default function Control_panel_edit({submit_method, item_id}:Prop_types) {
     const section_name = useContext(Use_Context_Section_Name).show_context;
     console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `, section_name);
 
@@ -42,6 +42,7 @@ export default function Control_panel_edit({submit_method, item_id, section_nav}
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
     function check_empty_input(){
         const missing_inputs:string[] = [];
+        console.log("the new_table_data: ", new_table_data)
         new_table_data.map((current_entry:Types_form_data)=>{
             db_column_info.map((item: Types_column_info) => {
                 const null_check = item.is_nullable;
@@ -74,6 +75,9 @@ export default function Control_panel_edit({submit_method, item_id, section_nav}
         console.log("the new_table_data: ", new_table_data)
 
         const missing_input = check_empty_input();
+
+
+/*
         if(missing_input !== ""){
             set_status_message(`Please enter values for ${missing_input}`)
             return
@@ -94,6 +98,7 @@ export default function Control_panel_edit({submit_method, item_id, section_nav}
             } catch (error) {
                 console.log('%cError posting info to database: ', 'background-color:darkred',error); 
             }
+*/
     }
     
 console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for new_table_data`,'\n' ,new_table_data);

@@ -31,9 +31,10 @@ export default function Control_panel_view({ edit_btn_clicked}:Prop_types) {
 
     
     const view_table = useMemo(()=>{
+        selected_entry !== 0 && set_selected_entry(0)
         if(table_data.length !== 0){
         console.log(`%c MEMO `, `background-color:${log_colors.memo}`, `Control_panel_view view_table for ${section_name}`);
-        //set_selected_entry(0)
+ 
         return(
             <div id="cpv_entry_box" className="cp_content_box">
                 {table_data && table_data.map((item:Types_form_data, index:number)=>{
@@ -57,6 +58,8 @@ export default function Control_panel_view({ edit_btn_clicked}:Prop_types) {
         );
     }
     },[table_data])
+
+
     const view_buttons = useMemo(()=>{
         console.log(`%c MEMO `, `background-color:${log_colors.memo}`, `Control_panel_view view_buttons for ${section_name}`);
         return(
@@ -83,12 +86,10 @@ export default function Control_panel_view({ edit_btn_clicked}:Prop_types) {
         )
     },[selected_entry])
 
-
     useMemo(()=>{
         //set_view_order_key("")
          update_table_data({order_key:view_order_key})
     },[view_order_key,section_name])
-
 
 
 

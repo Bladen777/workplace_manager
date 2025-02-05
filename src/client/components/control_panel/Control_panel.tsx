@@ -47,8 +47,8 @@ export default function Control_panel() {
 
     async function cp_nav_btn_clicked(section:string){
         if(section !== view_section || edit_section){
-            await update_table_info(section)
-            await update_section_name(section);
+            await update_table_info({section_name:section})
+            await update_section_name({section_name:section});
             set_selected_item(0);
             set_view_section(section);
             set_edit_section(false);
@@ -63,8 +63,8 @@ export default function Control_panel() {
 
     useEffect(() =>{
         (async()=>{
-            await update_section_name(initial_section);
-            await update_table_info(initial_section);
+            await update_section_name({section_name:initial_section});
+            await update_table_info({section_name:initial_section});
             set_view_section(initial_section);
         })();
     },[])

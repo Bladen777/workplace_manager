@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
 import Control_panel_entries from "../Control_panel_entries.js";
@@ -37,8 +37,6 @@ interface Types_selected_ele_pos{
 }
 
 
-
-
 // THE COMPONENT
 export default function Order_shift({ele_names, send_table_data, submit_method}:Types_props) {
 
@@ -46,10 +44,9 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Order_shift`);
 
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
-
     const [new_table_data, set_new_table_data] = useState<Types_form_data[]>(initial_table_data);
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data`,'\n' ,initial_table_data);
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for new_table_data`,'\n' ,new_table_data);
+    const current_table_data = useRef<Types_form_data[]>(initial_table_data)
+    const [entry_data, set_entry_data] = useState<ReactNode[]>([]);
 
     const current_ele_div_ref = useRef<HTMLDivElement | null>(null);
     
@@ -76,16 +73,19 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             shift_ele_direction.current = "";
             set_ele_pos({x:0, y:0});
             set_selected_ele_name("");
-            set_new_table_data(adjust_table_data(index));
+            adjust_table_data(index);
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_table_data.current`,'\n' ,current_table_data.current);
+            set_new_table_data(current_table_data.current);
+            send_table_data(current_table_data.current);
         }
     }
 
 
     // Adjust the table data based on the position of the current elements
     function adjust_table_data(index:number){
-        const temp_table_data:Types_form_data[] = [...new_table_data];
+        const temp_table_data:Types_form_data[] = [...current_table_data.current];
         temp_table_data.splice(selected_ele_pos.current.start, 1);
-        temp_table_data.splice(selected_ele_pos.current.adjust, 0, new_table_data[index]);
+        temp_table_data.splice(selected_ele_pos.current.adjust, 0, current_table_data.current[index]);
         temp_table_data.map((item, index)=>{
             const item_order_key:string | undefined = (Object.keys(item)).find((key_name: string) => {
                 if(key_name.includes("order")){
@@ -95,7 +95,8 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             item[item_order_key!] =`${index + 1}`;
         })
         console.log(`%ctemp_table_data: `, 'background-color:olive',temp_table_data );
-        return temp_table_data;
+        current_table_data.current = temp_table_data;
+
     }
 
     // Track the position of clicked element and adjust the position of other elements
@@ -133,21 +134,61 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                     shift_ele_direction.current = "";
                     return
                 };
-                console.log("the Size of the ele: ", current_ele_height);
-                console.log("the Size of the ele margin: ", ele_margin);
-                console.log(`%c selected_ele_name:  `, 'background-color:olive', selected_ele_name); 
-                console.log(`%c Move ele up`, 'background-color:blue', selected_ele_pos.current);
-                console.log(`%c Shift is: `, 'background-color:darkblue', shift_ele_direction.current );
             }  
             check_to_shift();
             set_ele_pos({x: move_x, y: move_y});
         }
     }
+    
+    function change_table_data(value:Types_form_data){
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for value`,'\n' ,value);
+        const changed_entry_index = new_table_data.findIndex((item)=>{
+            return item.id === value.id;
+        })
+
+        const temp_table_data:Types_form_data[] = [...new_table_data];
+        temp_table_data.splice(changed_entry_index, 1, value);
+        current_table_data.current = temp_table_data;
+        send_table_data(temp_table_data);
+        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,"\n",`for new_table_data`,'\n' ,new_table_data, "\n", `current_table_data.current`, "\n", current_table_data.current, "\n", `temp_table_data`, "\n", temp_table_data);
+    }
+
+    // RE-ORDER THE ENTRIES
+    /*
+    function find_entry_index(item:Types_form_data){
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
+        const entry_index = entry_data.findIndex((entry_item)=> {
+            const target =entry_item?.props?.table_data.id;
+
+            return target === item.id
+        })
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for entry_data[entry_index]`,'\n' ,entry_data[entry_index]?.props?.table_data);
+        return entry_data[entry_index];
+    }
+    */
+
+
+    useEffect(() =>{
+        console.log(`%c IMPORTANT `, `background-color:${ log_colors.important} `);
+        const entries:ReactNode[] = new_table_data.map((item, index:number)=>{
+            return(
+                <Edit_control_panel_entry 
+                        table_data={item}
+                        send_table_data={change_table_data}
+                    />
+                )
+        });
+        set_entry_data(entries)
+    },[new_table_data])
+  
 
     // Create the elements to be displayed
     function create_inputs(item:Types_form_data, index:number){
         let key_name = `dep_ele_${index}`
         const row = index + 1;
+        if(!pos_track.current && entry_data.length !== 0){
+            //console.log(`%c DATA `, `background-color:${ log_colors.data }`, `\n`,`for index`, index, "\n",`for entry_data`,'\n' ,entry_data[index]?.props?.table_data);
+        }
 
         return(
             <figure
@@ -188,10 +229,8 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 >
                     O
                 </button>
-                <Edit_control_panel_entry 
-                    table_data={new_table_data[index]}
-                    send_table_data={send_table_data}
-                />
+
+                {entry_data[index]}
 
             </figure>
         )
