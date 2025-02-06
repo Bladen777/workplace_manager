@@ -110,7 +110,7 @@ app.get("/user_info",
 // *** SQL DATABASE START ***
 
 
-  // GENERAL HTTP REQUESTS, FOR CLIENTS, EMPOYEES, AND DEPARTMENTS
+  // GENERAL REQUESTS TO GET INFORMATION
   app.post("/get_table_info",
     async (req, res) => {
       const sort_field = req.body.sort_field ? req.body.sort_field : "*";
@@ -158,7 +158,7 @@ app.get("/user_info",
     
   );
 
-
+  // GET THE COLUMN NAMES
   app.post("/get_columns",
     async (req, res) => {
       const table_name = req.body.table_name
@@ -176,7 +176,7 @@ app.get("/user_info",
   );
 
 
-
+  // ADD, EDIT OR DELETE IN THE DATABASE
   app.post("/edit_form_data",
     async (req, res) => {
       interface Types_entry_item{
@@ -190,10 +190,16 @@ app.get("/user_info",
         edit_values:string;
       }
 
+      interface Types_string_data{
+        entry_item: Types_entry_item;
+        entry_filter_item: string;
+        submit_method: string;
+      }
+
       const table_name: string = req.body.table_name;
       const filter_key: string = req.body.filter_key;
       const filter_item: string = req.body.filter_item;
-      const submit_method: string = req.body.submit_method;
+      const sent_submit_method: string = req.body.submit_method;
       const submit_data: Types_entry_item | Types_entry_item[] = req.body.submit_data;
       const column_names: {column_name:string}[]  = req.body.db_column_info;
 
@@ -201,29 +207,30 @@ app.get("/user_info",
 
       console.log("the recieved data: ", submit_data,"\n",
                   "the recieved column names: ", column_names,"\n",
-                  "the submit_method: ", submit_method
+                  "the sent_submit_method: ", sent_submit_method
       );
 
     
 
-      // function to find the data to be added and create a string for the db query
-      function string_data(entry_item:Types_entry_item, entry_filter_item:string){
+      // FUNCTION TO FIND THE DATA TO BE ADDED AND CREATE A STRING FOR THE DB QUERY
+      function string_data({entry_item, entry_filter_item, submit_method }:Types_string_data){
+        console.log("THE CURRENT ITEM: ", entry_item);
         let search_condition = "";
         let name_values = "";
         let name_columns = "";
         let edit_values = "";
 
-        // Set the Search Condition
+        // SET THE SEARCH CONDITION
         if(filter_key){
           search_condition = `WHERE ${filter_key}=${entry_filter_item}`
         };
 
-        // Define Key, Value pairs as strings
+        // DEFINE KEY, VALUE PAIRS AS STRINGS
         column_names.map((item:{column_name:string}) => {
           const column = item.column_name;
           const data_value = entry_item[column];
 
-          // path if add is the method
+          // PATH IF ADD IS THE METHOD
           if (submit_method === "add"){
             if (data_value !== ""){
               if (name_values === ""){
@@ -234,7 +241,7 @@ app.get("/user_info",
                 name_values += `, '${data_value}'`;
               }
             }
-          // path if edit is the method
+          // PATH IF EDIT IS THE METHOD
           } else if (submit_method === "edit"){
             if(edit_values === ""){
               edit_values += `${column} = '${data_value}'`;
@@ -251,7 +258,7 @@ app.get("/user_info",
         }
       };
 
-      async function access_db(table_data:Types_table_data){
+      async function access_db({table_data, submit_method}:{table_data:Types_table_data, submit_method:string}){
  
         if(submit_method === "add"){
           console.log(
@@ -295,14 +302,18 @@ app.get("/user_info",
 
       if(Array.isArray(submit_data)){
         submit_data.map((item:Types_entry_item)=>{
-          const table_data:Types_table_data = string_data(item, item[filter_key]);
-          access_db(table_data);
-          res.send(`successfully ${submit_method}ed`);
+          let adjust_submit_method = sent_submit_method;
+          if(sent_submit_method === "add" && item.id){
+            adjust_submit_method = "edit"
+          }; 
+          const table_data:Types_table_data = string_data({entry_item: item, entry_filter_item:item[filter_key], submit_method:adjust_submit_method});
+          access_db({table_data:table_data, submit_method: adjust_submit_method});
         });
+        res.send(`successfully ${sent_submit_method}ed`);
       } else {
-        const table_data:Types_table_data = string_data(submit_data, filter_item);
-        access_db(table_data);
-        res.send(`successfully ${submit_method}ed`);
+        const table_data:Types_table_data = string_data({entry_item: submit_data, entry_filter_item: filter_item, submit_method:sent_submit_method});
+        access_db({table_data:table_data, submit_method:sent_submit_method});
+        res.send(`successfully ${sent_submit_method}ed`);
       }
 
     }

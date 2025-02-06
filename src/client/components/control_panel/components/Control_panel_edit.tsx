@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
 import Order_shift from "./control_panel_edits/Order_shift.js";
@@ -21,6 +21,8 @@ import { Types_form_data } from "../context/Context_db_table_info.js";
 
 
 
+
+
 // THE COMPONENT
 export default function Control_panel_edit({submit_method, item_id}:Prop_types) {
     const section_name = useContext(Use_Context_Section_Name).show_context;
@@ -30,9 +32,22 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
     
-    const [new_table_data, set_new_table_data] = useState<Types_form_data[]>(initial_table_data);
+    const current_table_data = useRef<Types_form_data[]>(initial_table_data);
     const [status_message, set_status_message] = useState<string>("");
 
+
+    // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
+    function handle_form_change(form_data:Types_form_data | Types_form_data[]){
+        let form_data_array: Types_form_data[] = [];
+        if(!Array.isArray(form_data)){
+            form_data_array.push(form_data);
+            //set_new_table_data(form_data_array);
+            current_table_data.current = form_data_array;
+        } else {
+            //set_new_table_data(form_data)
+            current_table_data.current = form_data;
+        }
+    }
 
     // SET THE CURRENT ITEM INDEX
     const current_item_index = initial_table_data.findIndex((item) => {
@@ -42,8 +57,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
     function check_empty_input(){
         const missing_inputs:string[] = [];
-        console.log("the new_table_data: ", new_table_data)
-        new_table_data.map((current_entry:Types_form_data)=>{
+        current_table_data.current.map((current_entry:Types_form_data)=>{
             db_column_info.map((item: Types_column_info) => {
                 const null_check = item.is_nullable;
                 const current_item = item.column_name;
@@ -72,12 +86,9 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
 
     // SEND THE INFOMATION TO THE DATABASE TO BE ADDED/EDITED
     async function post_form(){
-        console.log("the new_table_data: ", new_table_data)
-
+        console.log(`%c THE DATA BEING SENT `, `background-color:${ log_colors.important }`,`for current_table_data.current`,'\n' ,current_table_data.current);
         const missing_input = check_empty_input();
 
-
-/*
         if(missing_input !== ""){
             set_status_message(`Please enter values for ${missing_input}`)
             return
@@ -89,19 +100,17 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                     filter_item: item_id,
                     submit_method: submit_method,
                     db_column_info: db_column_info, 
-                    submit_data: new_table_data
+                    submit_data: current_table_data.current
                 })
                 console.log("The success_message: ",response.data)
                 set_status_message(response.data)
-                section_nav(section_name);
 
             } catch (error) {
                 console.log('%cError posting info to database: ', 'background-color:darkred',error); 
             }
-*/
     }
     
-console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for new_table_data`,'\n' ,new_table_data);
+
         return (
             <article id="control_panel_edits" className="control_panel_action_box">
                 <h3>{submit_method === "add" ? "Add" : "Edit"} {section_name}</h3>
@@ -111,7 +120,7 @@ console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for new_table_d
                     <div id={`${section_name}_o_shift_box`} className="o_shift_box cp_content_box">
                         <Order_shift 
                             ele_names = {`cp_${section_name}`}
-                            send_table_data = {set_new_table_data} 
+                            send_table_data = {handle_form_change} 
                             submit_method = {submit_method}
             
                         /> 
@@ -119,8 +128,8 @@ console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for new_table_d
                     : 
                     <div id="cp_input_box" className="cp_content_box">
                         <Edit_control_panel_entry
-                            table_data={submit_method === "add" ? initial_form_data : new_table_data[current_item_index]}
-                            send_table_data={set_new_table_data}
+                            table_data={submit_method === "add" ? initial_form_data : initial_table_data[current_item_index]}
+                            send_table_data={handle_form_change}
                         />
                     </div> 
                 }

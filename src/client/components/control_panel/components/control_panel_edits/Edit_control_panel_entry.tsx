@@ -18,10 +18,17 @@ export interface Types_new_entry{
 
 
 export default function Edit_control_panel_entry({table_data, send_table_data}:Types_new_entry) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Edit_control_panel_entry`, "\n",   table_data);
+    //console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Edit_control_panel_entry`, "\n",   table_data);
 
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
     const [current_table_data, set_current_table_data] = useState<Types_form_data>(table_data);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Edit_control_panel_entry`, "\n",   current_table_data);
+
+/*
+    useMemo(()=>{
+        set_current_table_data(table_data);
+    },[table_data])
+*/
 
     // CREATE THE INPUTS FOR THE FORM BASED ON DATABASE COLUMN NAMES
     function create_inputs(item: Types_column_info, index:number) {
@@ -31,7 +38,7 @@ export default function Edit_control_panel_entry({table_data, send_table_data}:T
         const form_value = current_table_data[item_name] ? current_table_data[item_name] : "";
         if(input_type !== "order"){
         return(
-            <div className="cpe_form_input"  key={index}>
+            <div className="cpe_form_input"   key={index}>
                 <p>{item_string}</p>
                 <input
                 type={input_type}
@@ -49,13 +56,8 @@ export default function Edit_control_panel_entry({table_data, send_table_data}:T
         }
     }
 
-    useMemo(() =>{
-      set_current_table_data(table_data);
-    },[table_data])
-
     return(
-
-        <form id="cpe_form">
+        <form className="cpe_form" id={`the_current_key_${table_data.id}`}>
             {db_column_info.map(create_inputs)}
         </form>
     )
