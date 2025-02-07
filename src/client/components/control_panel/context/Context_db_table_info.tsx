@@ -21,7 +21,7 @@ interface Types_context {
 interface Types_context_content extends Types_initial_data {};
 
 interface Types_context_function {
-  section_name:string
+  section_name:string;
 };
 
 export interface Types_column_info{
@@ -38,6 +38,11 @@ export interface Types_form_data{
 export interface Types_initial_data{
   db_column_info:Types_column_info[];
   initial_form_data:Types_form_data;
+}
+
+interface Types_form_input{
+    type: string;
+    value: string;
 }
 
 // INITIAL CONTEXT CONTENT 
@@ -64,24 +69,28 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
           // set input types
           const form_data: Types_form_data = {};
           const column_info: Types_column_info[] = response.data.map((item:Types_column_info, index:number) => {
-              const item_name:string = item.column_name
-              let input_type;
-              let initial_item_value = "";
-                  if(item_name.includes("date")){
-                      input_type = "date"
-                  } else if (item_name.includes("admin")) {
-                      input_type = "checkbox"
-                  } else if (item_name.includes("color")) {
-                      input_type = "color";
-                      initial_item_value = "#F1F1F1"
-                  } else if (item_name.includes("order")){
-                      input_type = "order";
-                  } else {
-                      input_type = "text"
-                  }; 
-                  item.input_type = input_type;
-                  form_data[item_name] = initial_item_value; 
-                  return(item);
+            const item_name:string = item.column_name
+
+            let initial_item_value = "";
+            if(item_name.includes("date")){
+                item.input_type = "date"
+            } else if (item_name.includes("admin")) {
+                item.input_type = "checkbox"
+            } else if (item_name.includes("color")) {
+                item.input_type = "color";
+                initial_item_value = "#F1F1F1"
+            } else if (item_name.includes("order")){
+                item.input_type = "order";
+            } else if (item_name.includes("pay")){
+                item.input_type = "money";
+                initial_item_value = "00.00"
+            } else {
+                item.input_type = "text"
+            }; 
+            
+            
+            form_data[item_name] = initial_item_value; 
+            return(item);
           })
           set_send_context({db_column_info: column_info, initial_form_data:form_data}) 
       } catch (error) {

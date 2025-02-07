@@ -126,7 +126,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                         /> 
                     </div>
                     : 
-                    <div id="cp_input_box" className="cp_content_box">
+                    <div id="cpe_input_box" className="cp_content_box">
                         <Edit_control_panel_entry
                             table_data={submit_method === "add" ? initial_form_data : initial_table_data[current_item_index]}
                             send_table_data={handle_form_change}

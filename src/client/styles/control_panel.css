@@ -119,12 +119,12 @@
 /* *** classes and ids with "cpe" are abbreviated for control panel edit ****/
 #control_panel_edits > h3{
     grid-row: 1;
+    height: fit-content;
 }
 
-#cp_input_box{
-    display: grid;
-    grid-template-rows: 10% 70% 20%;
-    grid-column: 100%;
+#cpe_input_box{
+    width: 12em;
+    margin: 0 auto;
 }
 
 .cpe_form_input{
@@ -133,7 +133,6 @@
 
 .cpe_form{
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap; 
 }
 
