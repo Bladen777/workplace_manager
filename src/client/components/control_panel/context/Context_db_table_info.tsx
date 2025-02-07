@@ -81,9 +81,9 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
                 initial_item_value = "#F1F1F1"
             } else if (item_name.includes("order")){
                 item.input_type = "order";
-            } else if (item_name.includes("pay")){
-                item.input_type = "money";
-                initial_item_value = "00.00"
+            } else if (item_name.includes("pay_rate")){
+                item.input_type = "text";
+                initial_item_value = "0.00"              
             } else {
                 item.input_type = "text"
             }; 

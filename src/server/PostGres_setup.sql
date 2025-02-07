@@ -4,7 +4,8 @@ email varchar(255) UNIQUE NOT NULL ,
 name varchar(255),
 admin bit(1) NOT NULL,
 title varchar(255),
-rate decimal(4,2),
+pay_rate decimal(20,2),
+pay_type varchar(50),
 employ_date date
 );
 
