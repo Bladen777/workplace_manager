@@ -8,7 +8,7 @@ title varchar(255),
 pay_rate decimal(20,2),
 pay_type varchar(50),
 employment_type varchar(50),
-employment_status varchar(50),
+part_time bit(1),
 hours_per_week int,
 employment_start_date date,
 employment_end_date date

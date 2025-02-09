@@ -14,7 +14,6 @@ import { log_colors } from "../../../styles/_log_colors.js";
 export default function Control_panel_sort_button({change_sort}:{change_sort:Function}) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_sort_btn`);
     
-    
     const [clicked, set_clicked] = useState<boolean>(false)
 
     const db_column_names = useContext(Use_Context_Table_Info).show_context.db_column_info.map((item)=>item.column_name);

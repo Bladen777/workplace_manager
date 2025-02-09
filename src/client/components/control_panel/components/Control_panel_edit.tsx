@@ -10,6 +10,10 @@ import Control_panel_input from "./control_panel_edits/Control_panel_input.js";
 import { Use_Context_Section_Name } from "../context/Context_section_name.js";
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 import { Use_Context_Table_Data } from "../context/Context_get_table_data.js";
+import { Use_Context_current_table_item } from "../context/Context_current_table_item.js";
+
+// STYLE IMPORTS
+import "../../../styles/cp_edit.css"
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../../../styles/_log_colors.js";
@@ -20,25 +24,13 @@ import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
 
-
-export interface Types_input_form{
-    send_table_data: Function;
-    submit_method: string;
-}
-
-export interface Types_input_order_form extends Types_input_form{
-    ele_names: string;
-}
-
-
-
 // THE COMPONENT
-export default function Control_panel_edit({submit_method, item_id}:Prop_types) {
+export default function Control_panel_edit({submit_method}:Prop_types) {
     const section_name = useContext(Use_Context_Section_Name).show_context;
     console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `, section_name);
 
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
-    const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
+    const current_table_item = useContext(Use_Context_current_table_item).show_context;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
     
     const table_data_ref = useRef<Types_form_data[]>(initial_table_data);
@@ -47,6 +39,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change(form_data:Types_form_data | Types_form_data[]){
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
         let form_data_array: Types_form_data[] = [];
         if(!Array.isArray(form_data)){
             form_data_array.push(form_data);
@@ -57,11 +50,6 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
             table_data_ref.current = form_data;
         }
     }
-
-    // SET THE CURRENT ITEM INDEX
-    const current_item_index = initial_table_data.findIndex((item) => {
-        return item.id === item_id;
-    })
 
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
     function check_empty_input(){
@@ -106,7 +94,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                 const response = await axios.post("/edit_form_data",{
                     table_name: section_name,
                     filter_key: "id",
-                    filter_item: item_id,
+                    filter_item: current_table_item.id,
                     submit_method: submit_method,
                     db_column_info: db_column_info, 
                     submit_data: table_data_ref.current
@@ -127,11 +115,10 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                     db_column_info[0].input_type === "order"
                     ? 
                     <div id={`${section_name}_o_shift_box`} className="o_shift_box cp_content_box">
-                        <Order_shift 
+                        <Order_shift
+                            submit_method = {submit_method} 
                             ele_names = {`cp_${section_name}`}
                             send_table_data = {handle_form_change} 
-                            submit_method = {submit_method}
-            
                         /> 
                     </div>
                     :
@@ -140,7 +127,6 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                     <div id="cpe_input_box" className="cp_content_box">
                         <Employee_input 
                             send_table_data = {handle_form_change} 
-                            submit_method = {submit_method}
                         /> 
                     </div>
                     : 
@@ -152,7 +138,6 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                                     <Control_panel_input
                                         key={`input_for_${column.column_name}`}
                                         column_info = {column}
-                                        table_data_object = {submit_method === "add" ? initial_form_data : initial_table_data[current_item_index]}
                                         send_table_data = {handle_form_change}
                                     />
                                 )
@@ -175,18 +160,3 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
         )
     
 }
-
-
-/*
-       {
-                    db_column_info.map((column)=>{
-                        <Control_panel_input
-                            column_info = {column}
-                            table_data_object = {submit_method === "add" ? initial_form_data : initial_table_data[current_item_index]}
-                            send_table_data = {handle_form_change}
-                        />
-                    })
-
-                }
-
-*/

@@ -21,15 +21,12 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Money_input({send_table_data, item_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `money_input`);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `money_input`, item_data);
 
     // ENSURE PROPER CURSOR POSITION WHILE ADJUSTING NUMBERS
     const [focus_input, set_focus_input] = useState<Boolean>(false);
     const money_input_ref = useRef<HTMLInputElement | null>(null);
     const input_cursor_pos = useRef<number>(1);
-
-
-
 
     // FORMAT THE MONEY AMOUNT CORRECTLY
     function format_money(input:string){
@@ -94,7 +91,7 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
         return input;
     }
 
-    function input_change({input, db_column}:{input:string, db_column:string}){
+    function handle_input_change({input, db_column}:{input:string, db_column:string}){
         if(db_column !== "pay_type"){
             input = format_money(input);
         }
@@ -110,18 +107,18 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
                     <input
                         id="hourly_pay"
                         name="pay_type"
-                        value="Hourly"
+                        value="hourly"
                         type="radio"
-                        onChange={(e)=>{input_change({input:e.target.value, db_column:"pay_type"})}}
+                        onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
                     />
                     <label htmlFor="hourly_pay">Hourly</label>
 
                     <input
                         id="annual_pay"
                         name="pay_type"
-                        value="Annually"
+                        value="annually"
                         type="radio"
-                        onChange={(e)=>{input_change({input:e.target.value, db_column:"pay_type"})}}
+                        onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
                     />
                     <label htmlFor="annual_pay">Annually</label>
                 </div>
@@ -151,7 +148,7 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
         
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                     input_cursor_pos.current = e.target.selectionStart!;
-                    input_change({input:e.target.value, db_column:item_data.name})
+                    handle_input_change({input:e.target.value, db_column:item_data.name})
                     console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for change detected`);
                 }}
                 onFocus={()=>{

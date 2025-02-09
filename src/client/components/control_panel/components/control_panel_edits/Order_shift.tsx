@@ -12,7 +12,13 @@ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data} from "../../context/Context_db_table_info.js";
-import { Types_input_order_form as Prop_Types } from "../Control_panel_edit.js";
+
+
+interface Prop_Types{
+    ele_names:String;
+    send_table_data: Function;
+    submit_method: string;
+}
 
 
 interface Types_pos{
@@ -20,6 +26,8 @@ interface Types_pos{
     x: number;
     y: number;
 }
+
+
 
 interface Types_shift_ele_row{
     start: number;
@@ -54,7 +62,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
 
 
     // CHECK IF ORDER ELEMENT WAS CLICKED OR UNCLICKED
-    function ele_clicked(method:string, key_name:string, index:number){
+    function handle_ele_click(method:string, key_name:string, index:number){
         if(method === "down"){
             console.log(`%c CLICKED `, `background-color:${ log_colors.important }`);
             pos_track.current = true;
@@ -74,7 +82,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     }
 
     // TRACK THE POSITION OF CLICKED ELEMENT AND ADJUST THE POSITION OF OTHER ELEMENTS
-    function track_mouse(event:React.MouseEvent){
+    function handle_mouse_move(event:React.MouseEvent){
         const mouse_pos:Types_pos ={ x:event.clientX, y:event.clientY};
 
             // FIND AND ADJUST STARTING GRAB POSITION
@@ -236,7 +244,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                     key={key_name}
                     className={`o_shift_ele ${ele_names}_o_shift_ele`}
                     id={row.toString()}
-                    onMouseMove={(e: React.MouseEvent)=>{pos_track.current && track_mouse(e)}}
+                    onMouseMove={(e: React.MouseEvent)=>{pos_track.current && handle_mouse_move(e)}}
 
                     style={{
                         transform: `translate(${
@@ -265,9 +273,9 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                     <button
                         ref={key_name === selected_ele_name ? grab_box_ref : undefined }
                         className={`o_shift_grab_box ${ele_names}_o_shift_grab_box`}
-                        onMouseDown={()=>{ele_clicked("down", key_name, index_adjust)}} 
-                        onMouseUp={()=>{pos_track.current && ele_clicked("up","", index_adjust )}}
-                        onMouseOut={()=>{pos_track.current && ele_clicked("out", "", index_adjust)}}     
+                        onMouseDown={()=>{handle_ele_click("down", key_name, index_adjust)}} 
+                        onMouseUp={()=>{pos_track.current && handle_ele_click("up","", index_adjust )}}
+                        onMouseOut={()=>{pos_track.current && handle_ele_click("out", "", index_adjust)}}     
                     >
                         O
                     </button>

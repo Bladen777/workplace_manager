@@ -1,0 +1,66 @@
+/* CONTROL PANEL EDIT */
+/* *** classes and ids with "cpe" are abbreviated for control panel edit ****/
+#control_panel_edits > h3{
+    grid-row: 1;
+    height: fit-content;
+}
+
+#cpe_input_box{
+    width: 12em;
+    margin: 0 auto;
+}
+
+.cpe_form_input{
+    margin: 10px;
+}
+
+.cpe_form{
+    display: flex;
+    flex-wrap: wrap; 
+}
+
+
+/* ORDER SHIFT */
+.o_shift_box{
+    overflow-y: auto;
+    display: grid;
+    grid-template-rows: auto;
+    user-select: none;
+}
+
+.o_shift_ele{
+    background-color: var(--third);
+    display: flex;
+    height: 4em;
+    grid-column: 0;
+    margin: 0.5em 0;
+    padding: 0.5em;
+}
+
+.o_shift_ele > * {
+    margin: 0 0.5em;
+}
+
+.o_shift_grab_box{
+    background-color: var(--second);
+    height: 100%;
+    width: 3em;
+    text-align: center;
+    cursor: pointer;   
+}
+
+
+/* EMPLOYEE INPUT */
+#employment_type_box{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+
+/* DEPARTMENT EDIT */
+.cp_departments_o_shift_ele{
+    display: flex;
+    flex-direction: row;
+    height: 5em;
+    }

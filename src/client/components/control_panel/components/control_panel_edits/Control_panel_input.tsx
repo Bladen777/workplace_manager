@@ -5,6 +5,7 @@ import Money_input from "./Money_input.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
+import { Use_Context_current_table_item } from "../../context/Context_current_table_item.js";
 
 // TYPE DEFINITIONS 
 import { Types_column_info } from "../../context/Context_db_table_info.js";
@@ -16,7 +17,7 @@ import { log_colors } from "../../../../styles/_log_colors.js";
 
 export interface Types_new_entry{
     column_info: Types_column_info;
-    table_data_object: Types_form_data;
+    table_data_object?: Types_form_data;
     send_table_data: Function;
 }
 
@@ -27,10 +28,17 @@ export interface Types_entry_input{
     value: string | number | undefined; 
 }
 
+export interface Types_input_change{
+    input:string;
+    db_column:string;
+}
 
-export default function Control_panel_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
 
-    const [input_data, set_input_data] = useState<Types_form_data>(table_data_object);
+export default function Control_panel_input({column_info, table_data_object,  send_table_data}:Types_new_entry) {
+
+    let current_table_data = useContext(Use_Context_current_table_item).show_context;
+    if(table_data_object){current_table_data = table_data_object}
+    const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
 
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Control_panel_input`, "\n",   input_data);
 
@@ -49,7 +57,7 @@ export default function Control_panel_input({column_info, table_data_object, sen
         }
 
         // HANDLE INPUTS AND MODIFY DATA ACCORDINLY BEFORE SENDING
-        function input_change({input, db_column}:{input:string, db_column:string}){
+        function handle_input_change({input, db_column}:Types_input_change){
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input`,'\n' ,input);
             send_table_data({...input_data, [db_column]: input})
             set_input_data({...input_data, [db_column]: input})
@@ -64,7 +72,7 @@ export default function Control_panel_input({column_info, table_data_object, sen
             return(
                 <Money_input 
                     item_data = {item_data}
-                    send_table_data = {input_change}
+                    send_table_data = {handle_input_change}
                     key={`input_for_${item_data.name}`}
                 />
             )
@@ -87,11 +95,11 @@ export default function Control_panel_input({column_info, table_data_object, sen
                         if(item_data.input_type === "checkbox"){
                             if(e.target.checked){
                                 value="1"
-                            } else {
+                            } else { 
                                 value="0"
                             }
                         }
-                        input_change({input:value, db_column:item_data.name})
+                        handle_input_change({input:value, db_column:item_data.name})
                     }}
                     />
         
