@@ -13,8 +13,10 @@ import { Types_form_data } from "../../context/Context_db_table_info.js";
 // LOG STYLES
 import { log_colors } from "../../../../styles/_log_colors.js";
 
+
 export interface Types_new_entry{
-    table_data: Types_form_data;
+    column_info: Types_column_info;
+    table_data_object: Types_form_data;
     send_table_data: Function;
 }
 
@@ -26,34 +28,31 @@ export interface Types_entry_input{
 }
 
 
-export default function Edit_control_panel_entry({table_data, send_table_data}:Types_new_entry) {
-    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
-    const [current_table_data, set_current_table_data] = useState<Types_form_data>(table_data);
+export default function Control_panel_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
 
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Edit_control_panel_entry`, "\n",   current_table_data);
+    const [input_data, set_input_data] = useState<Types_form_data>(table_data_object);
 
-    // CREATE THE INPUTS FOR THE FORM BASED ON DATABASE COLUMN NAMES
-    function create_inputs(item: Types_column_info, index:number) {
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Control_panel_input`, "\n",   input_data);
 
         function convert_text(){
-            let text = item.column_name.replaceAll("_"," ")
+            let text = column_info.column_name.replaceAll("_"," ")
             const first_letter = text.slice(0,1).toUpperCase();
             text = first_letter + text.slice(1);
             return text;
         }
 
         const item_data: Types_entry_input ={
-            name: item.column_name,
-            input_type: item.input_type,
+            name: column_info.column_name,
+            input_type: column_info.input_type,
             name_text: convert_text(),
-            value: current_table_data[item.column_name] ? current_table_data[item.column_name] : ""
+            value: input_data[column_info.column_name] ? input_data[column_info.column_name] : ""
         }
 
         // HANDLE INPUTS AND MODIFY DATA ACCORDINLY BEFORE SENDING
         function input_change({input, db_column}:{input:string, db_column:string}){
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input`,'\n' ,input);
-            send_table_data({...current_table_data, [db_column]: input})
-            set_current_table_data({...current_table_data, [db_column]: input})
+            send_table_data({...input_data, [db_column]: input})
+            set_input_data({...input_data, [db_column]: input})
         }
       
   
@@ -73,7 +72,7 @@ export default function Edit_control_panel_entry({table_data, send_table_data}:T
             return(
                 <div 
                     className="cpe_form_input"   
-                    key={`input_for_${item_data.name}`}
+ 
                 >
                     <label htmlFor={item_data.name}>{item_data.name_text}</label>
                     <input
@@ -101,9 +100,4 @@ export default function Edit_control_panel_entry({table_data, send_table_data}:T
             }
         }
 
-    return(
-        <form className="cpe_form">
-            {db_column_info.map(create_inputs)}
-        </form>
-    )
-}
+

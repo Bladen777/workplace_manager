@@ -3,7 +3,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
 import Order_shift from "./control_panel_edits/Order_shift.js";
-import Edit_control_panel_entry from "./control_panel_edits/Edit_control_panel_entry.js";
+import Employee_input from "./control_panel_edits/Employee_input.js";
+import Control_panel_input from "./control_panel_edits/Control_panel_input.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_Section_Name } from "../context/Context_section_name.js";
@@ -20,6 +21,14 @@ import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
 
 
+export interface Types_input_form{
+    send_table_data: Function;
+    submit_method: string;
+}
+
+export interface Types_input_order_form extends Types_input_form{
+    ele_names: string;
+}
 
 
 
@@ -32,7 +41,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
     
-    const current_table_data = useRef<Types_form_data[]>(initial_table_data);
+    const table_data_ref = useRef<Types_form_data[]>(initial_table_data);
     const [status_message, set_status_message] = useState<string>("");
 
 
@@ -42,10 +51,10 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
         if(!Array.isArray(form_data)){
             form_data_array.push(form_data);
             //set_new_table_data(form_data_array);
-            current_table_data.current = form_data_array;
+            table_data_ref.current = form_data_array;
         } else {
             //set_new_table_data(form_data)
-            current_table_data.current = form_data;
+            table_data_ref.current = form_data;
         }
     }
 
@@ -57,7 +66,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
     function check_empty_input(){
         const missing_inputs:string[] = [];
-        current_table_data.current.map((current_entry:Types_form_data)=>{
+        table_data_ref.current.map((current_entry:Types_form_data)=>{
             db_column_info.map((item: Types_column_info) => {
                 const null_check = item.is_nullable;
                 const current_item = item.column_name;
@@ -86,7 +95,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
 
     // SEND THE INFOMATION TO THE DATABASE TO BE ADDED/EDITED
     async function post_form(){
-        console.log(`%c THE DATA BEING SENT `, `background-color:${ log_colors.important }`,`for current_table_data.current`,'\n' ,current_table_data.current);
+        console.log(`%c THE DATA BEING SENT `, `background-color:${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
         const missing_input = check_empty_input();
 
         if(missing_input !== ""){
@@ -100,7 +109,7 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
                     filter_item: item_id,
                     submit_method: submit_method,
                     db_column_info: db_column_info, 
-                    submit_data: current_table_data.current
+                    submit_data: table_data_ref.current
                 })
                 console.log("The success_message: ",response.data)
                 set_status_message(response.data)
@@ -125,15 +134,36 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
             
                         /> 
                     </div>
+                    :
+                    section_name === "employees" 
+                    ?
+                    <div id="cpe_input_box" className="cp_content_box">
+                        <Employee_input 
+                            send_table_data = {handle_form_change} 
+                            submit_method = {submit_method}
+                        /> 
+                    </div>
                     : 
                     <div id="cpe_input_box" className="cp_content_box">
-                        <Edit_control_panel_entry
-                            table_data={submit_method === "add" ? initial_form_data : initial_table_data[current_item_index]}
-                            send_table_data={handle_form_change}
-                        />
-                    </div> 
-                }
+                        <form className="cpe_form">
+                        {
+                            db_column_info.map((column)=>{
+                                return(
+                                    <Control_panel_input
+                                        key={`input_for_${column.column_name}`}
+                                        column_info = {column}
+                                        table_data_object = {submit_method === "add" ? initial_form_data : initial_table_data[current_item_index]}
+                                        send_table_data = {handle_form_change}
+                                    />
+                                )
+                            })
 
+                        }
+                        </form>
+                    </div>
+                }
+               
+                
                 <div className="cp_utility_bar">
                 <button id="cp_done_btn" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
                 {status_message !== "" &&
@@ -145,3 +175,18 @@ export default function Control_panel_edit({submit_method, item_id}:Prop_types) 
         )
     
 }
+
+
+/*
+       {
+                    db_column_info.map((column)=>{
+                        <Control_panel_input
+                            column_info = {column}
+                            table_data_object = {submit_method === "add" ? initial_form_data : initial_table_data[current_item_index]}
+                            send_table_data = {handle_form_change}
+                        />
+                    })
+
+                }
+
+*/

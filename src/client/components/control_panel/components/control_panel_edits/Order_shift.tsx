@@ -1,25 +1,19 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
-import Edit_control_panel_entry from "./Edit_control_panel_entry.js";
-
+import Control_panel_input from "./Control_panel_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Section_Name } from "../../context/Context_section_name.js";
 import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
+import { Use_Context_Table_Data } from "../../context/Context_get_table_data.js";
 
 // LOG STYLES
 import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data} from "../../context/Context_db_table_info.js";
-import { Use_Context_Table_Data } from "../../context/Context_get_table_data.js";
+import { Types_input_order_form as Prop_Types } from "../Control_panel_edit.js";
 
-interface Types_props{
-    ele_names: string;
-    send_table_data: Function;
-    submit_method: string;
-}
 
 interface Types_pos{
     size?: number;
@@ -35,12 +29,11 @@ interface Types_shift_ele_row{
 
 
 // THE COMPONENT
-export default function Order_shift({ele_names, send_table_data, submit_method}:Types_props) {
-
-    const section_name = useContext(Use_Context_Section_Name).show_context;
+export default function Order_shift({ele_names, send_table_data, submit_method}:Prop_Types) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Order_shift`);
 
     // CONSTANTS FOR TRACKING DATA
+    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
     const [table_data, set_table_data] = useState<Types_form_data[]>(initial_table_data);
@@ -209,11 +202,19 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
         const entries:ReactElement[] = temp_table_data.map((item, index:number)=>{
             entry_indexes.current.push(index);
             return(
-                <Edit_control_panel_entry 
-                        table_data={item}
-                        send_table_data={change_table_data}
-                    />
-                );
+                <form className="cpe_form">
+                    {db_column_info.map((column)=>{
+                        return(
+                            <Control_panel_input 
+                                key={`input_for_${column.column_name}`}
+                                column_info={column}
+                                table_data_object={item}
+                                send_table_data={change_table_data}
+                            />
+                        )
+                    })}
+                </form>
+            );
         });
 
         current_table_data.current = temp_table_data;

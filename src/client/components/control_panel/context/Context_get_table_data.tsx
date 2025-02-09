@@ -4,7 +4,7 @@ import { createContext, useContext, useState, ReactNode } from "react"
 // COMPONENT IMPORTS
 
 // CONTEXT IMPORTS 
-import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
+import { Use_Context_Table_Info } from "./Context_db_table_info.js";
 import { Use_Context_Section_Name } from "./Context_section_name.js";
 
 // HOOK IMPORTS 
@@ -15,7 +15,7 @@ import { Use_Context_Section_Name } from "./Context_section_name.js";
 import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
-import { Types_form_data } from "../context/Context_db_table_info.js";
+import { Types_form_data } from "./Context_db_table_info.js";
 
 interface Types_context {
     update_func:Function;

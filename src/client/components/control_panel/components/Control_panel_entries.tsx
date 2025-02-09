@@ -20,7 +20,6 @@ export default function Control_panel_entries({table_item}:{table_item:Types_for
                 let text = item.column_name.replaceAll("_"," ")
                 const first_letter = text.slice(0,1).toUpperCase();
                 text = first_letter + text.slice(1);
-
                 return text;
             }
 

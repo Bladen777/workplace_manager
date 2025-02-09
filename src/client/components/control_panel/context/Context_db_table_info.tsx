@@ -40,10 +40,6 @@ export interface Types_initial_data{
   initial_form_data:Types_form_data;
 }
 
-interface Types_form_input{
-    type: string;
-    value: string;
-}
 
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = {

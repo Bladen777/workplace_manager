@@ -26,13 +26,18 @@ export default function useFindClickPosition() {
     function track_click({active, ele_pos, update_func}:Types_props){
         is_active.current = active;
         document.body.onclick = (e)=>{
+            e.stopPropagation();
             if(is_active.current){
                 console.log(`   %c HOOK UPDATE `, `background-color:${ log_colors.hook }`,`for Click_Location`, is_active.current);
-                let clicked  = e.target;
+                /*
+                    let clicked  = e.target;
+                    console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for clicked`,'\n' ,clicked);
+                */
                 const screen_pos = {
                     x: e.clientX, 
                     y: e.clientY
                 }
+ 
                 console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for track_ele_pos`,  ele_pos);
                 console.log("   the screen_pos: ", screen_pos.x , ", ", screen_pos.y);
 

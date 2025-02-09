@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 // COMPONENT IMPORTS 
 
@@ -12,7 +12,7 @@ import { useRef, useEffect } from "react";
 import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-import { Types_entry_input } from "./Edit_control_panel_entry.js";
+import { Types_entry_input } from "./Control_panel_input.js";
 
 interface Types_props{
     send_table_data: Function;
@@ -24,14 +24,11 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `money_input`);
 
     // ENSURE PROPER CURSOR POSITION WHILE ADJUSTING NUMBERS
+    const [focus_input, set_focus_input] = useState<Boolean>(false);
     const money_input_ref = useRef<HTMLInputElement | null>(null);
-    const input_cursor_pos = useRef<number>(0);
+    const input_cursor_pos = useRef<number>(1);
 
-    useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input_cursor_pos.current`,'\n' ,input_cursor_pos.current);
-        const cursor_pos:number = input_cursor_pos.current !== -1 ? input_cursor_pos.current : 0;
-        money_input_ref.current?.setSelectionRange(cursor_pos, cursor_pos);
-    })
+
 
 
     // FORMAT THE MONEY AMOUNT CORRECTLY
@@ -101,7 +98,8 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
         if(db_column !== "pay_type"){
             input = format_money(input);
         }
-        send_table_data({input, db_column})
+        send_table_data({input: input, db_column: db_column})
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for change finished`);
     }
 
 
@@ -119,13 +117,13 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
                     <label htmlFor="hourly_pay">Hourly</label>
 
                     <input
-                        id="salary_pay"
+                        id="annual_pay"
                         name="pay_type"
-                        value="Salary"
+                        value="Annually"
                         type="radio"
                         onChange={(e)=>{input_change({input:e.target.value, db_column:"pay_type"})}}
                     />
-                    <label htmlFor="salary_pay">Salary</label>
+                    <label htmlFor="annual_pay">Annually</label>
                 </div>
             )
         } else {
@@ -133,10 +131,14 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
         }
     }
 
-
+    useEffect(() =>{
+        const cursor_pos:number = input_cursor_pos.current !== -1 ? input_cursor_pos.current : 0;
+        money_input_ref.current?.setSelectionRange(cursor_pos, cursor_pos);
+    })
+    
     // RETURNED VALUES 
     return(
-        <div className="cpe_form_input"   >
+        <div className="cpe_form_input" >
             <label htmlFor={item_data.name}>{item_data.name_text}</label>
             <input
                 ref = {money_input_ref}
@@ -144,11 +146,19 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
                 name={item_data.name}
                 type={item_data.input_type}
                 placeholder={item_data.name_text}
+                autoComplete="off"
                 value={item_data.value}
-            
+        
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                    input_cursor_pos.current = e.target.selectionStart!
+                    input_cursor_pos.current = e.target.selectionStart!;
                     input_change({input:e.target.value, db_column:item_data.name})
+                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for change detected`);
+                }}
+                onFocus={()=>{
+                    input_cursor_pos.current = 1;
+                    setTimeout(() => {
+                        set_focus_input(true);
+                    },1)
                 }}
             />
 

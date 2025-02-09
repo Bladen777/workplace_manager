@@ -3,10 +3,15 @@ id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 email varchar(255) UNIQUE NOT NULL ,
 name varchar(255),
 admin bit(1) NOT NULL,
+role varchar(50),
 title varchar(255),
 pay_rate decimal(20,2),
 pay_type varchar(50),
-employ_date date
+employment_type varchar(50),
+employment_status varchar(50),
+hours_per_week int,
+employment_start_date date,
+employment_end_date date
 );
 
 CREATE TABLE employee_departments(
