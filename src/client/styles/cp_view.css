@@ -28,6 +28,8 @@
     position: absolute;
     bottom: 0;
     right: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
     max-height: 10em;
     background-color: var(--second);
     display: flex;

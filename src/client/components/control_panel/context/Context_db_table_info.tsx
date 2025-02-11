@@ -85,6 +85,7 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
                 item.input_type = "date"
             } else if (item_name.includes("admin")) {
                 item.input_type = "checkbox"
+                initial_item_value = "0"
             } else if (item_name.includes("color")) {
                 item.input_type = "color";
                 initial_item_value = "#F1F1F1"
