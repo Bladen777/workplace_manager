@@ -34,13 +34,13 @@ export interface Types_input_change{
 }
 
 
-export default function Control_panel_input({column_info, table_data_object,  send_table_data}:Types_new_entry) {
+export default function Control_panel_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
 
     let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
     if(table_data_object){current_table_data = table_data_object}
     const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
 
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Control_panel_input`, "\n",   input_data);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Control_panel_input for ${column_info.column_name}`, "\n",   input_data);
 
         function convert_text(){
             let text = column_info.column_name.replaceAll("_"," ")
@@ -72,6 +72,7 @@ export default function Control_panel_input({column_info, table_data_object,  se
             return(
                 <Money_input 
                     item_data = {item_data}
+                    pay_type_value = {input_data.pay_type}
                     send_table_data = {handle_input_change}
                     key={`input_for_${item_data.name}`}
                 />
@@ -88,8 +89,8 @@ export default function Control_panel_input({column_info, table_data_object,  se
                     name={item_data.name}
                     type={item_data.input_type}
                     placeholder={item_data.name_text}
-                    value={item_data.value}
-                   
+                    value={item_data.value ===  null ? "" : item_data.value}
+                    checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                         let value = e.target.value;
                         if(item_data.input_type === "checkbox"){

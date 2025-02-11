@@ -15,12 +15,13 @@ import { log_colors } from "../../../../styles/_log_colors.js";
 import { Types_entry_input } from "./Control_panel_input.js";
 
 interface Types_props{
-    send_table_data: Function;
     item_data: Types_entry_input;
+    pay_type_value?: string | number;
+    send_table_data: Function;
 }
 
 // THE COMPONENT 
-export default function Money_input({send_table_data, item_data}:Types_props) {
+export default function Money_input({send_table_data, pay_type_value, item_data}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `money_input`, item_data);
 
     // ENSURE PROPER CURSOR POSITION WHILE ADJUSTING NUMBERS
@@ -109,6 +110,7 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
                         name="pay_type"
                         value="hourly"
                         type="radio"
+                        checked = {pay_type_value === "hourly" ? true : false}
                         onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
                     />
                     <label htmlFor="hourly_pay">Hourly</label>
@@ -118,6 +120,7 @@ export default function Money_input({send_table_data, item_data}:Types_props) {
                         name="pay_type"
                         value="annually"
                         type="radio"
+                        checked = {pay_type_value === "annually" ? true : false}
                         onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
                     />
                     <label htmlFor="annual_pay">Annually</label>

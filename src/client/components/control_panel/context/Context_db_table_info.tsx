@@ -92,7 +92,13 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
                 item.input_type = "order";
             } else if (item_name.includes("pay_rate")){
                 item.input_type = "text";
-                initial_item_value = "0.00"              
+                initial_item_value = "0.00"
+            } else if (item_name.includes("employment_type")){
+                initial_item_value = "full_time"
+            } else if (item_name.includes("part_time")){
+                initial_item_value = "0"
+            } else if (item_name.includes("hours_per_week")){
+                initial_item_value = "40"                  
             } else {
                 item.input_type = "text"
             }; 

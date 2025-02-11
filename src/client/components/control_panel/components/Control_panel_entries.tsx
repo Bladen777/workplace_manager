@@ -34,8 +34,10 @@ export default function Control_panel_entries({table_item}:{table_item:Types_for
             } else if(column_name.includes("admin")){
                 return
             } else if(column_name.includes("pay_rate")){
-                return(<p key={table_index}>{`${column_name_text}: $${table_item[column_name]} ${table_item.pay_type}`}</p>)            
-            } else {
+                return(<p key={table_index}>{`${column_name_text}: $${table_item[column_name]} ${table_item.pay_type}`}</p>)
+            } else if(column_name.includes("part_time")){
+                return(<p key={table_index}>{`${column_name_text}: ${table_item.part_time === "1" ? "Yes" : "No" }`}</p>)                       
+            } else { 
                 return(<p key={table_index}>{`${column_name_text}: ${table_item[column_name]}`}</p>)
             };
         });

@@ -91,6 +91,7 @@ export default function Employee_input({send_table_data}:Types_props) {
                         name="employ_type"
                         value="full_time"
                         type="radio"
+                        checked = {input_data.employment_type === "full_time" ? true : false}
                         onChange={(e)=>handle_input_change({input: e.target.value, db_column:"employment_type", update:true})}
                     />
                     <label htmlFor="full_time">Full Time</label>
@@ -100,6 +101,7 @@ export default function Employee_input({send_table_data}:Types_props) {
                         name="employ_type"
                         value="contract"
                         type="radio"
+                        checked = {input_data.employment_type === "contract" ? true : false}
                         onChange={(e)=>handle_input_change({input: e.target.value, db_column:"employment_type", update:true})}
                     />
                     <label htmlFor="contract">Contract</label>
@@ -109,6 +111,7 @@ export default function Employee_input({send_table_data}:Types_props) {
                         name="part_time_check"
                         value={input_data.part_time}
                         type="checkbox"
+                        checked = {input_data.part_time === "1" ? true : false}
                         onChange={(e)=>{
                             let value = e.target.value;
                             if(e.target.checked){
