@@ -12,6 +12,7 @@ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data} from "../../context/Context_db_table_info.js";
+import { Types_input_change } from "./Control_panel_input.js";
 
 
 interface Prop_Types{
@@ -20,19 +21,20 @@ interface Prop_Types{
     submit_method: string;
 }
 
-
 interface Types_pos{
     size?: number;
     x: number;
     y: number;
 }
 
-
-
 interface Types_shift_ele_row{
     start: number;
     adjust: number;
     direction: string;
+}
+
+interface Types_change_input_data extends Types_input_change{
+    id:number;
 }
 
 
@@ -45,7 +47,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
     const [table_data, set_table_data] = useState<Types_form_data[]>(initial_table_data);
-    const current_table_data = useRef<Types_form_data[]>(initial_table_data)
+    const table_data_ref = useRef<Types_form_data[]>(initial_table_data)
     const [entry_data, set_entry_data] = useState<ReactElement[]>([]);
 
     // CONSTANTS FOR TRACKING POSITION
@@ -77,7 +79,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             set_selected_ele_name("");
             adjust_table_data(index);
             shift_ele_row.current.direction = "";
-            send_table_data(current_table_data.current);
+            send_table_data(table_data_ref.current);
         }
     }
 
@@ -104,7 +106,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
 
             // TRACK WHEN SHIFTING ELEMENT POSITIONS WITH OTHER ELEMENTS
             function check_to_shift(){ 
-                if (move.y > start_pos.current.size! && shift_ele_row.current.adjust < current_table_data.current.length){
+                if (move.y > start_pos.current.size! && shift_ele_row.current.adjust < table_data_ref.current.length){
                     // move index down
                     shift_ele_row.current.adjust ++ ;
                 } else if (start_pos.current.size! + move.y <= 0  && shift_ele_row.current.adjust !== 0){
@@ -134,9 +136,9 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
 
     // ADJUST THE TABLE DATA BASED ON THE POSITION OF THE CURRENT ELEMENTS
     function adjust_table_data(index:number){
-        const temp_table_data:Types_form_data[] = [...current_table_data.current];
+        const temp_table_data:Types_form_data[] = [...table_data_ref.current];
         temp_table_data.splice(shift_ele_row.current.start, 1);
-        temp_table_data.splice(shift_ele_row.current.adjust, 0, current_table_data.current[index]);
+        temp_table_data.splice(shift_ele_row.current.adjust, 0, table_data_ref.current[index]);
         temp_table_data.map((item, index)=>{
             const item_order_key:string | undefined = (Object.keys(item)).find((key_name: string) => {
                 if(key_name.includes("order")){
@@ -146,7 +148,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             item[item_order_key!] = index + 1;
         })
         console.log(`%ctemp_table_data: `, 'background-color:olive',temp_table_data );
-        current_table_data.current = temp_table_data;
+        table_data_ref.current = temp_table_data;
 
         // ADJUST THE POSITIONS OF THE ELEMENTS
         const temp_entry_indexes: number[] = [...entry_indexes.current];
@@ -181,13 +183,15 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
 
  
     // SEND DATA TO PARENT, AND UPDATE CURRENT TABLE DATA FROM THE CHILD COMPONENT
-    function change_table_data(value:Types_form_data){
+    function change_table_data(form_data:Types_change_input_data){
         const changed_entry_index = table_data.findIndex((item)=>{
-            return item.id === value.id;
+            return item.id === form_data.id;
         })
-        const temp_table_data:Types_form_data[] = [...current_table_data.current];
-        temp_table_data.splice(changed_entry_index, 1, value);
-        current_table_data.current = temp_table_data;
+        const update_form_data = {...table_data_ref.current[changed_entry_index], [form_data.db_column]:form_data.input};
+
+        const temp_table_data:Types_form_data[] = [...table_data_ref.current];
+        temp_table_data.splice(changed_entry_index, 1, update_form_data);
+        table_data_ref.current = temp_table_data;
         send_table_data(temp_table_data);
     }
 
@@ -206,7 +210,6 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             temp_table_data.push(temp_form_data);  
         } 
 
-
         const entries:ReactElement[] = temp_table_data.map((item, index:number)=>{
             entry_indexes.current.push(index);
             return(
@@ -217,7 +220,13 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                                 key={`input_for_${column.column_name}`}
                                 column_info={column}
                                 table_data_object={item}
-                                send_table_data={change_table_data}
+                                send_table_data={(input:Types_input_change)=>{
+                                    change_table_data({
+                                        input:input.input, 
+                                        db_column:input.db_column,
+                                        id:item.id!
+                                    })
+                                }}
                             />
                         )
                     })}
@@ -225,7 +234,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             );
         });
 
-        current_table_data.current = temp_table_data;
+        table_data_ref.current = temp_table_data;
         set_table_data(temp_table_data);
         set_entry_data(entries);
     },[]);

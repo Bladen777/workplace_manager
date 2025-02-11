@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useContext, useState, ReactNode } from "react"
+import { createContext, useState, ReactNode,} from "react"
 
 // COMPONENT IMPORTS 
 
@@ -14,7 +14,11 @@ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
 interface Types_context {
-    update_func:Function;
+    update_func:{
+        now:Function;
+        wait:Function;
+        update_context: Function;
+    };
     show_context:Types_context_content; 
 };
 
@@ -36,6 +40,7 @@ export interface Types_form_data{
 }
 
 export interface Types_initial_data{
+  table_name: string;  
   db_column_info:Types_column_info[];
   initial_form_data:Types_form_data;
 }
@@ -43,12 +48,20 @@ export interface Types_initial_data{
 
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = {
-  db_column_info:[{column_name: "", is_nullable: "", input_type: "" }], 
-  initial_form_data:{[""]:""}
+    table_name:"",
+    db_column_info:[{column_name: "", is_nullable: "", input_type: "" }], 
+    initial_form_data:{[""]:""}
 };
 
 // CONTEXT TO USE 
-export const Use_Context_Table_Info = createContext<Types_context>({update_func:()=>{}, show_context:initial_context_content })
+export const Use_Context_Table_Info = createContext<Types_context>({
+    update_func:{
+        now:()=>{},
+        wait:()=>{}, 
+        update_context:()=>{}
+    },
+    show_context:initial_context_content
+});
 
 // CONTEXT PROVIDER & UPDATE 
 export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
@@ -88,16 +101,30 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
             form_data[item_name] = initial_item_value; 
             return(item);
           })
-          set_send_context({db_column_info: column_info, initial_form_data:form_data}) 
+
+        console.log(` %c CONTEXT FINISHED `, `background-color:${ log_colors.context }`,`for db_table_info`);
+        return({
+            table_name: section_name, 
+            db_column_info: column_info, 
+            initial_form_data:form_data
+        }) 
       } catch (error) {
-          console.log(`%cError getting db columns: ${error} `, 'background-color:darkred');   
+          console.log(`%cError getting db columns: ${error} `, 'background-color:darkred');
+          return(initial_context_content)   
       }
     }
     
 
 // RETURN THE CONTEXT PROVIDER 
     return (
-        <Use_Context_Table_Info.Provider value={{update_func:update_context, show_context:send_context}}>
+        <Use_Context_Table_Info.Provider value={{
+            update_func:{
+                now:async (props:Types_context_function)=>{set_send_context(await update_context(props))},
+                wait:update_context,
+                update_context:set_send_context 
+            },
+            show_context:send_context}}
+        >
             {children} 
         </Use_Context_Table_Info.Provider> 
     );

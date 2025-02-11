@@ -117,24 +117,52 @@ app.get("/user_info",
       const table_name: string = req.body.table_name;
       const filter_key: string = req.body.filter_key;
       const filter_item: string = req.body.filter_item;
-      const order_key: string = req.body.order_key; 
+      let order_key: string = req.body.order_key; 
 
       let search_condition = "";
       if(filter_key){
         search_condition = `WHERE ${filter_key}=${filter_item}`
       };
 
+          // FIND COLUMN NAME BASED ON ORDER KEY PROVIDED
       let order_condition = "";
+
+      if(!order_key){
+        switch (table_name) {
+            case "departments":
+                order_key = "order";
+                break;
+            default:
+                break; 
+        }
+      } 
+
       if(order_key){
-        order_condition = `ORDER BY ${order_key}`
-      };
+        try {
+          const db_columns = await db.query(
+            "SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id';",
+            [table_name]
+          );
+
+          db_columns.rows.find((key_name)=>{
+            if(key_name.column_name.includes(order_key)){
+              console.log(" the order key: ", order_key);
+              order_condition = `ORDER BY ${key_name.column_name}`;
+            } 
+          })
+        
+        } catch (error) {
+          console.log(`Error getting column names from ${table_name} : `,error);
+        }
+      }
+
         try {
           const response = await db.query(
             `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
           )
         
           const data = response.rows;
-          // convert sent dates to proper format
+          // CONVERT SENT DATES TO PROPER FORMAT
           data.map((item, index:number) => {
             const data_keys = Object.keys(item);
             data_keys.findIndex((key_name:string, key_index:number) => {
@@ -149,13 +177,12 @@ app.get("/user_info",
           });  
 
           res.send(data);
-
-          //console.log("the response: ", response.rows)
         } catch (error) {
           console.log(`Error getting infomation from ${table_name} : `,error);
         }
+        
       }
-    
+          
   );
 
   // GET THE COLUMN NAMES

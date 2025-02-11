@@ -7,7 +7,6 @@ import Employee_input from "./control_panel_edits/Employee_input.js";
 import Control_panel_input from "./control_panel_edits/Control_panel_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Section_Name } from "../context/Context_section_name.js";
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 import { Use_Context_Table_Data } from "../context/Context_get_table_data.js";
 import { Use_Context_current_table_item } from "../context/Context_current_table_item.js";
@@ -19,36 +18,45 @@ import "../../../styles/cp_edit.css"
 import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
-import { Prop_types_control_panel_edit as Prop_types} from "../Control_panel.js"
 
 import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
+import { Types_input_change } from "./control_panel_edits/Control_panel_input.js";
+
 
 // THE COMPONENT
-export default function Control_panel_edit({submit_method}:Prop_types) {
-    const section_name = useContext(Use_Context_Section_Name).show_context;
+export default function Control_panel_edit() {
+    const section_name = useContext(Use_Context_Table_Info).show_context.table_name;
     console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `, section_name);
 
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
-    const current_table_item = useContext(Use_Context_current_table_item).show_context;
+    const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
+
+    const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
+    const submit_method = useContext(Use_Context_current_table_item).show_context.submit_method
+
+    let starting_data: Types_form_data[] = initial_table_data;
+    if(submit_method === "add"){
+        starting_data = [initial_form_data] 
+    } 
     
-    const table_data_ref = useRef<Types_form_data[]>(initial_table_data);
+    const table_data_ref = useRef<Types_form_data[]>(starting_data);
     const [status_message, set_status_message] = useState<string>("");
 
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
-    function handle_form_change(form_data:Types_form_data | Types_form_data[]){
+    function handle_form_change(form_data:Types_input_change | Types_form_data[]){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
-        let form_data_array: Types_form_data[] = [];
+        let form_data_array: Types_form_data[] = [];  
         if(!Array.isArray(form_data)){
-            form_data_array.push(form_data);
-            //set_new_table_data(form_data_array);
+            const update_form_data = {...table_data_ref.current[0], [form_data.db_column]:form_data.input};
+            form_data_array.push(update_form_data);
             table_data_ref.current = form_data_array;
         } else {
-            //set_new_table_data(form_data)
             table_data_ref.current = form_data;
         }
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
     }
 
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING

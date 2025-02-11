@@ -36,7 +36,7 @@ export interface Types_input_change{
 
 export default function Control_panel_input({column_info, table_data_object,  send_table_data}:Types_new_entry) {
 
-    let current_table_data = useContext(Use_Context_current_table_item).show_context;
+    let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
     if(table_data_object){current_table_data = table_data_object}
     const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
 
@@ -59,8 +59,8 @@ export default function Control_panel_input({column_info, table_data_object,  se
         // HANDLE INPUTS AND MODIFY DATA ACCORDINLY BEFORE SENDING
         function handle_input_change({input, db_column}:Types_input_change){
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input`,'\n' ,input);
-            send_table_data({...input_data, [db_column]: input})
             set_input_data({...input_data, [db_column]: input})
+            send_table_data({input: input, db_column:db_column})
         }
       
   

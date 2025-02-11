@@ -5,17 +5,19 @@ import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
+import { Use_Context_Table_Data } from "../context/Context_get_table_data.js";
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../../../styles/_log_colors.js";
 
 
 // THE COMPONENT
-export default function Control_panel_sort_button({change_sort}:{change_sort:Function}) {
+export default function Control_panel_sort_button() {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_sort_btn`);
     
     const [clicked, set_clicked] = useState<boolean>(false)
 
+    const update_table_data = useContext(Use_Context_Table_Data).update_func;
     const db_column_names = useContext(Use_Context_Table_Info).show_context.db_column_info.map((item)=>item.column_name);
     const options_menu_ref = useRef<HTMLDivElement | null>(null);
 
@@ -27,7 +29,8 @@ export default function Control_panel_sort_button({change_sort}:{change_sort:Fun
             className="control_panel_btn"
             key={index}
             onClick={()=>{
-                change_sort(item)
+    
+                update_table_data.now({order_key: item})
                 set_clicked(false)
                 track_click({active:false})
             }}
