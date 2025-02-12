@@ -1,0 +1,36 @@
+/* ORDER SHIFT */
+.o_shift_box{
+    overflow-y: auto;
+    display: grid;
+    grid-template-rows: auto;
+    user-select: none;
+}
+
+.o_shift_ele{
+    background-color: var(--section_secondary);
+    display: flex;
+    min-height: 4em;
+    margin: 0.5em 0;
+    padding: 0.5em;
+}
+
+.o_shift_form{
+    flex-direction: row;
+}
+
+.o_shift_ele > * {
+    margin: 0 0.5em;
+}
+
+.o_shift_grab_box{
+    background-color: var(--section_btn);
+    height: 100%;
+    width: 3em;
+
+    text-align: center;
+    cursor: pointer;   
+}
+
+.o_shift_grab_box > p{
+    font-size: 2rem;
+}

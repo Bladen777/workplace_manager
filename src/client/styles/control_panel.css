@@ -1,5 +1,5 @@
 #control_panel{
-    background-color: var(--third);
+    background-color: var(--section_bg);
     height: 45em;
     width: 80vw;
     margin: 1em auto;
@@ -24,19 +24,24 @@
 }
 
 .cp_nav_btn{
-    background-color: var(--second);
+    background-color: var(--section_accent);
+    color:var(--secondary);
     border-top-left-radius: 1em;
     border-bottom-left-radius: 1em;
     height:2.5em;
 }
 
+.cp_nav_btn:hover , .cp_nav_btn_active{
+    color:var(--section_btn_text)
+}
+
 .cp_nav_btn_active{
-    background-color: var(--first);
+    background-color: var(--section_primary);
 }
 
 /* GENERAL CONTROL PANEL CONTENT */
 .control_panel_action_box{
-    background-color: var(--first);
+    background-color: var(--section_primary);
     grid-column: 2;
     grid-row: 2;
     display: grid;
@@ -68,15 +73,17 @@
 .control_panel_btn{
     height: 100%;
     min-width: 4em;
-    background-color: var(--third);
+    background-color: var(--section_btn);
+    color:var(--section_btn_text);
     border-radius: 0.25em;
     margin:0 1em;
 }
 
-.color_id{
-    width: 3em;
-    height: 3em;
+.control_panel_btn:hover{
+    transform: scale(1.05);
+    background-color: var(--section_btn_hover) !important;
 }
+
 
 
 

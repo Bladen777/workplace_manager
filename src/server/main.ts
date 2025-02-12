@@ -117,7 +117,9 @@ app.get("/user_info",
       const table_name: string = req.body.table_name;
       const filter_key: string = req.body.filter_key;
       const filter_item: string = req.body.filter_item;
-      let order_key: string = req.body.order_key; 
+      let order_key: string = req.body.order_key;
+      const order_direction:string = req.body.order_direction; 
+      console.log("get_table_info: ", req.body);
 
       let search_condition = "";
       if(filter_key){
@@ -125,7 +127,7 @@ app.get("/user_info",
       };
 
           // FIND COLUMN NAME BASED ON ORDER KEY PROVIDED
-      let order_condition = "";
+      let order_condition = "ORDER BY id";
 
       if(!order_key){
         switch (table_name) {
@@ -140,14 +142,13 @@ app.get("/user_info",
       if(order_key){
         try {
           const db_columns = await db.query(
-            "SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id';",
+            "SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = $1;",
             [table_name]
           );
 
           db_columns.rows.find((key_name)=>{
             if(key_name.column_name.includes(order_key)){
-              console.log(" the order key: ", order_key);
-              order_condition = `ORDER BY ${key_name.column_name}`;
+              order_condition = `ORDER BY ${key_name.column_name} ${order_direction === "desc" ? "DESC" : ""}`;
             } 
           })
         
@@ -155,7 +156,6 @@ app.get("/user_info",
           console.log(`Error getting column names from ${table_name} : `,error);
         }
       }
-
         try {
           const response = await db.query(
             `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
@@ -180,10 +180,9 @@ app.get("/user_info",
         } catch (error) {
           console.log(`Error getting infomation from ${table_name} : `,error);
         }
-        
-      }
-          
+      } 
   );
+
 
   // GET THE COLUMN NAMES
   app.post("/get_columns",
@@ -191,14 +190,13 @@ app.get("/user_info",
       const table_name = req.body.table_name
       try {
         const response = await db.query(
-          "SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id';",
+          "SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id' ORDER BY ordinal_position;",
           [table_name]
         );
         res.send(response.rows);
       } catch (error) {
         console.log(`Error getting columns for ${table_name} from database: `,error);
       }
-
     }
   );
 
@@ -254,26 +252,36 @@ app.get("/user_info",
 
         // DEFINE KEY, VALUE PAIRS AS STRINGS
         column_names.map((item:{column_name:string}) => {
+
           const column = item.column_name;
-          const data_value = entry_item[column];
+          const data_value = (()=>{
+            let item_data = entry_item[column];
+            if(item_data === null){
+              item_data = item_data;
+            } else {
+              item_data = `'${item_data}'`;
+            };
+
+            return item_data
+          })()
 
           // PATH IF ADD IS THE METHOD
           if (submit_method === "add"){
             if (data_value !== ""){
               if (name_values === ""){
                 name_columns += column;
-                name_values += `'${data_value}'`;
+                name_values += `${data_value}`;
               } else {
                 name_columns += ', ' + column;
-                name_values += `, '${data_value}'`;
+                name_values += `, ${data_value}`;
               }
             }
           // PATH IF EDIT IS THE METHOD
           } else if (submit_method === "edit"){
             if(edit_values === ""){
-              edit_values += `${column} = '${data_value}'`;
+              edit_values += `${column} = ${data_value}`;
             } else {
-              edit_values += `, ${column} = '${data_value}'`;
+              edit_values += `, ${column} = ${data_value}`;
             };
           };
         });

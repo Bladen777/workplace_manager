@@ -83,26 +83,28 @@ export default function Control_panel_input({column_info, table_data_object, sen
                     className="cpe_form_input"   
  
                 >
-                    <label htmlFor={item_data.name}>{item_data.name_text}</label>
-                    <input
-                    id={item_data.name}
-                    name={item_data.name}
-                    type={item_data.input_type}
-                    placeholder={item_data.name_text}
-                    value={item_data.value ===  null ? "" : item_data.value}
-                    checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                        let value = e.target.value;
-                        if(item_data.input_type === "checkbox"){
-                            if(e.target.checked){
-                                value="1"
-                            } else { 
-                                value="0"
-                            }
-                        }
-                        handle_input_change({input:value, db_column:item_data.name})
-                    }}
-                    />
+                    <label className="cpe_input_label">{item_data.name_text}:{" "}   
+                        <input
+                            id={item_data.name}
+                            className={`cpe_${item_data.input_type}`}
+                            name={item_data.name}
+                            type={item_data.input_type}
+                            placeholder={item_data.name_text}
+                            value={item_data.value ===  null ? "" : item_data.value}
+                            checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
+                                let value = e.target.value;
+                                if(item_data.input_type === "checkbox"){
+                                    if(e.target.checked){
+                                        value="1"
+                                    } else { 
+                                        value="0"
+                                    }
+                                }
+                                handle_input_change({input:value, db_column:item_data.name})
+                            }}
+                        />
+                    </label>
         
                 </div>
             )

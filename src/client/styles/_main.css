@@ -1,20 +1,37 @@
 /* COLOURS*/
 :root {
-    --primary: #1a1a1a;
-    --primary_accent: #282828;
-    --secondary: #F2F2F2;
-    --first: #8C4A3B;
-    --second: #3C401D;
-    --third:#04BFAD;
+    --primary: #d9653b;
+    --primary_accent: #a65746;
+    --secondary: #1E2933;
+    --first: #0339a6;
+    --second: #214D73;
+    --third:#0f5fa6;
     --hover_link: #8C1EFF;
+
+    --main_bg:var(--secondary);
+
+    /* SECTION COLOURS */
+    --section_bg: var(--primary_accent);
+    --section_primary:var(--primary);
+    --section_accent:var(--second);
+    --section_secondary:var(--third);
+
+    --section_btn: var(--second);
+    --section_btn_text: var(--main_text);
+    --section_btn_active: var(--first);
+    --section_btn_active_text:var(--main_text);
+    --section_btn_hover:var(--hover_link);
+
+    --main_text:#F2F2F2;
+    
     }
 
 /* TYPEOGRAPHY */
 p{
-    color:var(--secondary);
+    color:var(--main_text);
 }
 div{
-    color: var(--secondary);
+    color: var(--main_text);
 }
 
 /* GENERAL */
@@ -25,7 +42,7 @@ html{
 }
 
 body{
-    background-color: var(--primary);
+    background-color: var(--main_bg);
 }
 
 #root{
@@ -42,20 +59,15 @@ button, input[type=button]{
     background: none;
     border: none;
     cursor: pointer;
+    transition: 0.25s;
 }
+
+
 
 .main_page{
     position: relative;
     overflow: hidden;
     min-height: calc(100vh - 8em );
-
-}
-
-.section_container{
-    position: relative;
-    width: 100%;
-    min-height: calc(100vh - 8em );
-    background-color: var(--primary);
 
 }
 

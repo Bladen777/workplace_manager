@@ -34,6 +34,7 @@ export interface Types_get_table_data {
     filter_key?: string;
     filter_item?: string | number;
     order_key?: string;
+    order_direction?: string;
 }
 
 // INITIAL CONTEXT CONTENT 
@@ -57,9 +58,9 @@ export function Provide_Context_Table_Data({children}:{children:ReactNode}) {
 
 
     // UPDATE THE CONTEXT 
-    async function update_context({ section_name, sort_field, filter_key, filter_item, order_key }:Types_context_function = {}){
+    async function update_context({ section_name, sort_field, filter_key, filter_item, order_key, order_direction }:Types_context_function = {}){
         if(!section_name){section_name = context_section_name};
-        console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `change table data to be from`,section_name, `by order of`, order_key);
+        console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `change table data to be from`,section_name, `by order of`, order_key, order_direction);
        
         try {
             const response = await axios.post("/get_table_info",{
@@ -67,7 +68,8 @@ export function Provide_Context_Table_Data({children}:{children:ReactNode}) {
                 sort_field: sort_field,
                 filter_key: filter_key,
                 filter_item: filter_item,
-                order_key: order_key
+                order_key: order_key,
+                order_direction: order_direction
             })
             const data = response.data;
             console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for get_table_date & ${section_name} `, '\n' , data);

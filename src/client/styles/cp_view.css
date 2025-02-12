@@ -1,26 +1,32 @@
 /* CONTROL PANEL VIEW */
 /* *** classes and ids with "cpv" are abbreviated for control panel view ****/
 .cpv_entry{
-    background-color: var(--third);
+    background-color: var(--section_accent);
     cursor: pointer;
 
 }
 
 .cpv_entry_odd{
-    background-color: var(--second);
+    background-color: var(--section_secondary);
 }
 
+.color_id{
+    min-width: 3em;
+    height: 3em;
+}
+
+/* SORT OPTIONS */
 #cpv_sort_btn{
     position: relative;
     margin: 0 1em 0 auto;
     min-width:3em;
 }
 
-#cpv_sort_btn > .control_panel_btn{
+#cpv_sort_btn > .control_panel_btn {
     margin: 0;
 }
 
-#cpv_sort_options > .control_panel_btn{
+#cpv_sort_options > .control_panel_btn , #cpv_sort_type > .control_panel_btn {
     margin: 0.5em;
 }
 
@@ -31,7 +37,20 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 10em;
-    background-color: var(--second);
+    background-color: var(--section_accent);
+    border: 0.125em solid var(--section_primary);
+    border-radius: 0.25em;
     display: flex;
     flex-direction: column;
+    padding:0.25em
+}
+
+#cpv_sort_type{
+    display: flex;
+    flex-direction: row;
+}
+
+.active_sort_btn{
+    background-color: var(--section_btn_active) !important;
+
 }

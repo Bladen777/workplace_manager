@@ -109,7 +109,7 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
             return(item);
           })
 
-        console.log(` %c CONTEXT FINISHED `, `background-color:${ log_colors.context }`,`for db_table_info`);
+        console.log(` %c CONTEXT FINISHED `, `background-color:${ log_colors.context }`,`for db_table_info`, column_info);
         return({
             table_name: section_name, 
             db_column_info: column_info, 

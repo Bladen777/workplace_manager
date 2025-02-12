@@ -105,25 +105,29 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
         if(item_data.name === "pay_rate"){
             return(
                 <div className="input_option">
-                    <input
-                        id="hourly_pay"
-                        name="pay_type"
-                        value="hourly"
-                        type="radio"
-                        checked = {pay_type_value === "hourly" ? true : false}
-                        onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
-                    />
-                    <label htmlFor="hourly_pay">Hourly</label>
+                    <label className="cpe_input_label">
+                        <input
+                            id="hourly_pay"
+                            className="cpe_radio"
+                            name="pay_type"
+                            value="hourly"
+                            type="radio"
+                            checked = {pay_type_value === "hourly" ? true : false}
+                            onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
+                        />
+                    {" "}Hourly</label>
 
-                    <input
-                        id="annual_pay"
-                        name="pay_type"
-                        value="annually"
-                        type="radio"
-                        checked = {pay_type_value === "annually" ? true : false}
-                        onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
-                    />
-                    <label htmlFor="annual_pay">Annually</label>
+                    <label className="cpe_input_label">
+                        <input
+                            id="annual_pay"
+                            className="cpe_radio"
+                            name="pay_type"
+                            value="annually"
+                            type="radio"
+                            checked = {pay_type_value === "annually" ? true : false}
+                            onChange={(e)=>{handle_input_change({input:e.target.value, db_column:"pay_type"})}}
+                        />
+                    {" "}Annually</label>
                 </div>
             )
         } else {
@@ -139,28 +143,30 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
     // RETURNED VALUES 
     return(
         <div className="cpe_form_input" >
-            <label htmlFor={item_data.name}>{item_data.name_text}</label>
-            <input
-                ref = {money_input_ref}
-                id={item_data.name}
-                name={item_data.name}
-                type={item_data.input_type}
-                placeholder={item_data.name_text}
-                autoComplete="off"
-                value={item_data.value}
-        
-                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                    input_cursor_pos.current = e.target.selectionStart!;
-                    handle_input_change({input:e.target.value, db_column:item_data.name})
-                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for change detected`);
-                }}
-                onFocus={()=>{
-                    input_cursor_pos.current = 1;
-                    setTimeout(() => {
-                        set_focus_input(true);
-                    },1)
-                }}
-            />
+            <label className="cpe_input_label">{item_data.name_text}:{" "} 
+                <input
+                    ref = {money_input_ref}
+                    id={item_data.name}
+                    className={`cpe_${item_data.input_type}`}
+                    name={item_data.name}
+                    type={item_data.input_type}
+                    placeholder={item_data.name_text}
+                    autoComplete="off"
+                    value={item_data.value}
+            
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
+                        input_cursor_pos.current = e.target.selectionStart!;
+                        handle_input_change({input:e.target.value, db_column:item_data.name})
+                        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for change detected`);
+                    }}
+                    onFocus={()=>{
+                        input_cursor_pos.current = 1;
+                        setTimeout(() => {
+                            set_focus_input(true);
+                        },1)
+                    }}
+                />
+            </label>
 
             {input_option()}
         </div>

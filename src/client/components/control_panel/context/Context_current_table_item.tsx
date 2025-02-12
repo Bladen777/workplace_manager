@@ -51,7 +51,6 @@ export function Provide_Context_current_table_item({children}:{children:ReactNod
     // UPDATE THE CONTEXT 
     function update_context({ current_table_item, submit_method  }:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_current_table_item`, "\n" , current_table_item);
-
         return({current_table_item:current_table_item , submit_method:submit_method});
     }
 

@@ -86,28 +86,35 @@ export default function Employee_input({send_table_data}:Types_props) {
             />
 
             <div id="employment_type_box">
+
+                <label className="cpe_input_label radio_label">
                     <input
                         id="full_time"
+                        className="cpe_radio"
                         name="employ_type"
                         value="full_time"
                         type="radio"
                         checked = {input_data.employment_type === "full_time" ? true : false}
                         onChange={(e)=>handle_input_change({input: e.target.value, db_column:"employment_type", update:true})}
                     />
-                    <label htmlFor="full_time">Full Time</label>
+                    {" "}Full Time</label>
 
+                    <label className="cpe_input_label radio_label">
                     <input
                         id="contract"
+                        className="cpe_radio"
                         name="employ_type"
                         value="contract"
                         type="radio"
                         checked = {input_data.employment_type === "contract" ? true : false}
                         onChange={(e)=>handle_input_change({input: e.target.value, db_column:"employment_type", update:true})}
                     />
-                    <label htmlFor="contract">Contract</label>
-
+                    {" "}Contract</label>
+                    
+                    <label className="cpe_input_label checkbox_label">
                     <input
                         id="part_time"
+                        className="cpe_checkbox"
                         name="part_time_check"
                         value={input_data.part_time}
                         type="checkbox"
@@ -122,9 +129,16 @@ export default function Employee_input({send_table_data}:Types_props) {
                             handle_input_change({input: value, db_column:"part_time", update:true})
                         }}
                     />
-                    <label htmlFor="part_time">Part Time</label>
+                    {" "}Part Time</label>
 
             </div>
+
+            {input_data.part_time === "1" &&
+                    <Control_panel_input 
+                    column_info={column_data.hours_per_week}
+                    send_table_data={handle_input_change}
+                    />
+                }
 
             <div id="employment_date_box">
                 <Control_panel_input 
@@ -139,12 +153,7 @@ export default function Employee_input({send_table_data}:Types_props) {
                     />
                 }
 
-                {input_data.part_time === "1" &&
-                    <Control_panel_input 
-                    column_info={column_data.hours_per_week}
-                    send_table_data={handle_input_change}
-                    />
-                }
+                
             </div>
 
         </form>

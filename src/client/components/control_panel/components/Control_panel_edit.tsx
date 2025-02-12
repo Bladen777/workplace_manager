@@ -25,9 +25,9 @@ import { Types_input_change } from "./control_panel_edits/Control_panel_input.js
 
 
 // THE COMPONENT
-export default function Control_panel_edit() {
+export default function Control_panel_edit({handle_cancel_edit_click}:{handle_cancel_edit_click:Function}) {
     const section_name = useContext(Use_Context_Table_Info).show_context.table_name;
-    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `, section_name);
+    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `,section_name);
 
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
@@ -158,7 +158,8 @@ export default function Control_panel_edit() {
                
                 
                 <div className="cp_utility_bar">
-                <button id="cp_done_btn" type="button" className="control_panel_btn" onClick={()=>{post_form()}}> Done </button>
+                <button id="cp_done_btn" type="button" className="control_panel_btn" onClick={()=>post_form()}> Done </button>
+                <button id="cp_cancel_btn" type="button" className="control_panel_btn" onClick={()=>handle_cancel_edit_click()}> {status_message !== "" ? "Return" : "Cancel"} </button>
                 {status_message !== "" &&
                     <h3>{status_message}</h3>
                 }
