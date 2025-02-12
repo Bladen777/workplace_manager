@@ -38,7 +38,7 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
     const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
     const submit_method = useContext(Use_Context_current_table_item).show_context.submit_method
 
-    let starting_data: Types_form_data[] = initial_table_data;
+    let starting_data: Types_form_data[] = [current_table_item];
     if(submit_method === "add"){
         starting_data = [initial_form_data] 
     } 
@@ -111,20 +111,21 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
                 })
                 const table_data_update = await update_table_data.wait({section_name:section_name});
                 update_table_data.update_context(table_data_update);
-                console.log("The success_message: ",response.data)
-                set_status_message(response.data)
+                console.log("The success_message: ",response.data);
+                set_status_message(response.data);
+                handle_cancel_edit_click();
 
             } catch (error) {
                 console.log('%cError posting info to database: ', 'background-color:darkred',error); 
             }
     }
     
-
+console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
         return (
             <article id="control_panel_edits" className="control_panel_action_box">
                 <h3>{submit_method === "add" ? "Add" : "Edit"} {section_name}</h3>
                 {   
-                    db_column_info[0].input_type === "order"
+                    section_name === "departments"
                     ? 
                     <div id={`${section_name}_o_shift_box`} className="o_shift_box cp_content_box">
                         <Order_shift
