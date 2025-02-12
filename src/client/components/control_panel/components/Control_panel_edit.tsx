@@ -33,6 +33,8 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
 
+    const update_table_data = useContext(Use_Context_Table_Data).update_func;
+
     const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
     const submit_method = useContext(Use_Context_current_table_item).show_context.submit_method
 
@@ -107,6 +109,8 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
                     db_column_info: db_column_info, 
                     submit_data: table_data_ref.current
                 })
+                const table_data_update = await update_table_data.wait({section_name:section_name});
+                update_table_data.update_context(table_data_update);
                 console.log("The success_message: ",response.data)
                 set_status_message(response.data)
 

@@ -80,9 +80,10 @@ export function Provide_Context_Table_Info({children}:{children:ReactNode}) {
           const column_info: Types_column_info[] = response.data.map((item:Types_column_info, index:number) => {
             const item_name:string = item.column_name
 
-            let initial_item_value = "";
+            let initial_item_value: string | undefined = "";
             if(item_name.includes("date")){
                 item.input_type = "date"
+                initial_item_value = undefined;
             } else if (item_name.includes("admin")) {
                 item.input_type = "checkbox"
                 initial_item_value = "0"

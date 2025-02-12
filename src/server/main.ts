@@ -255,13 +255,12 @@ app.get("/user_info",
 
           const column = item.column_name;
           const data_value = (()=>{
-            let item_data = entry_item[column];
-            if(item_data === null){
-              item_data = item_data;
+            let item_data: string | null = entry_item[column];
+            if(item_data === null || item_data === undefined){
+              item_data = null;
             } else {
               item_data = `'${item_data}'`;
             };
-
             return item_data
           })()
 
