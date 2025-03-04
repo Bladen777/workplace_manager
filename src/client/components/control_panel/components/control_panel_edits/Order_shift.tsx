@@ -8,7 +8,7 @@ import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
 import { Use_Context_Table_Data } from "../../context/Context_get_table_data.js";
 
 // STYLE IMPORTS
-import "../../../../styles/cp_order_shift.css"
+import "../../../../styles/control_panel/cp_order_shift.css"
 
 // LOG STYLES
 import { log_colors } from "../../../../styles/_log_colors.js";
@@ -98,7 +98,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 // FIND AND ADJUST ELEMENT SIZES TO TRACK 
                 const current_ele_height:number = current_ele_div_ref.current!.offsetHeight;
                 const ele_margin:number = Number(window.getComputedStyle(current_ele_div_ref.current!).getPropertyValue('margin-top').replace(/[^0-9]/g , ''));
-                start_pos.current.size = current_ele_height + ele_margin*3;
+                start_pos.current.size = current_ele_height + ele_margin*2;
             }
     
             // DEFINE VARIABLES TO CONTAIN THE AMOUNT TO SHIFT POSITION
@@ -216,7 +216,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
         const entries:ReactElement[] = temp_table_data.map((item, index:number)=>{
             entry_indexes.current.push(index);
             return(
-                <form className="cpe_form o_shift_form" >
+                <form className="cpe_form o_shift_form">
                     {db_column_info.map((column)=>{
                         return(
                             <Control_panel_input 
@@ -254,7 +254,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 <figure
                     ref={key_name === selected_ele_name ? current_ele_div_ref : undefined }
                     key={key_name}
-                    className={`o_shift_ele ${ele_names}_o_shift_ele`}
+                    className={submit_method === "add" && index === table_data.length - 1 ? `o_shift_ele new_o_shift_entry ${ele_names}_o_shift_ele`  : `o_shift_ele ${ele_names}_o_shift_ele`}
                     id={row.toString()}
                     onMouseMove={(e: React.MouseEvent)=>{pos_track.current && handle_mouse_move(e)}}
 

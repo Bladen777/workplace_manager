@@ -14,6 +14,10 @@
     padding: 0.5em;
 }
 
+.new_o_shift_entry{
+    border: 0.25em solid var(--section_attention);
+}
+
 .o_shift_form{
     flex-direction: row;
 }

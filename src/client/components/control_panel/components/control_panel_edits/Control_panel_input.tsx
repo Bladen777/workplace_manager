@@ -79,11 +79,9 @@ export default function Control_panel_input({column_info, table_data_object, sen
             )
         } else {
             return(
-                <div 
-                    className="cpe_form_input"   
- 
-                >
-                    <label className="cpe_input_label">{item_data.name_text}:{" "}   
+                <div className="cpe_form_input" >
+                    <label className="cpe_input_label">
+                        <p>{item_data.name_text}:</p>   
                         <input
                             id={item_data.name}
                             className={`cpe_${item_data.input_type}`}

@@ -1,0 +1,39 @@
+/* COLOURS*/
+:root {
+    --primary: #d9653b;
+    --primary_accent: #a65746;
+    --secondary: #1E2933;
+    --first: #0339a6;
+    --second: #214D73;
+    --third:#0f5fa6;
+    --hover: #8C1EFF;
+
+    --main_text:#F2F2F2;
+
+
+    /* MAIN COLORS  */
+    --main_bg:var(--secondary);
+
+    /* NEW PROJECT COLOR */
+    --new_project_btn:var(--second);
+    --new_project_btn_text:var(--main_text);
+    --new_project_btn_hover:var(--hover);
+
+    /* SECTION COLORS */
+    --section_bg: var(--primary_accent);
+    --section_primary:var(--primary);
+    --section_accent:var(--second);
+    --section_secondary:var(--third);
+    --section_attention:var(--first);
+
+    
+
+    --section_btn: var(--second);
+    --section_btn_text: var(--main_text);
+    --section_btn_active: var(--first);
+    --section_btn_active_text:var(--main_text);
+    --section_btn_hover:var(--hover);
+
+    
+    
+}

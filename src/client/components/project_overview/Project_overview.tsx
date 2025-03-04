@@ -33,7 +33,7 @@ export default function Project_overview() {
   */
 
   return (
-    <div id="project_overview">
+    <div id="project_overview" className="general_section">
       <h1 id="project_overview_title">Project Overview</h1>
       <div id="department_legend">
 

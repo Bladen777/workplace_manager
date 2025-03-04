@@ -1,0 +1,33 @@
+/* UNIVERSAL STYLING */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    position:relative; 
+    scroll-behavior:smooth;
+    /*scrollbar-gutter: stable;*/
+}
+
+button, input[type=button]{
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+/* UNIVERSAL TYPOGRAPHY */
+p{
+    color:var(--main_text);
+}
+div{
+    color: var(--main_text);
+}
+
+/* GENERAL SECTION STYLING */
+.general_section{
+    background-color: var(--section_bg);
+    border-radius: 1em;
+}

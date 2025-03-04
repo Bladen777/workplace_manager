@@ -12,7 +12,7 @@ import { Use_Context_Table_Data } from "../context/Context_get_table_data.js";
 import { Use_Context_current_table_item } from "../context/Context_current_table_item.js";
 
 // STYLE IMPORTS
-import "../../../styles/cp_edit.css"
+import "../../../styles/control_panel/cp_edit.css"
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../../../styles/_log_colors.js";

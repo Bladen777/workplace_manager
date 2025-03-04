@@ -143,7 +143,8 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
     // RETURNED VALUES 
     return(
         <div className="cpe_form_input" >
-            <label className="cpe_input_label">{item_data.name_text}:{" "} 
+            <label className="cpe_input_label">
+                <p>{item_data.name_text}: </p>
                 <input
                     ref = {money_input_ref}
                     id={item_data.name}

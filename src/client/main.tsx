@@ -12,8 +12,10 @@ import App from "./App.js";
 
 
 // STYLE IMPORTS
+import "./styles/_general_styling.css"
 import "./styles/_main.css"
 import "./styles/_type.css"
+import "./styles/colors.css"
 
 
 // PAGE ROUTING
@@ -29,5 +31,5 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root") as HTMLElement).render(
   //<React.StrictMode>
       <RouterProvider router={router}/>
-  //</React.StrictMode>,
+  //</React.StrictMode>
 );

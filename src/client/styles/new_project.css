@@ -1,0 +1,96 @@
+#new_project_box{
+    width: 80vw;
+    margin: 1em auto;
+    display:flex;
+    flex-direction: column;
+}
+
+.new_project_btn{
+    background-color: var(--new_project_btn);
+    color: var(--new_project_btn_text);
+    border-radius: 0.25em;
+    width: 20%;
+    height: 4em;
+    padding: 1em;
+    margin:auto;
+    overflow: hidden;
+}
+
+.new_project_btn:hover{
+    transform: scale(1.05);
+    background-color: var(--new_project_btn_hover) !important;
+}
+
+.new_project_btn_close{
+    animation: toggle_btn_visibility 1s ease normal forwards;    
+}
+
+.new_project_btn_open{
+    animation: toggle_btn_visibility 1s ease 0.5s reverse backwards;    
+}
+
+
+@keyframes toggle_btn_visibility {
+    0%{
+        padding: 1em;
+        height: 4em;
+        pointer-events: all;
+    }
+
+    1%{
+        pointer-events: none;
+    }
+
+    50%{
+        padding: 1em;
+        height: 4em;
+        width: 100%;
+    }
+
+    100%{
+        padding: 0;
+        height: 0;
+        width: 100%;
+        pointer-events: none;
+    }
+}
+
+.new_project_input_box{
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    height: 0;
+    display: grid;
+    grid-template-rows:auto auto 3em;
+}
+
+
+.new_project_input_box_close{
+    animation: toggle_input_box_visibility 0.5s ease normal forwards;
+}
+
+.new_project_input_box_open{
+    animation: toggle_input_box_visibility 0.5s ease 1s reverse backwards !important;
+    height: 20em;
+    padding: 1em;
+}
+
+@keyframes toggle_input_box_visibility {
+    0%{
+        height: 20em;
+        padding: 1em;
+    }
+
+    100%{
+        padding: 0 1em;
+        height: 0;
+    }
+}
+
+.new_project_done_btn{
+    background-color: var(--section_btn);
+    color: var(--section_btn_text);
+    border-radius: 0.25em;
+    width: 5em;
+    grid-row: 3;
+}

@@ -11,7 +11,7 @@ import { Use_Context_current_table_item } from "./context/Context_current_table_
 import { Provide_Context_current_table_item } from "./context/Context_current_table_item.js"
 
 // STYLE IMPORTS
-import "../../styles/control_panel.css"
+import "../../styles/control_panel/control_panel.css"
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../../styles/_log_colors.js"
@@ -60,7 +60,7 @@ export default function Control_panel() {
       },[])
 
     return (
-        <section id="control_panel">
+        <section id="control_panel" className="general_section">
             <h1 id="control_panel_title">Control Panel</h1>
 
             <div id="control_panel_nav">

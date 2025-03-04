@@ -10,7 +10,7 @@ import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
 import { Use_Context_current_table_item } from "../context/Context_current_table_item.js";
 
 // STYLE IMPORTS
-import "../../../styles/cp_view.css"
+import "../../../styles/control_panel/cp_view.css"
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../../../styles/_log_colors.js";

@@ -1,5 +1,4 @@
 #control_panel{
-    background-color: var(--section_bg);
     height: 45em;
     width: 80vw;
     margin: 1em auto;
@@ -42,6 +41,8 @@
 /* GENERAL CONTROL PANEL CONTENT */
 .control_panel_action_box{
     background-color: var(--section_primary);
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
     grid-column: 2;
     grid-row: 2;
     display: grid;

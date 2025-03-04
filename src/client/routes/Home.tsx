@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 
 // COMPONENT IMPORTS
 import Project_overview from "../components/project_overview/Project_overview.js"
+import New_project from "../components/New_project.js";
 import Control_panel from "../components/control_panel/Control_panel.js"
 
 // CONTEXT IMPORTS
@@ -15,6 +16,7 @@ import "../styles/home.css"
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../styles/_log_colors.js";
+
 
 // THE COMPONENT
 export default function Home() {
@@ -33,6 +35,7 @@ export default function Home() {
         <Provide_Context_Table_Info>
           <Provide_Context_Table_Data>
           <Provide_Context_current_table_item>
+              {user_info.is_admin && <New_project />}
               {user_info.is_admin && <Control_panel />}
               </Provide_Context_current_table_item> 
           </Provide_Context_Table_Data>

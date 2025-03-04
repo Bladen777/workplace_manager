@@ -1,7 +1,6 @@
 #project_overview{
     width: 80vw;
     height: 50rem;
-    background-color: var(--section_bg);
     margin: 1rem auto;
     padding: 10px;
     display: grid;
