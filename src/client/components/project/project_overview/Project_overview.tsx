@@ -4,10 +4,11 @@
 import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
 import Date_tracker from "./project_overview_comps/Date_tracker.js"
+import Project_details from "./project_overview_comps/Project_details.js"
 
 // STYLE IMPORTS 
 import "../../styles/project_overview.css"
-import { log_colors } from "../../styles/_log_colors.js";
+import { log_colors } from "../../../styles/_log_colors.js";
 
 
 // THE COMPONENT
@@ -35,17 +36,13 @@ export default function Project_overview() {
   return (
     <div id="project_overview" className="general_section">
       <h1 id="project_overview_title">Project Overview</h1>
-      <div id="department_legend">
-
-      </div>
       <div id="project_department_legend" className="project_overview_content_box">
         Legend
       </div>
       <Pie_chart />
       <Budget_tracker />
       <Date_tracker />
-
-
+      <Project_details />
     </div>
   )
 }

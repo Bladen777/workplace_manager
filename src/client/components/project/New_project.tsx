@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // COMPONENT IMPORTS 
+import Control_panel_input from "../control_panel/components/control_panel_edits/Control_panel_input.js";
 
 // CONTEXT IMPORTS 
-
+import { Use_Context_project } from "./context/Context_projects.js";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
 import "../styles/new_project.css"
 
 // LOG STYLE 
-import { log_colors } from "../styles/_log_colors.js";
+import { log_colors } from "../../styles/_log_colors.js";
 
 
 // TYPE DEFINITIONS
@@ -18,6 +19,11 @@ import { log_colors } from "../styles/_log_colors.js";
 // THE COMPONENT 
 export default function New_project() {
     console.log(`%c COMPONENT `, `background-color:${ log_colors.component }`, `New_project`);
+
+    const initial_form_data = useContext(Use_Context_project).show_context.table_info.initial_form_data;
+    const db_column_info = useContext(Use_Context_project).show_context.table_info.db_column_info;
+
+    //const update_current_project = useContext(Use_Context_project).update_func;
 
     const [new_btn_clicked, set_new_btn_clicked] = useState<boolean | null>(null);
 
@@ -28,8 +34,12 @@ export default function New_project() {
             set_new_btn_clicked(!new_btn_clicked)
         }
     }
+    
+    // FORM INFO CHANGED
+    function handle_form_change(){
 
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for new_btn_clicked`,'\n' ,new_btn_clicked);
+    }
+
     // RETURNED VALUES 
     return(
         <section id="new_project_box" >
@@ -44,6 +54,7 @@ export default function New_project() {
             >
                 <h2>New Project</h2>
             </button>
+            
             <div
                 key={Math.random()}
                 className={
@@ -52,7 +63,27 @@ export default function New_project() {
                     "new_project_input_box"
                 }
             >
-                <h2> New Project</h2>    
+                <h2> New Project</h2>
+                <form className="cpe_form">
+                    {   
+                    
+                        db_column_info.map((column)=>{
+                            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for db_column_info`,'\n' ,db_column_info);
+                            return(
+                                <Control_panel_input
+                                    key={`input_for_${column.column_name}`}
+                                    column_info = {column}
+                                    table_data_object={initial_form_data}
+                                    send_table_data = {handle_form_change}
+                                />
+                            )
+                        })
+
+                    }
+                </form>
+              
+
+
                 <button 
                     className="new_project_done_btn"
                     onClick={handle_new_project_click}

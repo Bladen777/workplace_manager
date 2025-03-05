@@ -31,7 +31,6 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
 
     const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
     const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
-    const initial_table_data = useContext(Use_Context_Table_Data).show_context;
 
     const update_table_data = useContext(Use_Context_Table_Data).update_func;
 

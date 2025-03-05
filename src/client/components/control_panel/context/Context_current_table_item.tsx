@@ -49,7 +49,7 @@ export function Provide_Context_current_table_item({children}:{children:ReactNod
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
     // UPDATE THE CONTEXT 
-    function update_context({ current_table_item, submit_method  }:Types_context_function){
+    async function update_context({ current_table_item, submit_method  }:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_current_table_item`, "\n" , current_table_item);
         return({current_table_item:current_table_item , submit_method:submit_method});
     }

@@ -18,8 +18,11 @@ export default function Project_details() {
 
     // RETURNED VALUES 
     return(
-        <>
-
-        </>
+        <article 
+            id="project_details"
+            className="project_overview_content_box"    
+        >
+            Details
+        </article>
     ); 
 }
