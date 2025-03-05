@@ -87,6 +87,14 @@
     }
 }
 
+.new_project_input_box , h2{
+    grid-row: 1;
+}
+
+.new_project_input_box , .cpe_form{
+    grid-row: 2;
+}
+
 .new_project_done_btn{
     background-color: var(--section_btn);
     color: var(--section_btn_text);

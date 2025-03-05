@@ -34,7 +34,7 @@ export interface Types_input_change{
 }
 
 
-export default function Control_panel_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
+export default function Form_auto_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
 
     let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
     if(table_data_object){current_table_data = table_data_object}
@@ -79,12 +79,12 @@ export default function Control_panel_input({column_info, table_data_object, sen
             )
         } else {
             return(
-                <div className="cpe_form_input" >
-                    <label className="cpe_input_label">
+                <div className="auto_form_input" >
+                    <label className="auto_form_input_label">
                         <p>{item_data.name_text}:</p>   
                         <input
                             id={item_data.name}
-                            className={`cpe_${item_data.input_type}`}
+                            className={`auto_form_${item_data.input_type}`}
                             name={item_data.name}
                             type={item_data.input_type}
                             placeholder={item_data.name_text}

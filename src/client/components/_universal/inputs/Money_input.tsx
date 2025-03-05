@@ -105,10 +105,10 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
         if(item_data.name === "pay_rate"){
             return(
                 <div className="input_option">
-                    <label className="cpe_input_label">
+                    <label className="auto_form_input_label">
                         <input
                             id="hourly_pay"
-                            className="cpe_radio"
+                            className="auto_form_radio"
                             name="pay_type"
                             value="hourly"
                             type="radio"
@@ -117,10 +117,10 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
                         />
                     {" "}Hourly</label>
 
-                    <label className="cpe_input_label">
+                    <label className="auto_form_input_label">
                         <input
                             id="annual_pay"
-                            className="cpe_radio"
+                            className="auto_form_radio"
                             name="pay_type"
                             value="annually"
                             type="radio"
@@ -142,13 +142,13 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
     
     // RETURNED VALUES 
     return(
-        <div className="cpe_form_input" >
-            <label className="cpe_input_label">
+        <div className="auto_form_input" >
+            <label className="auto_form_input_label">
                 <p>{item_data.name_text}: </p>
                 <input
                     ref = {money_input_ref}
                     id={item_data.name}
-                    className={`cpe_${item_data.input_type}`}
+                    className={`auto_form_${item_data.input_type}`}
                     name={item_data.name}
                     type={item_data.input_type}
                     placeholder={item_data.name_text}

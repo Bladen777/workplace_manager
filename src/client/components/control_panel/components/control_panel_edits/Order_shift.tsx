@@ -1,7 +1,7 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
-import Control_panel_input from "../../../_universal/inputs/Form_auto_input.js";
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
@@ -219,7 +219,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 <form className="cpe_form o_shift_form">
                     {db_column_info.map((column)=>{
                         return(
-                            <Control_panel_input 
+                            <Form_auto_input 
                                 key={`input_for_${column.column_name}`}
                                 column_info={column}
                                 table_data_object={item}

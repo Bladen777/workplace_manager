@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 
 // COMPONENT IMPORTS 
-import Control_panel_input from "../../../_universal/inputs/Form_auto_input.js";
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_Table_Data } from "../../context/Context_get_table_data.js";
@@ -60,27 +60,27 @@ export default function Employee_input({send_table_data}:Types_props) {
     // RETURNED VALUES 
     return(
         <form className="cpe_form">
-            <Control_panel_input 
+            <Form_auto_input 
                 column_info={column_data.name}
                 send_table_data={handle_input_change}
             />
-            <Control_panel_input 
+            <Form_auto_input 
                 column_info={column_data.email}
                 send_table_data={handle_input_change}
             />
-            <Control_panel_input 
+            <Form_auto_input 
                 column_info={column_data.admin}
                 send_table_data={handle_input_change}
             />
-            <Control_panel_input 
+            <Form_auto_input 
                 column_info={column_data.role}
                 send_table_data={handle_input_change}
             />
-            <Control_panel_input 
+            <Form_auto_input 
                 column_info={column_data.title}
                 send_table_data={handle_input_change}
             />
-            <Control_panel_input 
+            <Form_auto_input 
                 column_info={column_data.pay_rate}
                 send_table_data={handle_input_change}
             />
@@ -134,20 +134,20 @@ export default function Employee_input({send_table_data}:Types_props) {
             </div>
 
             {input_data.part_time === "1" &&
-                    <Control_panel_input 
+                    <Form_auto_input 
                     column_info={column_data.hours_per_week}
                     send_table_data={handle_input_change}
                     />
                 }
 
             <div id="employment_date_box">
-                <Control_panel_input 
+                <Form_auto_input 
                     column_info={column_data.employment_start_date}
                     send_table_data={handle_input_change}
                 />
                     
                 {input_data.employment_type === "contract" &&
-                    <Control_panel_input 
+                    <Form_auto_input 
                         column_info={column_data.employment_end_date}
                         send_table_data={handle_input_change}
                     />

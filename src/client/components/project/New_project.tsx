@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 
 // COMPONENT IMPORTS 
-import Control_panel_input from "../_universal/inputs/Form_auto_input.js";
+import Form_auto_input from "../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_project } from "./context/Context_projects.js";
@@ -70,7 +70,7 @@ export default function New_project() {
                         db_column_info.map((column)=>{
                             console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for db_column_info`,'\n' ,db_column_info);
                             return(
-                                <Control_panel_input
+                                <Form_auto_input
                                     key={`input_for_${column.column_name}`}
                                     column_info = {column}
                                     table_data_object={initial_form_data}
