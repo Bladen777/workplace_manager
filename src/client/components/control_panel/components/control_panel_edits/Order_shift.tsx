@@ -1,7 +1,7 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
-import Control_panel_input from "./Control_panel_input.js";
+import Control_panel_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
@@ -15,7 +15,7 @@ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data} from "../../context/Context_db_table_info.js";
-import { Types_input_change } from "./Control_panel_input.js";
+import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
 
 
 interface Prop_Types{

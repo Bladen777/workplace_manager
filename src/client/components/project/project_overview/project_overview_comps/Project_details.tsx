@@ -7,7 +7,7 @@
 // STYLE IMPORTS
 
 // LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
+import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 

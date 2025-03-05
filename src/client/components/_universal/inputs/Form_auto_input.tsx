@@ -4,15 +4,15 @@ import { ChangeEvent, useContext, useEffect, useMemo, useRef, useState } from "r
 import Money_input from "./Money_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
-import { Use_Context_current_table_item } from "../../context/Context_current_table_item.js";
+import { Use_Context_Table_Info } from "../../control_panel/context/Context_db_table_info.js";
+import { Use_Context_current_table_item } from "../../control_panel/context/Context_current_table_item.js";
 
 // TYPE DEFINITIONS 
-import { Types_column_info } from "../../context/Context_db_table_info.js";
-import { Types_form_data } from "../../context/Context_db_table_info.js";
+import { Types_column_info } from "../../control_panel/context/Context_db_table_info.js";
+import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
 
 // LOG STYLES
-import { log_colors } from "../../../../styles/_log_colors.js";
+import { log_colors } from "../../../styles/_log_colors.js";
 
 
 export interface Types_new_entry{

@@ -1,14 +1,14 @@
 import { useContext, useState } from "react";
 
 // COMPONENT IMPORTS 
-import Control_panel_input from "../control_panel/components/control_panel_edits/Control_panel_input.js";
+import Control_panel_input from "../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_project } from "./context/Context_projects.js";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-import "../styles/new_project.css"
+import "../../styles/new_project.css"
 
 // LOG STYLE 
 import { log_colors } from "../../styles/_log_colors.js";

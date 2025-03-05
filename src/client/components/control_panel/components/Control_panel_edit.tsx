@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 // COMPONENT IMPORTS
 import Order_shift from "./control_panel_edits/Order_shift.js";
 import Employee_input from "./control_panel_edits/Employee_input.js";
-import Control_panel_input from "./control_panel_edits/Control_panel_input.js";
+import Control_panel_input from "../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
@@ -21,7 +21,7 @@ import { log_colors } from "../../../styles/_log_colors.js";
 
 import { Types_column_info } from "../context/Context_db_table_info.js";
 import { Types_form_data } from "../context/Context_db_table_info.js";
-import { Types_input_change } from "./control_panel_edits/Control_panel_input.js";
+import { Types_input_change } from "../../_universal/inputs/Form_auto_input.js";
 
 
 // THE COMPONENT
