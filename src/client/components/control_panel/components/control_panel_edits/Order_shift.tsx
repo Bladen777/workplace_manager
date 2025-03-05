@@ -216,7 +216,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
         const entries:ReactElement[] = temp_table_data.map((item, index:number)=>{
             entry_indexes.current.push(index);
             return(
-                <form className="cpe_form o_shift_form">
+                <form className="auto_form o_shift_form">
                     {db_column_info.map((column)=>{
                         return(
                             <Form_auto_input 
@@ -284,7 +284,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 >
                     <button
                         ref={key_name === selected_ele_name ? grab_box_ref : undefined }
-                        className={`control_panel_btn o_shift_grab_box ${ele_names}_o_shift_grab_box`}
+                        className={`o_shift_grab_box ${ele_names}_o_shift_grab_box`}
                         onMouseDown={()=>{handle_ele_click("down", key_name, index_adjust)}} 
                         onMouseUp={()=>{pos_track.current && handle_ele_click("up","", index_adjust )}}
                         onMouseOut={()=>{pos_track.current && handle_ele_click("out", "", index_adjust)}}     

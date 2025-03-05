@@ -56,16 +56,16 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
             </div>
 
             <div id="cpv_btns" className="cp_utility_bar">
-                <button id="cpv_add_btn" className="control_panel_btn"
+                <button id="cpv_add_btn" className="cp_utility_bar_btn general_btn"
                         onClick={()=>{handle_edit_btn_click({submit_method:"add", table_item:initial_form_data})}}
                 > New </button>
                 {selected_entry !== 0 &&
-                <button id="cpv_edit_btn" className="control_panel_btn"
+                <button id="cpv_edit_btn" className="cp_utility_bar_btn general_btn"
                         onClick={()=>{handle_edit_btn_click({submit_method:"edit", table_item:selected_entry})}}
                 > Edit  </button>
                 }
                 {selected_entry !== 0 &&
-                <button id="cpv_delete_btn" className="control_panel_btn"
+                <button id="cpv_delete_btn" className="cp_utility_bar_btn general_btn"
                         onClick={()=>{handle_edit_btn_click({submit_method:"delete", table_item:selected_entry})}}
                 > Delete  </button>
                 }

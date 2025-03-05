@@ -143,7 +143,7 @@ console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_i
                     </div>
                     : 
                     <div id="cpe_input_box" className="cp_content_box">
-                        <form className="cpe_form">
+                        <form className="auto_form">
                         {
                             db_column_info.map((column)=>{
                                 return(
@@ -162,8 +162,8 @@ console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_i
                
                 
                 <div className="cp_utility_bar">
-                <button id="cp_done_btn" type="button" className="control_panel_btn" onClick={()=>post_form()}> Done </button>
-                <button id="cp_cancel_btn" type="button" className="control_panel_btn" onClick={()=>handle_cancel_edit_click()}> {status_message !== "" ? "Return" : "Cancel"} </button>
+                <button id="cp_done_btn" type="button" className="cp_utility_bar_btn general_btn" onClick={()=>post_form()}> Done </button>
+                <button id="cp_cancel_btn" type="button" className="cp_utility_bar_btn general_btn" onClick={()=>handle_cancel_edit_click()}> {status_message !== "" ? "Return" : "Cancel"} </button>
                 {status_message !== "" &&
                     <h3>{status_message}</h3>
                 }

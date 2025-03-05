@@ -9,13 +9,13 @@
 .o_shift_ele{
     background-color: var(--section_secondary);
     display: flex;
-    min-height: 4em;
-    margin: 0.5em 0;
-    padding: 0.5em;
+    min-height: 4rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
 }
 
 .new_o_shift_entry{
-    border: 0.25em solid var(--section_attention);
+    border: 0.25rem solid var(--section_attention);
 }
 
 .o_shift_form{
@@ -23,13 +23,13 @@
 }
 
 .o_shift_ele > * {
-    margin: 0 0.5em;
+    margin: 0 0.5rem;
 }
 
 .o_shift_grab_box{
     background-color: var(--section_btn);
     height: 100%;
-    width: 3em;
+    width: 3rem;
 
     text-align: center;
     cursor: pointer;   

@@ -64,7 +64,10 @@ export default function New_project() {
                 }
             >
                 <h2> New Project</h2>
-                <form className="cpe_form">
+                <form 
+                    id="new_project_form"
+                    className="auto_form"
+                >
                     {   
                     
                         db_column_info.map((column)=>{
@@ -85,10 +88,10 @@ export default function New_project() {
 
 
                 <button 
-                    className="new_project_done_btn"
+                    className="new_project_done_btn general_btn"
                     onClick={handle_new_project_click}
                 >
-                    <h3>Done</h3>    
+                    Done  
                 </button>                    
 
             </div>

@@ -6,25 +6,25 @@
 }
 
 .auto_form > *{
-    margin: 0.5em;
+    margin: 0.5rem;
 }
 
 
 .auto_form_input > *{
-    margin: 0.5em 0;
+    margin: 0.5rem 0;
 }
 
 .input_option > *{
-    margin: 0 0.5em 0 0;
+    margin: 0 0.5rem 0 0;
 }
 
 /* CUSTOM RADIO BUTTONS AND CHECKBOXES */
 .auto_form_checkbox{
-    height: 1.25em;
-    width: 1.25em;
+    height: 1.25rem;
+    width: 1.25rem;
 }
 
 .auto_form_radio{
-    width: 1.25em;
-    height: 1.25em;
+    width: 1.25rem;
+    height: 1.25rem;
 }

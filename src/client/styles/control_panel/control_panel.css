@@ -1,8 +1,8 @@
 #control_panel{
-    height: 45em;
+    height: 45rem;
     width: 80vw;
-    margin: 1em auto;
-    padding: 1em;
+    margin: 1rem auto;
+    padding: 1rem;
     display: grid;
     grid-template-columns: 20% 80%;
     grid-template-rows: 15% 80% 5%;
@@ -25,9 +25,9 @@
 .cp_nav_btn{
     background-color: var(--section_accent);
     color:var(--secondary);
-    border-top-left-radius: 1em;
-    border-bottom-left-radius: 1em;
-    height:2.5em;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    height:2.5rem;
 }
 
 .cp_nav_btn:hover , .cp_nav_btn_active{
@@ -41,14 +41,14 @@
 /* GENERAL CONTROL PANEL CONTENT */
 .control_panel_action_box{
     background-color: var(--section_primary);
-    border-top-right-radius: 1em;
-    border-bottom-right-radius: 1em;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
     grid-column: 2;
     grid-row: 2;
     display: grid;
-    grid-template-rows:auto auto 3em;
+    grid-template-rows:3rem calc(100% - 6rem) 3rem;
     height: 100%;
-    padding: 1em;
+    padding: 1rem;
 }
 
 .cp_content_box{
@@ -59,30 +59,20 @@
 
 .control_panel_entry{
     display: grid;
-    grid-template-rows: 3em auto;
+    grid-template-rows: 3rem auto;
     grid-template-columns: auto;
-    padding: 1em;
+    padding: 1rem;
 }
 
 .cp_utility_bar{
     display: flex;
     flex-direction: row;
     grid-row: 3;
-    padding: 0.5em;
+    padding: 0.5rem;
 }
 
-.control_panel_btn{
+.general_btn.cp_utility_bar_btn{
     height: 100%;
-    min-width: 4em;
-    background-color: var(--section_btn);
-    color:var(--section_btn_text);
-    border-radius: 0.25em;
-    margin:0 1em;
-}
-
-.control_panel_btn:hover{
-    transform: scale(1.05);
-    background-color: var(--section_btn_hover) !important;
 }
 
 

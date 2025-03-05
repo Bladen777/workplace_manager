@@ -59,7 +59,7 @@ export default function Employee_input({send_table_data}:Types_props) {
 
     // RETURNED VALUES 
     return(
-        <form className="cpe_form">
+        <form className="auto_form">
             <Form_auto_input 
                 column_info={column_data.name}
                 send_table_data={handle_input_change}

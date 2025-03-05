@@ -9,16 +9,16 @@ body{
 .main_page{
     position: relative;
     overflow: hidden;
-    min-height: calc(100vh - 8em );
+    min-height: calc(100vh - 8rem );
 
 }
 
 
 /* HEADER AND FOOTER SIZES */
 header{
-    height: 4em;
+    height: 4rem;
 }
 footer{
-    height: 4em;
+    height: 4rem;
 }
 

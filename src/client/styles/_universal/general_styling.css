@@ -16,7 +16,10 @@ button, input[type=button]{
     border: none;
     cursor: pointer;
     transition: 0.25s;
+    border-radius: 0.25rem;
 }
+
+
 
 /* UNIVERSAL TYPOGRAPHY */
 p{
@@ -29,5 +32,18 @@ div{
 /* GENERAL SECTION STYLING */
 .general_section{
     background-color: var(--section_bg);
-    border-radius: 1em;
+    border-radius: 1rem;
+}
+
+.general_btn{
+    height: 2rem;
+    min-width: 4rem;
+    background-color: var(--section_btn);
+    color:var(--section_btn_text);
+    margin:0 1rem;
+}
+
+.general_btn:hover{
+    transform: scale(1.05);
+    background-color: var(--section_btn_hover) !important;
 }

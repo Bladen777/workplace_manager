@@ -49,7 +49,7 @@ export default function Control_panel_sort_button() {
     function sort_options(item:string, index:number){
         return(
             <button
-            className={`control_panel_btn ${active_sort_btn.current.order_key === item && "active_sort_btn"}`}
+            className={`cpv_sort_option_btn ${active_sort_btn.current.order_key === item && "active_sort_btn"}`}
             key={index}
             onClick={()=>{handle_sort_btn_clicked({order_key:item})}}>
             {convert_text(item)}
@@ -72,11 +72,11 @@ export default function Control_panel_sort_button() {
             <div id="cpv_sort_options" ref={options_menu_ref}>
                 <div id="cpv_sort_type">
                     <button
-                        className={`cpv_sort_type_btn control_panel_btn ${active_sort_btn.current.direction ==="asc" && "active_sort_btn"}`}
+                        className={`cpv_sort_type_btn cpv_sort_option_btn ${active_sort_btn.current.direction ==="asc" && "active_sort_btn"}`}
                         onClick={()=>{handle_sort_btn_clicked({direction:"asc"})}}
                     >Asc</button>
                     <button
-                        className={`cpv_sort_type_btn control_panel_btn ${active_sort_btn.current.direction ==="desc" && "active_sort_btn"}`}
+                        className={`cpv_sort_type_btn cpv_sort_option_btn ${active_sort_btn.current.direction ==="desc" && "active_sort_btn"}`}
                         onClick={()=>{handle_sort_btn_clicked({direction:"desc"})}}
                     >Desc</button>
                 </div>
@@ -85,7 +85,7 @@ export default function Control_panel_sort_button() {
         }
 
         {!clicked && 
-            <button  className="control_panel_btn"
+            <button  className="cp_utility_bar_btn general_btn"
                 onClick={()=>set_clicked(!clicked)}
         > 
         Sort 
