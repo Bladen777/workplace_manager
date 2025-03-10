@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 
 // COMPONENT IMPORTS
 import Project_overview from "../components/project/project_overview/Project_overview.js"
-import New_project from "../components/project/New_project.js";
+import Edit_project from "../components/project/project_overview/edit_project/Edit_project.js";
 import Control_panel from "../components/control_panel/Control_panel.js"
 
 // CONTEXT IMPORTS
@@ -37,7 +37,7 @@ export default function Home() {
             <Provide_Context_current_table_item>
               <Provide_Context_project>
                 <Project_overview />
-                {user_info.is_admin && <New_project />}
+                {user_info.is_admin && <Edit_project />}
               </Provide_Context_project>
               {user_info.is_admin && <Control_panel />}
               </Provide_Context_current_table_item> 

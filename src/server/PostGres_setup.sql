@@ -11,7 +11,7 @@ employment_type varchar(50),
 part_time bit(1),
 hours_per_week int,
 employment_start_date date,
-employment_end_date date
+employment_end_date date,
 );
 
 CREATE TABLE employee_departments(

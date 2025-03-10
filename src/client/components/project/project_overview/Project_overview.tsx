@@ -7,7 +7,7 @@ import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import Project_details from "./project_overview_comps/Project_details.js"
 
 // STYLE IMPORTS 
-import "../../../styles/project_overview.css"
+import "../../../styles/project/project_overview.css"
 import { log_colors } from "../../../styles/_log_colors.js";
 
 

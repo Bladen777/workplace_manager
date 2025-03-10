@@ -10,6 +10,7 @@ import pg from "pg"
 // DATABASE IMPORTS
 import {local_db} from "./local_db.js"
 import { render_db } from "./render_db.js";
+import { filter } from "framer-motion/client";
 
 
 // *** INITIAL SET UPS ***
@@ -226,7 +227,7 @@ app.get("/user_info",
       const filter_item: string = req.body.filter_item;
       const sent_submit_method: string = req.body.submit_method;
       const submit_data: Types_entry_item | Types_entry_item[] = req.body.submit_data;
-      const column_names: {column_name:string}[]  = req.body.db_column_info;
+      const column_names: string[]  = req.body.db_column_info;
 
   
 
@@ -240,6 +241,7 @@ app.get("/user_info",
       // FUNCTION TO FIND THE DATA TO BE ADDED AND CREATE A STRING FOR THE DB QUERY
       function string_data({entry_item, entry_filter_item, submit_method }:Types_string_data){
         console.log("THE CURRENT ITEM: ", entry_item);
+        console.log("THE COLUMN NAMES: ", column_names)
         let search_condition = "";
         let name_values = "";
         let name_columns = "";
@@ -251,9 +253,8 @@ app.get("/user_info",
         };
 
         // DEFINE KEY, VALUE PAIRS AS STRINGS
-        column_names.map((item:{column_name:string}) => {
+        column_names.map((column:string) => {
 
-          const column = item.column_name;
           const data_value = (()=>{
             let item_data: string | null = entry_item[column];
             if(item_data === null || item_data === undefined){
@@ -268,19 +269,19 @@ app.get("/user_info",
           if (submit_method === "add"){
             if (data_value !== ""){
               if (name_values === ""){
-                name_columns += column;
+                name_columns += `"${column}"`;
                 name_values += `${data_value}`;
               } else {
-                name_columns += ', ' + column;
+                name_columns += ', ' + `"${column}"`;
                 name_values += `, ${data_value}`;
               }
             }
           // PATH IF EDIT IS THE METHOD
           } else if (submit_method === "edit"){
             if(edit_values === ""){
-              edit_values += `${column} = ${data_value}`;
+              edit_values += `"${column}" = ${data_value}`;
             } else {
-              edit_values += `, ${column} = ${data_value}`;
+              edit_values += `, "${column}" = ${data_value}`;
             };
           };
         });
@@ -297,7 +298,7 @@ app.get("/user_info",
         if(submit_method === "add"){
           console.log(
             "the name_columns: ", table_data.name_columns,'\n',
-             "the name_values: ", table_data.name_values,'\n',
+            "the name_values: ", table_data.name_values,'\n',
           );
           try {
             const response = await db.query(
@@ -340,7 +341,7 @@ app.get("/user_info",
           if(sent_submit_method === "add" && item.id){
             adjust_submit_method = "edit"
           }; 
-          const table_data:Types_table_data = string_data({entry_item: item, entry_filter_item:item[filter_key], submit_method:adjust_submit_method});
+          const table_data:Types_table_data = string_data({entry_item: item, entry_filter_item:filter_item, submit_method:adjust_submit_method});
           access_db({table_data:table_data, submit_method: adjust_submit_method});
         });
         res.send(`successfully ${sent_submit_method}ed`);
@@ -352,6 +353,43 @@ app.get("/user_info",
 
     }
   );
+
+  // ADJUST DEPARTMENT NAME COLUMNS IN THE EMPLOYEE_DEPARTMENTS TABLE
+
+  app.post("/edit_employee_deps_cols",
+    async (req, res) => {
+
+      const dep_name = req.body.dep_name;
+      const submit_method = req.body.submit_method;
+
+      if(submit_method === "add"){
+        try{
+          const response = await db.query(
+            `ALTER TABLE employee_departments ADD COLUMN "${dep_name}" bit(1)`,
+            []
+          )
+        
+        } catch (error){
+          console.log(`%c  has the following error, when adding columns from employee deps: `, 'background-color:darkred', error); 
+        };
+
+      } else if (submit_method === "delete"){
+        try{
+          const response = await db.query(
+            `ALTER TABLE employee_departments REMOVE COLUMN "${dep_name}"`,
+            []
+          )
+        
+        } catch (error){
+          console.log(`%c  has the following error, when removing columns from employee deps: `, 'background-color:darkred', error); 
+        };
+      }
+
+
+
+
+    }
+  );      
 
 
 

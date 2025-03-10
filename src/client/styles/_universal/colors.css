@@ -14,10 +14,10 @@
     /* MAIN COLORS  */
     --main_bg:var(--secondary);
 
-    /* NEW PROJECT COLOR */
-    --new_project_btn:var(--second);
-    --new_project_btn_text:var(--main_text);
-    --new_project_btn_hover:var(--hover);
+    /* EDIT PROJECT COLOR */
+    --edit_project_btn:var(--second);
+    --edit_project_btn_text:var(--main_text);
+    --edit_project_btn_hover:var(--hover);
 
     /* SECTION COLORS */
     --section_bg: var(--primary_accent);

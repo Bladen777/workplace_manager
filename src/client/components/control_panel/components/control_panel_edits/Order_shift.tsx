@@ -46,8 +46,9 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Order_shift`);
 
     // CONSTANTS FOR TRACKING DATA
-    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
-    const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
+    const table_info = useContext(Use_Context_Table_Info).show_context;
+    const db_column_info = table_info.db_column_info;
+    const initial_form_data = table_info.initial_form_data;
     const initial_table_data = useContext(Use_Context_Table_Data).show_context;
     const [table_data, set_table_data] = useState<Types_form_data[]>(initial_table_data);
     const table_data_ref = useRef<Types_form_data[]>(initial_table_data)
@@ -82,7 +83,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             set_selected_ele_name("");
             adjust_table_data(index);
             shift_ele_row.current.direction = "";
-            send_table_data(table_data_ref.current);
+            send_table_data({form_data:table_data_ref.current});
         }
     }
 
@@ -300,8 +301,8 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
 
 
     return (
-        <>  
+        <div id={`${table_info.table_name}_o_shift_box`} className="o_shift_box cp_content_box">
             {table_data && create_inputs()}
-        </>
+        </div>
     )
 }
