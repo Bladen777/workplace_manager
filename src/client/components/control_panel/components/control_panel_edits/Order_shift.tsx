@@ -188,15 +188,17 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
  
     // SEND DATA TO PARENT, AND UPDATE CURRENT TABLE DATA FROM THE CHILD COMPONENT
     function change_table_data(form_data:Types_change_input_data){
-        const changed_entry_index = table_data.findIndex((item)=>{
+        let changed_entry_index = table_data_ref.current.findIndex((item)=>{
             return item.id === form_data.id;
-        })
+        });
+        if(!form_data.id){
+            changed_entry_index = table_data_ref.current.length -1;
+        };
         const update_form_data = {...table_data_ref.current[changed_entry_index], [form_data.db_column]:form_data.input};
-
         const temp_table_data:Types_form_data[] = [...table_data_ref.current];
         temp_table_data.splice(changed_entry_index, 1, update_form_data);
         table_data_ref.current = temp_table_data;
-        send_table_data(temp_table_data);
+        send_table_data({form_data:temp_table_data});
     }
 
     // SET THE INITIAL DATA VALUES
@@ -237,13 +239,15 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 </form>
             );
         });
-
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for temp_table_data`,'\n' ,temp_table_data);
         table_data_ref.current = temp_table_data;
+        send_table_data({form_data:temp_table_data});
         set_table_data(temp_table_data);
         set_entry_data(entries);
     },[]);
   
 
+    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data`,'\n' ,table_data);
     // CREATE THE ELEMENTS TO BE DISPLAYED
     function create_inputs(){
         const inputs = table_data.map((item:Types_form_data, index:number)=>{

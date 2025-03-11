@@ -49,31 +49,32 @@ export default function Select_departments({submit_method, send_table_data}:Type
 
     // GET THE DEPARTMENT NAMES FOR NEW ENTRY
     async function fetch_department_names(){
-        console.log(`%c IMPORTANT `, `background-color:${ log_colors.important }`,`fetch_department_names called`);
+
         try{
-            const response = await axios.post("/get_columns",{
-                table_name: "employee_departments",
+            const response = await axios.post("/get_table_info",{
+                table_name: "departments",
+                sort_field: "department_name"
+                
             })
             const dep_names:Types_form_data[] = [];
             const form_data:Types_form_data = {};
             
-            response.data.map((item:Types_column_info)=>{
-                if(!item.column_name.includes("id")){
-                    dep_names.push({
-                        [item.column_name]: "0"
+            response.data.map((item:{department_name:string})=>{
+                dep_names.push({
+                    [item.department_name]: "0"
                 })
-                form_data[item.column_name] = "0";
-                }
+                form_data[item.department_name] = "0";
+                
             })
-            console.log(`%c FETCH DEPARTMENT NAMES DONE `, `background-color:${ log_colors.data }`);
             set_departments(dep_names);
-            set_input_data(form_data);
-            send_table_data({
-                table_name:"employee_departments",
-                form_data:[form_data]
-            });
+            if(submit_method === "add"){
+                set_input_data(form_data);
+                send_table_data({
+                    table_name:"employee_departments",
+                    form_data:[form_data]
+                });
+            }
 
- 
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
@@ -94,9 +95,11 @@ export default function Select_departments({submit_method, send_table_data}:Type
                 form_data[column_name] = response.data[0][column_name];
                 }
             })
-            console.log(`%c FETCH DEPARTMENTS DONE `, `background-color:${ log_colors.data }`, "form_data", "\n", form_data);
-
             set_input_data(form_data);
+            send_table_data({
+                table_name:"employee_departments",
+                form_data:[form_data]
+            });
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
@@ -109,7 +112,6 @@ export default function Select_departments({submit_method, send_table_data}:Type
         }
     },[])
 
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input_data`,'\n' ,input_data);
     // RETURNED VALUES 
     return(
         <form className="select_departments_form">

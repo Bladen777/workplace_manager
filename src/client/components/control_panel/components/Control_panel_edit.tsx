@@ -115,12 +115,25 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
         console.log(`%c THE DATA BEING SENT `, `background-color:${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
         const missing_input = check_empty_input(section_name);
 
-
-
         if(missing_input !== ""){
             set_status_message(`Please enter values for ${missing_input}`)
             return
         }
+
+
+        if(section_name === "departments" && submit_method !== "edit"){
+            let dep_name:string | number = ""; 
+            table_data_ref.current.departments.forEach((item)=>{
+                if(!item.id){
+                    dep_name = item.department_name!;
+                }
+            });
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_name`,'\n' ,dep_name);
+
+            await edit_employee_deps_cols(dep_name)
+        }
+
+
 
         Object.keys(table_data_ref.current).map(async (table_name)=>{
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_name`,'\n' ,table_name);
@@ -134,7 +147,8 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
 
             if(table_name === "employee_departments"){
                 filter_key = "employee_id"
-            }
+            } 
+
 
 
 
@@ -160,8 +174,25 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
             }
 
         })
+
     }
 
+
+    // ADJUST THE COLUMNS IN THE EMPLOYEE_DEPARTMENTS DATABASE
+    async function edit_employee_deps_cols(dep_name:string){
+        console.log(`%c important `, `background-color:${ log_colors.important }`,`for edit_employee_deps_cols called`);
+        try{
+            const response = await axios.post("edit_employee_deps_cols",{
+                dep_name: dep_name,
+                submit_method: submit_method 
+
+            }) 
+        
+        } catch (error){
+          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+        };
+
+    }
     
 console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
 

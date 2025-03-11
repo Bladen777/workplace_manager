@@ -248,7 +248,7 @@ app.get("/user_info",
         let edit_values = "";
 
         // SET THE SEARCH CONDITION
-        if(filter_key){
+        if(filter_key !== ""){
           search_condition = `WHERE ${filter_key}=${entry_filter_item}`
         };
 
@@ -267,7 +267,7 @@ app.get("/user_info",
 
           // PATH IF ADD IS THE METHOD
           if (submit_method === "add"){
-            if (data_value !== ""){
+            if (data_value !== "" && column !== 'id'){
               if (name_values === ""){
                 name_columns += `"${column}"`;
                 name_values += `${data_value}`;
@@ -341,7 +341,11 @@ app.get("/user_info",
           if(sent_submit_method === "add" && item.id){
             adjust_submit_method = "edit"
           }; 
-          const table_data:Types_table_data = string_data({entry_item: item, entry_filter_item:filter_item, submit_method:adjust_submit_method});
+          const table_data:Types_table_data = string_data({
+            entry_item: item, 
+            entry_filter_item:item.id ? item.id : filter_item, 
+            submit_method:adjust_submit_method
+          });
           access_db({table_data:table_data, submit_method: adjust_submit_method});
         });
         res.send(`successfully ${sent_submit_method}ed`);
@@ -376,7 +380,7 @@ app.get("/user_info",
       } else if (submit_method === "delete"){
         try{
           const response = await db.query(
-            `ALTER TABLE employee_departments REMOVE COLUMN "${dep_name}"`,
+            `ALTER TABLE employee_departments DROP COLUMN "${dep_name}"`,
             []
           )
         
