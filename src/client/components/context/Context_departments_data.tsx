@@ -78,7 +78,6 @@ export function Provide_Context_departments_data({children}:{children:ReactNode}
                 }
 
             })
-            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for data`,'\n' ,data);
             return(data)
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 

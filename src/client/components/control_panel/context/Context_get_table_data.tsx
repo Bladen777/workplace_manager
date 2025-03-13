@@ -60,7 +60,7 @@ export function Provide_Context_table_data({children}:{children:ReactNode}) {
     // UPDATE THE CONTEXT 
     async function update_context({ section_name, sort_field, filter_key, filter_item, order_key, order_direction }:Types_context_function = {}){
         if(!section_name){section_name = context_section_name};
-        console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `change table data to be from`,section_name, `by order of`, order_key, order_direction);
+        console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `change table data to be from`,section_name, `${order_key !== undefined ? (`by order of, ${order_key}, ${order_direction}`) : ""}` );
        
         try {
             const response = await axios.post("/get_table_info",{
@@ -72,7 +72,7 @@ export function Provide_Context_table_data({children}:{children:ReactNode}) {
                 order_direction: order_direction
             })
             const data = response.data;
-            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for get_table_date & ${section_name} `, '\n' , data);
+            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for get_table_data & ${section_name} `, '\n' , data);
             return(data);
         } catch (error) {
             console.log(`%cError getting Table info: `, 'background-color:darkred', error); 

@@ -91,7 +91,6 @@ export function Provide_Context_project({children}:{children:ReactNode}) {
                 return(item);
                 });
 
-                console.log(`%c Project Context `, `background-color:${ log_colors.important }`,`for form_data`,'\n' ,form_data);
                 set_send_context({
                     all_projects: send_context.all_projects,
                     current_project: send_context.current_project,
@@ -142,9 +141,6 @@ export function Provide_Context_project({children}:{children:ReactNode}) {
             table_info: send_context.table_info
         });
     }
-
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_context`,'\n' ,send_context);
-
 
 // RETURN THE CONTEXT PROVIDER 
     return (

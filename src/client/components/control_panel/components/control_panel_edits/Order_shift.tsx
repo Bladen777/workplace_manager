@@ -247,7 +247,6 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     },[]);
   
 
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data`,'\n' ,table_data);
     // CREATE THE ELEMENTS TO BE DISPLAYED
     function create_inputs(){
         const inputs = table_data.map((item:Types_form_data, index:number)=>{

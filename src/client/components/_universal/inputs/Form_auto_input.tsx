@@ -40,7 +40,7 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
     if(table_data_object){current_table_data = table_data_object}
     const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
 
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Control_panel_input for ${column_info.column_name}`, "\n",   input_data);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Form_auto_input for ${column_info.column_name}`, "\n",   input_data);
 
         function convert_text(){
             let text = column_info.column_name.replaceAll("_"," ")
@@ -73,7 +73,7 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
                 <Money_input 
                     item_data = {item_data}
                     pay_type_value = {input_data.pay_type}
-                    send_table_data = {handle_input_change}
+                    send_table_data = {({input, db_column}:Types_input_change)=>{handle_input_change({input:input, db_column:db_column})}}
                     key={`input_for_${item_data.name}`}
                 />
             )
