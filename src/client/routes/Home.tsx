@@ -6,11 +6,12 @@ import Edit_project from "../components/project/project_overview/edit_project/Ed
 import Control_panel from "../components/control_panel/Control_panel.js"
 
 // CONTEXT IMPORTS
-import { Use_Context_User_Info } from "../components/user_info/Context_user_info.js";
-import { Provide_Context_Table_Info } from "../components/control_panel/context/Context_db_table_info.js";
-import { Provide_Context_Table_Data } from "../components/control_panel/context/Context_get_table_data.js";
+import { Use_Context_user_info } from "../components/user_info/Context_user_info.js";
+import { Provide_Context_table_info } from "../components/control_panel/context/Context_db_table_info.js";
+import { Provide_Context_table_data } from "../components/control_panel/context/Context_get_table_data.js";
 import { Provide_Context_current_table_item } from "../components/control_panel/context/Context_current_table_item.js";
 import { Provide_Context_project } from "../components/project/context/Context_projects.js";
+import { Provide_Context_departments_data } from "../components/context/Context_departments_data.js";
 
 // STYLE IMPORTS
 import "../styles/home.css"
@@ -23,8 +24,8 @@ import { log_colors } from "../styles/_log_colors.js";
 export default function Home() {
     console.log(`%c ROUTE `, `background-color:${log_colors.route}`, `Home`);
 
-  const update_user_info = useContext(Use_Context_User_Info).update_func;
-  const user_info = useContext(Use_Context_User_Info).show_context;
+  const update_user_info = useContext(Use_Context_user_info).update_func;
+  const user_info = useContext(Use_Context_user_info).show_context;
 
   useEffect(() =>{
     update_user_info.now();
@@ -32,17 +33,19 @@ export default function Home() {
   if(user_info.email !== "wait"){
     return (
       <>
-        <Provide_Context_Table_Info>
-          <Provide_Context_Table_Data>
+        <Provide_Context_table_info>
+          <Provide_Context_table_data>
             <Provide_Context_current_table_item>
-              <Provide_Context_project>
-                <Project_overview />
-                {user_info.is_admin && <Edit_project />}
-              </Provide_Context_project>
-              {user_info.is_admin && <Control_panel />}
+              <Provide_Context_departments_data>
+                <Provide_Context_project>
+                  <Project_overview />
+                    {user_info.is_admin && <Edit_project />}
+                  </Provide_Context_project>
+                  {user_info.is_admin && <Control_panel />}
+                  </Provide_Context_departments_data>
               </Provide_Context_current_table_item> 
-          </Provide_Context_Table_Data>
-        </Provide_Context_Table_Info>
+          </Provide_Context_table_data>
+        </Provide_Context_table_info>
       </>
     )
   }

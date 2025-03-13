@@ -4,8 +4,8 @@ import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
-import { Use_Context_Table_Data } from "../../context/Context_get_table_data.js";
+import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
+import { Use_Context_table_data } from "../../context/Context_get_table_data.js";
 
 // STYLE IMPORTS
 import "../../../../styles/control_panel/cp_order_shift.css"
@@ -46,10 +46,10 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Order_shift`);
 
     // CONSTANTS FOR TRACKING DATA
-    const table_info = useContext(Use_Context_Table_Info).show_context;
+    const table_info = useContext(Use_Context_table_info).show_context;
     const db_column_info = table_info.db_column_info;
     const initial_form_data = table_info.initial_form_data;
-    const initial_table_data = useContext(Use_Context_Table_Data).show_context;
+    const initial_table_data = useContext(Use_Context_table_data).show_context;
     const [table_data, set_table_data] = useState<Types_form_data[]>(initial_table_data);
     const table_data_ref = useRef<Types_form_data[]>(initial_table_data)
     const [entry_data, set_entry_data] = useState<ReactElement[]>([]);

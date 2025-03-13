@@ -8,8 +8,8 @@ import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
 import Select_departments from "../../_universal/table_data/Select_departments.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
-import { Use_Context_Table_Data } from "../context/Context_get_table_data.js";
+import { Use_Context_table_info } from "../context/Context_db_table_info.js";
+import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 import { Use_Context_current_table_item } from "../context/Context_current_table_item.js";
 
 // STYLE IMPORTS
@@ -37,13 +37,13 @@ interface Types_table_form_data {
 
 // THE COMPONENT
 export default function Control_panel_edit({handle_cancel_edit_click}:{handle_cancel_edit_click:Function}) {
-    const section_name = useContext(Use_Context_Table_Info).show_context.table_name;
+    const section_name = useContext(Use_Context_table_info).show_context.table_name;
     console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `,section_name);
 
-    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
-    const initial_form_data = useContext(Use_Context_Table_Info).show_context.initial_form_data;
+    const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
+    const initial_form_data = useContext(Use_Context_table_info).show_context.initial_form_data;
 
-    const update_table_data = useContext(Use_Context_Table_Data).update_func;
+    const update_table_data = useContext(Use_Context_table_data).update_func;
 
     const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
     const submit_method = useContext(Use_Context_current_table_item).show_context.submit_method

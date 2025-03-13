@@ -1,7 +1,7 @@
 import { useContext} from "react";
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
+import { Use_Context_table_info } from "../context/Context_db_table_info.js";
 
 
 // LOG STYLES
@@ -14,7 +14,7 @@ import { Types_form_data } from "../context/Context_db_table_info.js";
 
 // THE COMPONENT
 export default function Control_panel_entries({table_item}:{table_item:Types_form_data}) {
-    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
+    const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_entries`,'\n' ,table_item);
 
         let entry_name;

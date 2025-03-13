@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_Table_Info } from "../../context/Context_db_table_info.js";
+import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
 import { Use_Context_current_table_item } from "../../context/Context_current_table_item.js";
 
 // HOOK IMPORTS 
@@ -35,7 +35,7 @@ interface Types_column_data{
 // THE COMPONENT 
 export default function Employee_input_form({send_table_data}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Employee_input`);
-    const db_column_info = useContext(Use_Context_Table_Info).show_context.db_column_info;
+    const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
 
     const current_table_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
     const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);

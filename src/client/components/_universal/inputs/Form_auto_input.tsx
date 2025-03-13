@@ -4,7 +4,7 @@ import { ChangeEvent, useContext, useEffect, useMemo, useRef, useState } from "r
 import Money_input from "./Money_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "../../control_panel/context/Context_db_table_info.js";
+import { Use_Context_table_info } from "../../control_panel/context/Context_db_table_info.js";
 import { Use_Context_current_table_item } from "../../control_panel/context/Context_current_table_item.js";
 
 // TYPE DEFINITIONS 

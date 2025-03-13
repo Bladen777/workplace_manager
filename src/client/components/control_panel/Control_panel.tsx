@@ -5,8 +5,8 @@ import Control_panel_view from "./components/Control_panel_view.js"
 import Control_panel_edit from "./components/Control_panel_edit.js"
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "./context/Context_db_table_info.js"
-import { Use_Context_Table_Data } from "./context/Context_get_table_data.js"
+import { Use_Context_table_info } from "./context/Context_db_table_info.js"
+import { Use_Context_table_data } from "./context/Context_get_table_data.js"
 import { Use_Context_current_table_item } from "./context/Context_current_table_item.js"
 import { Provide_Context_current_table_item } from "./context/Context_current_table_item.js"
 
@@ -32,9 +32,9 @@ export default function Control_panel() {
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
     const [edit_section, set_edit_section] = useState<boolean>(false);
 
-    const section_name = useContext(Use_Context_Table_Info).show_context.table_name;
-    const update_table_data = useContext(Use_Context_Table_Data).update_func;
-    const update_table_info = useContext(Use_Context_Table_Info).update_func;
+    const section_name = useContext(Use_Context_table_info).show_context.table_name;
+    const update_table_data = useContext(Use_Context_table_data).update_func;
+    const update_table_info = useContext(Use_Context_table_info).update_func;
     const update_current_table_item = useContext(Use_Context_current_table_item).update_func;
 
     async function update_context(section:string){

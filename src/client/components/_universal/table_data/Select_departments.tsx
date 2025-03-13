@@ -5,6 +5,7 @@ import axios from "axios";
 
 // CONTEXT IMPORTS 
 import { Use_Context_current_table_item } from "../../control_panel/context/Context_current_table_item.js";
+import { Use_Context_departments_data } from "../../context/Context_departments_data.js";
 
 // HOOK IMPORTS 
 
@@ -14,9 +15,9 @@ import { Use_Context_current_table_item } from "../../control_panel/context/Cont
 import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-import { Types_column_info } from "../../control_panel/context/Context_db_table_info.js";
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
 import { Types_input_change } from "../inputs/Form_auto_input.js";
+import { Types_department_data } from "../../context/Context_departments_data.js";
 
 interface Types_props{
     submit_method:string;
@@ -28,6 +29,8 @@ export default function Select_departments({submit_method, send_table_data}:Type
     console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Select_departments`);
 
     const current_employee_id = useContext(Use_Context_current_table_item).show_context.current_table_item.id;
+
+    const initial_department_data = useContext(Use_Context_departments_data).show_context;
 
     const [departments, set_departments] = useState<Types_form_data[]>([]);
     const [input_data, set_input_data] = useState<Types_form_data>({});
@@ -48,22 +51,18 @@ export default function Select_departments({submit_method, send_table_data}:Type
 
 
     // GET THE DEPARTMENT NAMES FOR NEW ENTRY
-    async function fetch_department_names(){
+    async function define_department_inputs(){
 
-        try{
-            const response = await axios.post("/get_table_info",{
-                table_name: "departments",
-                sort_field: "department_name"
-                
-            })
             const dep_names:Types_form_data[] = [];
             const form_data:Types_form_data = {};
-            
-            response.data.map((item:{department_name:string})=>{
+
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for initial_department_data`,'\n' ,initial_department_data);
+        
+            initial_department_data.map((item:Types_department_data)=>{
                 dep_names.push({
-                    [item.department_name]: "0"
+                    [item.department.name]: "0"
                 })
-                form_data[item.department_name] = "0";
+                form_data[item.department.name] = "0";
                 
             })
             set_departments(dep_names);
@@ -75,9 +74,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
                 });
             }
 
-        } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
-        };
+
     }
 
     
@@ -106,7 +103,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
     }
 
     useEffect(() =>{
-        fetch_department_names()
+        define_department_inputs()
         if(submit_method === "edit"){
             fetch_departments()
         }

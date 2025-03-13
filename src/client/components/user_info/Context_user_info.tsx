@@ -35,7 +35,7 @@ export interface Types_user_info {
 const initial_context_content:Types_context_content = {email:"wait", is_admin:false};
 
 // CONTEXT TO USE 
-export const Use_Context_User_Info = createContext<Types_context>({
+export const Use_Context_user_info = createContext<Types_context>({
     update_func:{
         now: ()=>{},
         wait: ()=>{}, 
@@ -44,7 +44,7 @@ export const Use_Context_User_Info = createContext<Types_context>({
     show_context:initial_context_content
 });
 // CONTEXT PROVIDER & UPDATE 
-export function Provide_Context_User_Info({children}:{children:ReactNode}) {
+export function Provide_Context_user_info({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
     // UPDATE THE CONTEXT 
@@ -66,7 +66,7 @@ export function Provide_Context_User_Info({children}:{children:ReactNode}) {
 
 // RETURN THE CONTEXT PROVIDER 
     return (
-        <Use_Context_User_Info.Provider value={{
+        <Use_Context_user_info.Provider value={{
           update_func:{
               now: async (props:Types_context_function)=>{set_send_context(await update_context(props))},
               wait: update_context,
@@ -74,6 +74,6 @@ export function Provide_Context_User_Info({children}:{children:ReactNode}) {
           },
           show_context:send_context}}
       >    {children} 
-        </Use_Context_User_Info.Provider> 
+        </Use_Context_user_info.Provider> 
     );
 }

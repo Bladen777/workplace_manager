@@ -4,8 +4,8 @@ import { useContext, useRef, useState, useEffect } from "react";
 import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_Table_Info } from "../context/Context_db_table_info.js";
-import { Use_Context_Table_Data } from "../context/Context_get_table_data.js";
+import { Use_Context_table_info } from "../context/Context_db_table_info.js";
+import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../../../styles/_log_colors.js";
@@ -29,8 +29,8 @@ export default function Control_panel_sort_button() {
         direction: "asc"
     });
 
-    const update_table_data = useContext(Use_Context_Table_Data).update_func;
-    const db_column_names = useContext(Use_Context_Table_Info).show_context.db_column_info.map((item)=>item.column_name);
+    const update_table_data = useContext(Use_Context_table_data).update_func;
+    const db_column_names = useContext(Use_Context_table_info).show_context.db_column_info.map((item)=>item.column_name);
     
     function handle_sort_btn_clicked({order_key, direction}:Types_active_sort_btn){
         order_key && (active_sort_btn.current.order_key = order_key);
