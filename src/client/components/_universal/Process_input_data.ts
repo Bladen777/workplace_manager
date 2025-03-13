@@ -132,8 +132,10 @@ export default function Process_input_data() {
         }
 
 
+        
+
         let status_message:string = "";
-        Object.keys(table_data_ref.current).map(async (table_name)=>{
+        for await(let table_name of Object.keys(table_data_ref.current)){
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_name`,'\n' ,table_name);
 
             let filter_key = "id";
@@ -143,6 +145,7 @@ export default function Process_input_data() {
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_names`,'\n' ,db_column_names);
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for filter_item`,'\n' ,filter_item);
 
+
             if(table_name === "employee_departments"){
                 filter_key = "employee_id"
             } else if (table_name === "departments"){
@@ -151,6 +154,7 @@ export default function Process_input_data() {
                 filter_item = current_project.id 
             }
 
+    
             try {
                 const response = await axios.post("/edit_form_data",{
                     table_name: table_name,
@@ -160,19 +164,24 @@ export default function Process_input_data() {
                     db_column_info: db_column_names, 
                     submit_data: table_data_ref.current[table_name]
                 })
+       
                 if(table_name === section_name){
                     const table_data_update = await update_table_data.wait({section_name:table_name});
                     update_table_data.update_context(table_data_update);
                 }
+       
                 console.log("The success_message: ",response.data);
                 status_message = (`${response.data}`);
 
             } catch (error) {
                 console.log('%cError posting info to database: ', 'background-color:darkred',error);
-                status_message = ("Failed to submit data"); 
+                status_message =("Failed to submit data"); 
             }
-        })
-        return status_message
+
+        }
+
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for blah`,'\n' , status_message);
+        return status_message;
     }
 
 
@@ -185,11 +194,9 @@ export default function Process_input_data() {
                 submit_method: submit_method 
 
             }) 
-                    return ""
         } catch (error){
             
             console.log(`%c  has the following error: `, 'background-color:darkred', error); 
-                    return ""
         };
     }
 
