@@ -38,7 +38,7 @@ export interface Types_data_change {
 
 // THE COMPONENT 
 export default function Process_input_data() {
-    console.log(`%c COMPONENT `, `background-color:${ log_colors.important }`, `Edit_data`);
+    console.log(`%c Process_input_data `, `background-color:${ log_colors.important }`, `Edit_data`);
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
     const project_db_column_info = useContext(Use_Context_project).show_context.table_info.db_column_info;
@@ -63,10 +63,12 @@ export default function Process_input_data() {
             table_name = section_name;
         }
 
+/*
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_name`,'\n' ,table_name);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current[table_name]`,'\n' ,table_data_ref.current[table_name]);
         
+*/
 
         if(!Array.isArray(form_data)){
             const update_form_data = {...table_data_ref.current[table_name][0], [form_data.db_column]:form_data.input};
@@ -75,7 +77,7 @@ export default function Process_input_data() {
         } else {
             table_data_ref.current[table_name] = form_data;
         }
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
+        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
     }
 
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
