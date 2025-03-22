@@ -13,6 +13,7 @@ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_entry_input } from "./Form_auto_input.js";
+import { Types_input_change } from "./Form_auto_input.js";
 
 interface Types_props{
     item_data: Types_entry_input;
@@ -57,8 +58,8 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
         const chars:{left:string | string[], right:string | string[]} = {left:"", right:""};
         chars.left = fix_numbers(input.slice(0, decimal_pos));
         chars.right = fix_numbers(input.slice(decimal_pos + 1));
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for decimal_pos`,'\n' ,decimal_pos);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for chars`,'\n' ,chars);
+        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for decimal_pos`,'\n' ,decimal_pos);
+        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for chars`,'\n' ,chars);
         
         // ADJUST RIGHT SIDE
         if(chars.right.length > 2){
@@ -69,22 +70,22 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
             }else{
                 chars.right = chars.right.slice(0,2);
             }
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for adjust right side`,'\n' ,chars.right);
+            //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for adjust right side`,'\n' ,chars.right);
         } else if(chars.right.length < 2){
             const missing_digits = 2 - chars.right.length;
             chars.right = chars.right + ("0".repeat(missing_digits));
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for missing right side`,'\n' ,chars.right);
+            //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for missing right side`,'\n' ,chars.right);
         } else {
             //ADJUST LEFT SIDE
             if(chars.left.length === 0){
                 chars.left = "0"
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for missing left side`,'\n' ,chars.left);
+                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for missing left side`,'\n' ,chars.left);
             } else if (chars.left.startsWith("0") && chars.left.length > 1){
                 chars.left = chars.left.slice(1)
                 if(chars.left.length === 1){
                     input_cursor_pos.current = input_cursor_pos.current -1;
                 }
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove zero left side`,'\n' ,chars.left);
+                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove zero left side`,'\n' ,chars.left);
             }        
         }
 
@@ -92,12 +93,11 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
         return input;
     }
 
-    function handle_input_change({input, db_column}:{input:string, db_column:string}){
+    function handle_input_change({input, db_column}:Types_input_change){
         if(db_column !== "pay_type"){
             input = format_money(input);
         }
         send_table_data({input: input, db_column: db_column})
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for change finished`);
     }
 
 
@@ -153,12 +153,11 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
                     type={item_data.input_type}
                     placeholder={item_data.name_text}
                     autoComplete="off"
-                    value={item_data.value}
+                    value={item_data.value !== "" ? item_data.value : "0.00"}
             
                     onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                         input_cursor_pos.current = e.target.selectionStart!;
                         handle_input_change({input:e.target.value, db_column:item_data.name})
-                        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for change detected`);
                     }}
                     onFocus={()=>{
                         input_cursor_pos.current = 1;

@@ -1,0 +1,30 @@
+.form_dd{
+    position: relative;
+}
+
+.form_dd_list{
+    max-height: 10rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    position:absolute;
+    padding: 0.25rem;
+
+}
+
+.form_dd_list_close{
+    height: 0;
+    padding: 0;
+}
+
+.form_dd_list_btn{
+    border: solid black 1px;
+    border-radius: 0;
+    padding:5px;
+}
+
+.form_dd_blank_input{
+    color: black;
+    padding: 5px;
+}

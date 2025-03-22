@@ -38,7 +38,6 @@ export interface Types_data_change {
 
 // THE COMPONENT 
 export default function Process_input_data() {
-    console.log(`%c Process_input_data `, `background-color:${ log_colors.important }`, `Edit_data`);
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
     const project_db_column_info = useContext(Use_Context_project).show_context.table_info.db_column_info;
@@ -53,6 +52,9 @@ export default function Process_input_data() {
     const current_project = useContext(Use_Context_project).show_context.current_project;
 
     const table_data_ref = useRef<Types_table_form_data>({});
+    console.log(`%c Process_input_data `, `background-color:${ log_colors.helper_function }`, `for ${table_data_ref.current}`);
+
+
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({table_name, form_data}:Types_data_change){

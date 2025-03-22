@@ -114,7 +114,7 @@ app.get("/user_info",
   // GENERAL REQUESTS TO GET INFORMATION
   app.post("/get_table_info",
     async (req, res) => {
-      const sort_field = req.body.sort_field ? req.body.sort_field : "*";
+      const sort_field = req.body.sort_field ? `"${req.body.sort_field}"` : "*";
       const table_name: string = req.body.table_name;
       const filter_key: string = req.body.filter_key;
       const filter_item: string = req.body.filter_item;

@@ -68,7 +68,7 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
             return
         }else if (item_data.name === "pay_type") {
             return         
-        } else if (item_data.name === "pay_rate") {
+        } else if (item_data.name === "pay_rate" || item_data.name.includes("budget")) {
             return(
                 <Money_input 
                     item_data = {item_data}
@@ -103,7 +103,6 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
                             }}
                         />
                     </label>
-        
                 </div>
             )
             }
