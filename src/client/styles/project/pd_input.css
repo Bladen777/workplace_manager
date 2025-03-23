@@ -1,0 +1,13 @@
+.project_department_input_box{
+
+    padding: 0.5rem;
+}
+
+.project_department_input_box > *{
+    margin:0.5rem
+}
+
+.pd_employee_dd{
+    display: block;
+    margin: 0.5rem;
+}

@@ -33,21 +33,33 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
     function find_percent(){    
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total_budget`,'\n' ,total_budget);
-        const budget_percent = (department_budget/total_budget)*100;
+        let budget_percent:number = 0
+        if(total_budget !== 0){
+            budget_percent = Number(((department_budget/total_budget)*100).toFixed(0));
+        }
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget_percent`,'\n' ,budget_percent); 
         set_department_percent(budget_percent);
     }
 
     function handle_pd_budget_change({input, db_column}:Types_input_change){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input`,'\n' ,input);
-        const input_number = Number(input);
-        if(db_column === `${department_name}_budget`){
-            const budget_difference =  input_number - department_budget ;
-            adjust_budget_used(budget_difference)
-            set_department_budget(input_number);
-        } else if(db_column === `${department_name}_percent`){
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input`,'\n' ,input, " ", typeof(input));
+        let input_number = Number(input);
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input_number`,'\n' ,input_number, " ", typeof(input_number));
 
+        if(!input_number && input_number !== 0){
+            console.log(`%c FAIL `, `background-color:${ log_colors.data }`);
+            return
         }
+
+        let new_department_budget:number = input_number;
+
+        if(db_column === `${department_name}_percent`){
+            input_number = Number(input.slice(-2))
+            new_department_budget = total_budget*(input_number/100);
+            set_department_percent(input_number);
+        }
+        set_department_budget(new_department_budget);
+        adjust_budget_used(new_department_budget - department_budget);
     }
 
     useMemo(()=>{
@@ -63,7 +75,7 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
                 is_nullable: "yes",
                 input_type: "budget"
             }} 
-            table_data_object={{[`${department_name}_budget`]: "0.00"}}
+            table_data_object={{[`${department_name}_budget`]: department_budget}}
             send_table_data = {({input, db_column}:Types_input_change)=>{handle_pd_budget_change({input:input, db_column:db_column})}}
         />
         <label className="auto_form_input_label">

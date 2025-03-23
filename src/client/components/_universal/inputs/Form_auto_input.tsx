@@ -62,6 +62,10 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
             set_input_data({...input_data, [db_column]: input})
             send_table_data({input: input, db_column:db_column})
         }
+
+        useMemo(()=>{
+            table_data_object && set_input_data(table_data_object!)
+        },[table_data_object])
       
   
         if(item_data.input_type === "order" ) {

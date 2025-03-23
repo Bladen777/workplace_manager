@@ -40,21 +40,31 @@ export default function Project_department_input({total_production_budget, edit_
 
     function handle_form_change({form_data}:Types_data_change){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
-        process_data.handle_form_change({table_name: "Projects", form_data: form_data})
+        //process_data.handle_form_change({table_name: "Projects", form_data: form_data})
+    }
+
+    
+    function convert_text({text}:{text:string}){
+        let new_text = text.replaceAll("_"," ")
+        const first_letter = new_text.slice(0,1).toUpperCase();
+        new_text = first_letter + text.slice(1);
+        return new_text;
     }
 
 
     // RETURNED VALUES 
     return(
         <form className="auto_form" id="edit_project_employee_select_box">
-       
+            <h3>Employee Select</h3>
             {edit_btn_clicked && departments.map((item)=>{
                 const department_name = item.department.name;
                 return(
                     <div 
                         className="project_department_input_box"
                         key={`dropdown_for_${department_name}`} 
+                        style={{backgroundColor:item.department.color}}
                     >
+                        <h4>{convert_text({text:department_name})}</h4>
                         <Pd_budgets 
                             department_name = {department_name}
                             total_budget = {total_production_budget}

@@ -171,7 +171,8 @@ export default function Edit_project() {
                         className={budget_used > production_budget ? "over_budget" : "under_budget"}
                     >
                         <p>Total Budget: ${production_budget}</p>
-                        <p>Remaining Budget: ${production_budget - budget_used}</p>
+                        <p>Remaining Budget: ${(production_budget - budget_used).toFixed(2)}</p>
+                        <p>Remaining Budget: %{(((production_budget - budget_used)/production_budget)*100).toFixed(2)}</p>
                     </div>
 
                     <Pd_input 

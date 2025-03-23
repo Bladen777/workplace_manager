@@ -14,6 +14,8 @@ import "../../../styles/_universal/form_dd.css"
 import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
+import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
+
 interface Types_props{
     send_table_data:Function;
     department_name:string;
@@ -25,8 +27,9 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
     console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_dd for: `, department_name);
 
     const [employee, set_employee] = useState<string>("");
-    const [employee_list, set_employee_list] = useState<string[]>([])
+    const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
     const [matched_employees, set_matched_employees] = useState<ReactElement[]>([]);
+    const [selected_employees, set_selected_employess] = useState<ReactElement[]>([]);
     const [open_dd, set_open_dd] = useState<boolean>(false)
 
     // GET CURRENT LIST OF CLIENT NAMES
@@ -40,7 +43,6 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
 
             })
             const employee_ids = response.data;
-            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`employee_ids for ${department_name}`,'\n' ,employee_ids);
             let employee_data = [];
             for await(let item of employee_ids){
                 try{
@@ -57,9 +59,8 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
                   console.log(`%c  has the following error: `, 'background-color:darkred', error); 
                 };
             };
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
-
-        
+            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
+            set_employee_list(employee_data);
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
@@ -69,23 +70,55 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
     }
 
     function handle_input_change({value}:{value:string}){
+        
         if(value === "" || value === undefined){
-            send_table_data({input: "", db_column:"client_name"})
+            //send_table_data({input:"", db_column:"client_name"})
             set_open_dd(false)
         }else{
             set_open_dd(true)
-        }
-        set_employee(value)
-     
+        };
+        set_employee(value);
+      
+    }
+
+    function add_employee(item:string){
+
+
+        const employee_input = (
+            <div 
+                key={`${item}`}
+            >
+                {/* LABEL FOR NAME */}
+                <p>{item}</p>
+                {/* INPUT FOR BUDGET */}
+                <input></input>
+                {/* INPUT FOR HOURS */}
+                <input></input>
+
+                {/* BUTTON TO REMOVE EMPLOYEE */}
+                <button>X</button>
+            </div>
+        )
+        set_selected_employess(prev_state => {
+            return[
+                ...prev_state,
+                employee_input
+            ]
+        });
     }
 
     useMemo(()=>{
         const searched_employees: string[] = [];
-        employee_list.forEach((item:string)=>{
+        employee_list.forEach((item:Types_form_data)=>{
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
+            let employee_name:string = "";
+            if(typeof(item.name) === "string"){
+                employee_name = item.name!.toLowerCase();
+            }
             const search_employee_name = employee.toLowerCase();
-            const employee_name:string = item.toLowerCase();
+
             if(employee_name.includes(search_employee_name)){
-                searched_employees.push(item)
+                searched_employees.push(employee_name)
             }
         });
 
@@ -97,9 +130,10 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
                         type="button"
                         className="form_dd_list_btn"
                         onClick={()=>{
-                            set_employee(item)
+                            set_employee("")
                             set_open_dd(false)
-                            send_table_data({input: item, db_column:"employee_name"})
+                            //send_table_data({input: item, db_column:"name",})
+                            add_employee(item)
                         }}
                     >
                         {item}
@@ -120,7 +154,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
         }
 
         
-    },[employee])
+    },[employee, employee_list])
 
     useEffect(() =>{
       fetch_employee_list()
@@ -128,22 +162,25 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
 
     // RETURNED VALUES 
     return(
-        <label className="form_dd">
+        <label className="form_dd pd_employee_dd">
+            
             <p>Selected Employees</p>
+            <div>
+                {selected_employees}
+            </div>
             <input
                 className="form_dd_input"
                 value={employee}
-                placeholder="Employee"
+                placeholder="Add Employee"
                 type="text"
+                onClick={()=>{set_open_dd(true)}}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                     let value:string = e.target.value;
                     handle_input_change({value:value})
                 }}
 
             />
-            <div 
-                className={`${open_dd ? "form_dd_list_open" : "form_dd_list_close"} form_dd_list`}
-            >
+            <div className={`${open_dd ? "form_dd_list_open" : "form_dd_list_close"} form_dd_list`}>
               {matched_employees}  
             </div>
 

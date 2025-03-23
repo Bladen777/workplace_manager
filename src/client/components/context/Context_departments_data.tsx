@@ -64,20 +64,19 @@ export function Provide_Context_departments_data({children}:{children:ReactNode}
 
         try{
             const response = await axios.post("/get_table_info",{
-                table_name: "departments",
-                sort_field: "department_name"
-                
+                table_name: "departments"
             })
 
             const data = response.data.map((item:Types_form_data)=>{
                 return{
                     department:{
                         name:item.department_name,
-                        color:item.color
+                        color:item.department_color
                     }
                 }
 
             })
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for data`,'\n' ,data);
             return(data)
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 

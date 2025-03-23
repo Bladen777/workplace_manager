@@ -41,17 +41,15 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
-
-
     }
 
     function handle_input_change({value}:{value:string}){
-    if(value === "" || value === undefined){
-        send_table_data({input: "", db_column:"client_name"})
-        set_open_dd(false)
-    }else{
-        set_open_dd(true)
-    }
+        if(value === "" || value === undefined){
+            send_table_data({input: "", db_column:"client_name"})
+            set_open_dd(false)
+        }else{
+            set_open_dd(true)
+        }
         set_client(value)
     }
 
@@ -98,7 +96,7 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
         }
 
         
-    },[client])
+    },[client, client_list])
 
     useEffect(() =>{
       fetch_client_list()
@@ -113,6 +111,7 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
                 value={client}
                 placeholder="Client"
                 type="text"
+                onClick={()=>{set_open_dd(true)}}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                     let value:string = e.target.value;
                     handle_input_change({value:value})
