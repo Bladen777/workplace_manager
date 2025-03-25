@@ -83,31 +83,29 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
             )
         } else {
             return(
-                <div className="auto_form_input" >
-                    <label className="auto_form_input_label">
-                        <p>{item_data.name_text}:</p>   
-                        <input
-                            id={item_data.name}
-                            className={`auto_form_${item_data.input_type}`}
-                            name={item_data.name}
-                            type={item_data.input_type}
-                            placeholder={item_data.name_text}
-                            value={item_data.value ===  null ? "" : item_data.value}
-                            checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                                let value = e.target.value;
-                                if(item_data.input_type === "checkbox"){
-                                    if(e.target.checked){
-                                        value="1"
-                                    } else { 
-                                        value="0"
-                                    }
+                <label className="auto_form_input">
+                    <p>{item_data.name_text}:</p>   
+                    <input
+                        id={item_data.name}
+                        className={`auto_form_${item_data.input_type}`}
+                        name={item_data.name}
+                        type={item_data.input_type}
+                        placeholder={item_data.name_text}
+                        value={item_data.value ===  null ? "" : item_data.value}
+                        checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
+                            let value = e.target.value;
+                            if(item_data.input_type === "checkbox"){
+                                if(e.target.checked){
+                                    value="1"
+                                } else { 
+                                    value="0"
                                 }
-                                handle_input_change({input:value, db_column:item_data.name})
-                            }}
-                        />
-                    </label>
-                </div>
+                            }
+                            handle_input_change({input:value, db_column:item_data.name})
+                        }}
+                    />
+                </label>
             )
             }
         }

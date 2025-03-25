@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
@@ -6,6 +6,7 @@ import axios from "axios";
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
+import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 
 // STYLE IMPORTS
 import "../../../styles/_universal/form_dd.css"
@@ -25,6 +26,9 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
     const [client_list, set_client_list] = useState<string[]>([])
     const [matched_clients, set_matched_clients] = useState<ReactElement[]>([]);
     const [open_dd, set_open_dd] = useState<boolean>(false)
+
+    const drop_down_ref = useRef<HTMLDivElement | null>(null);
+    const track_click = useFindClickPosition();
 
     // GET CURRENT LIST OF CLIENT NAMES
     async function fetch_client_list(){
@@ -102,28 +106,37 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
       fetch_client_list()
     },[])
 
+    useEffect(() =>{
+        open_dd && track_click({
+            active: true, 
+            ele_pos:drop_down_ref.current?.getBoundingClientRect(), 
+            update_func:(value:boolean)=>{value && set_open_dd(false)}
+        })
+    },[open_dd])
+
     // RETURNED VALUES 
     return(
-        <label className="form_dd">
+        <label className="form_dd auto_form_input">
             <p>Client:</p>
-            <input
-                className="form_dd_input"
-                value={client}
-                placeholder="Client"
-                type="text"
-                onClick={()=>{set_open_dd(true)}}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                    let value:string = e.target.value;
-                    handle_input_change({value:value})
-                }}
+            <div ref={drop_down_ref}>
+                <input
+                    className="form_dd_input"
+                    value={client}
+                    placeholder="Client"
+                    type="text"
+                    onClick={()=>{set_open_dd(true)}}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
+                        let value:string = e.target.value;
+                        handle_input_change({value:value})
+                    }}
 
-            />
-            <div 
-                className={`${open_dd ? "form_dd_list_open" : "form_dd_list_close"} form_dd_list`}
-            >
-              {matched_clients}  
+                />
+                <div 
+                    className={`${open_dd ? "form_dd_list_open" : "form_dd_list_close"} form_dd_list`}
+                >
+                {matched_clients}  
+                </div>
             </div>
-
         </label>
     ); 
 }

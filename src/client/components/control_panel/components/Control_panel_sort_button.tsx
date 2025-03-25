@@ -36,8 +36,7 @@ export default function Control_panel_sort_button() {
         order_key && (active_sort_btn.current.order_key = order_key);
         direction && (active_sort_btn.current.direction = direction);
         update_table_data.now({order_key: active_sort_btn.current.order_key, order_direction: active_sort_btn.current.direction})
-        //set_clicked(false)
-        //track_click({active:false})
+
     }
     function convert_text(word:string){
         let text = word.replaceAll("_"," ")

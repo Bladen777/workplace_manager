@@ -9,10 +9,11 @@
     margin: 0.5rem;
 }
 
-
-.auto_form_input > *{
-    margin: 0.5rem 0;
+.auto_form_input{
+    width: fit-content;
 }
+
+
 
 .input_option > *{
     margin: 0 0.5rem 0 0;
