@@ -9,7 +9,6 @@ import axios from "axios";
 import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 
 // STYLE IMPORTS
-import "../../../styles/_universal/form_dd.css"
 
 // LOG STYLE 
 import { log_colors } from "../../../styles/_log_colors.js";
@@ -20,7 +19,7 @@ import { log_colors } from "../../../styles/_log_colors.js";
 
 // THE COMPONENT 
 export default function Clients_dd({send_table_data}:{send_table_data:Function}) {
-    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `clients_dd`);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `clients_dd`);
 
     const [client, set_client] = useState<string>("");
     const [client_list, set_client_list] = useState<string[]>([])

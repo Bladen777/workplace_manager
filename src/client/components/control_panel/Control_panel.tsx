@@ -55,7 +55,7 @@ export default function Control_panel() {
 
     // SETTING CURRENT ITEM
     
-    useMemo(async () =>{
+    useMemo(() =>{
         update_context("clients")
       },[])
 

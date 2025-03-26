@@ -40,7 +40,8 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
     if(table_data_object){current_table_data = table_data_object}
     const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
 
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Form_auto_input for ${column_info.column_name}`, "\n",   input_data);
+
+    console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${column_info.column_name}`, "\n",   input_data);
 
         function convert_text(){
             let text = column_info.column_name.replaceAll("_"," ")

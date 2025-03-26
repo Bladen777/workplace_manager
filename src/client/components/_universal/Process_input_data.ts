@@ -43,7 +43,6 @@ export default function Process_input_data() {
     const project_db_column_info = useContext(Use_Context_project).show_context.table_info.db_column_info;
     const current_db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
 
-
     // CONTEXT UPDATERS
     const update_table_data = useContext(Use_Context_table_data).update_func;
     const update_departments_data = useContext(Use_Context_departments_data).update_func;
@@ -53,8 +52,6 @@ export default function Process_input_data() {
 
     const table_data_ref = useRef<Types_table_form_data>({});
     console.log(`%c Process_input_data `, `background-color:${ log_colors.helper_function }`, `for ${table_data_ref.current}`);
-
-
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({table_name, form_data}:Types_data_change){

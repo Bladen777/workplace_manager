@@ -24,30 +24,29 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Pd_budgets({department_name, total_budget, adjust_budget_used}:Types_props) {
-    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Project_department_budget_percents`);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budgets`);
 
     const [department_budget, set_department_budget] = useState<number>(0);
     const [department_percent, set_department_percent] = useState<number>(0);
 
 
-    function find_percent(){    
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total_budget`,'\n' ,total_budget);
+    function find_percent(){        
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for percent ran`);
         let budget_percent:number = 0
         if(total_budget !== 0){
             budget_percent = Number(((department_budget/total_budget)*100).toFixed(0));
         }
+/*
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total_budget`,'\n' ,total_budget);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget_percent`,'\n' ,budget_percent); 
-        set_department_percent(budget_percent);
+
+*/        set_department_percent(budget_percent);
     }
 
     function handle_pd_budget_change({input, db_column}:Types_input_change){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input`,'\n' ,input, " ", typeof(input));
         let input_number = Number(input);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input_number`,'\n' ,input_number, " ", typeof(input_number));
-
         if(!input_number && input_number !== 0){
-            console.log(`%c FAIL `, `background-color:${ log_colors.data }`);
             return
         }
 
@@ -63,8 +62,11 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
     }
 
     useMemo(()=>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for memochanged`);
         find_percent()
-    },[total_budget, department_budget])
+    },[ department_budget])
+
+    
 
     // RETURNED VALUES 
     return(
@@ -75,8 +77,10 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
                 is_nullable: "yes",
                 input_type: "budget"
             }} 
-            table_data_object={{[`${department_name}_budget`]: department_budget}}
-            send_table_data = {({input, db_column}:Types_input_change)=>{handle_pd_budget_change({input:input, db_column:db_column})}}
+            table_data_object={{[`${department_name}_budget`]: department_budget.toFixed(2)}}
+            send_table_data = {({input, db_column}:Types_input_change)=>{
+                handle_pd_budget_change({input:input, db_column:db_column})
+            }}
         />
         <label className="auto_form_input_label">
             <p>% of budget: </p>

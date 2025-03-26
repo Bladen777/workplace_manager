@@ -13,6 +13,7 @@ import { Use_Context_project } from "../../context/Context_projects.js";
 
 // STYLE IMPORTS
 import "../../../../styles/project/edit_project.css"
+import "../../../../styles/_universal/form_dd.css"
 
 // LOG STYLE 
 import { log_colors } from "../../../../styles/_log_colors.js";
@@ -30,6 +31,18 @@ interface Types_project_keys {
     input_box_key: number;
 }
 
+interface Types_budget {
+    total: number;
+    remaining: number;
+    percent: number;
+
+}
+
+interface Types_adjust_budget{
+    total?: number;
+    used?: number;
+}
+
 
 
 
@@ -40,7 +53,6 @@ export default function Edit_project() {
     const initial_form_data = useContext(Use_Context_project).show_context.table_info.initial_form_data;
     const db_column_info = useContext(Use_Context_project).show_context.table_info.db_column_info;
     const current_project = useContext(Use_Context_project).show_context.current_project;
-
 
     const process_data = Process_input_data();
     
@@ -59,8 +71,12 @@ export default function Edit_project() {
         btn_key: 1,
         input_box_key:2
     })
-    const [production_budget, set_production_budget] = useState<number>(0)
-    const [budget_used, set_budget_used] = useState<number>(0);
+
+    const [production_budget, set_production_budget] = useState<Types_budget>({
+        total: 0,
+        remaining: 0,
+        percent: 0
+    })
 
     function handle_edit_project_click(){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for edit_btn_clicked`,'\n' ,edit_btn_clicked);
@@ -76,25 +92,42 @@ export default function Edit_project() {
         })
     }
 
-    
-
     function handle_form_change({form_data}:Types_data_change){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
 
         if(!Array.isArray(form_data)){
             if(form_data.db_column === "production_budget"){
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data.input`,'\n' ,form_data.input);
-                set_production_budget(Number(form_data.input))
+                const budget = Number(form_data.input);
+                adjust_budget({total:budget});
             }
         } else {
             if( typeof(form_data[0].db_column) === "string"){
                 if(form_data[0]["prodction_budget"]){
-                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data[0][production_budget]`,'\n' ,form_data[0][production_budget]);
-                    set_production_budget(Number(form_data[0]["production_budget"]));
+                    const budget = Number(form_data[0]["production_budget"]);
+                    adjust_budget({total:budget})
+          
                 }
             }
         }
         process_data.handle_form_change({table_name: "Projects", form_data: form_data})
+    }
+
+    function adjust_budget({total, used}:Types_adjust_budget){
+        let budget:Types_budget = production_budget;
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget`,'\n' ,budget);
+    
+        if(used){
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for used`,'\n' ,used);
+            budget.remaining = Number((production_budget.total - (production_budget.remaining + used)).toFixed(2));
+        } else if (total){
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total`,'\n' ,total);
+            budget.total = total
+        }
+
+        budget.percent = Number((((budget.total - budget.remaining)/budget.total)*100).toFixed(2));
+
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget`,'\n' ,budget);
+        set_production_budget(budget);
     }
 
     async function post_form(){
@@ -107,6 +140,7 @@ export default function Edit_project() {
         },[])
 
 
+        console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for production_budget`,'\n' ,production_budget);
     // RETURNED VALUES 
     return(
         <section id="edit_project_container" >
@@ -129,6 +163,8 @@ export default function Edit_project() {
                     edit_btn_clicked === false ? "edit_project_box_close general_section edit_project_box" :
                     "edit_project_box"
                 }>
+
+                {edit_btn_clicked && 
                 <div className="edit_project_input_box">
                     <h2> New Project</h2>
                     <form 
@@ -168,17 +204,17 @@ export default function Edit_project() {
                     </form>
                     <div 
                         id="project_budget_tracker"      
-                        className={budget_used > production_budget ? "over_budget" : "under_budget"}
+                        className={production_budget.remaining > production_budget.total ? "over_budget" : "under_budget"}
                     >
-                        <p>Total Budget: ${production_budget}</p>
-                        <p>Remaining Budget: ${(production_budget - budget_used).toFixed(2)}</p>
-                        <p>Remaining Budget: %{(((production_budget - budget_used)/production_budget)*100).toFixed(2)}</p>
+                        <p>Total Budget: ${production_budget.total}</p>
+                        <p>Remaining Budget: ${production_budget.remaining}</p>
+                        <p>Remaining Budget: {production_budget.percent}%</p>
                     </div>
 
                     <Pd_input 
-                        total_production_budget={production_budget} 
+                        total_production_budget={production_budget.total} 
                         edit_btn_clicked={edit_btn_clicked}
-                        adjust_budget_used={(value:number) => {set_budget_used(budget_used + value)}} 
+                        adjust_budget_used={(value:number) => {adjust_budget({used:value})}} 
                     />
 
                     <div className="edit_project_utility_bar">
@@ -197,6 +233,7 @@ export default function Edit_project() {
                         }
                     </div>                    
                 </div>
+                }
             </article>
         </section>
     ); 

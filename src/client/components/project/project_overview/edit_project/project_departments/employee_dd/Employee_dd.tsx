@@ -2,20 +2,20 @@ import { ReactElement, useEffect, useMemo,  useRef,  useState } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
+import P_employee_edit from "./P_employee_edit.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
-import useFindClickPosition from "../../hooks/useFindClickPosition.js";
+import useFindClickPosition from "../../../../../hooks/useFindClickPosition.js";
 
 // STYLE IMPORTS
-import "../../../styles/_universal/form_dd.css"
 
 // LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
+import { log_colors } from "../../../../../../styles/_log_colors.js"
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
+import { Types_form_data } from "../../../../../control_panel/context/Context_db_table_info.js";
 
 interface Types_props{
     send_table_data:Function;
@@ -25,7 +25,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Employee_dd({send_table_data, department_name}:Types_props) {
-    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_dd for: `, department_name);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_dd for: `, department_name);
 
     const [employee, set_employee] = useState<string>("");
     const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
@@ -63,7 +63,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
                   console.log(`%c  has the following error: `, 'background-color:darkred', error); 
                 };
             };
-            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
+            //console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
             set_employee_list(employee_data);
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
@@ -87,22 +87,13 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
 
     function add_employee(item:string){
 
+        const employee_rate:number = 0;
 
-        const employee_input = (
-            <div 
-                key={`${item}`}
-            >
-                {/* LABEL FOR NAME */}
-                <p>{item}</p>
-                {/* INPUT FOR BUDGET */}
-                <input></input>
-                {/* INPUT FOR HOURS */}
-                <input></input>
+        const employee_input = <P_employee_edit 
+            name = {item}
+            rate = {employee_rate}
+        />
 
-                {/* BUTTON TO REMOVE EMPLOYEE */}
-                <button>X</button>
-            </div>
-        )
         set_selected_employess(prev_state => {
             return[
                 ...prev_state,
@@ -114,7 +105,6 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
     useMemo(()=>{
         const searched_employees: string[] = [];
         employee_list.forEach((item:Types_form_data)=>{
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
             let employee_name:string = "";
             if(typeof(item.name) === "string"){
                 employee_name = item.name!.toLowerCase();
@@ -164,7 +154,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
       fetch_employee_list()
     },[])
 
-    useEffect(() =>{
+    useMemo(() =>{
         open_dd && track_click({
             active: true, 
             ele_pos:drop_down_ref.current?.getBoundingClientRect(), 
@@ -174,7 +164,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
 
     // RETURNED VALUES 
     return(
-        <label className="form_dd pd_employee_dd">
+        <label className="form_dd auto_form_input pd_employee_dd">
             <p>Selected Employees</p>
             <div ref={drop_down_ref}>
                 <div>

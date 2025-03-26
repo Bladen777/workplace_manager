@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react"
+import { createContext, useState, ReactNode, useEffect } from "react"
 import axios from "axios";
 
 // COMPONENT IMPORTS 
@@ -56,7 +56,7 @@ export const Use_Context_departments_data = createContext<Types_context>({
 // CONTEXT PROVIDER & UPDATE 
 export function Provide_Context_departments_data({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
-
+console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for send_context`,'\n' ,send_context);
 
     // UPDATE THE CONTEXT 
     async function update_context({   }:Types_context_function){
@@ -74,7 +74,6 @@ export function Provide_Context_departments_data({children}:{children:ReactNode}
                         color:item.department_color
                     }
                 }
-
             })
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for data`,'\n' ,data);
             return(data)
