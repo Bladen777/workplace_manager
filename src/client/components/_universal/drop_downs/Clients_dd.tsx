@@ -1,12 +1,12 @@
-import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
+import Input_drop_down from "./Input_drop_down.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
-import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 
 // STYLE IMPORTS
 
@@ -21,13 +21,7 @@ import { log_colors } from "../../../styles/_log_colors.js";
 export default function Clients_dd({send_table_data}:{send_table_data:Function}) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `clients_dd`);
 
-    const [client, set_client] = useState<string>("");
     const [client_list, set_client_list] = useState<string[]>([])
-    const [matched_clients, set_matched_clients] = useState<ReactElement[]>([]);
-    const [open_dd, set_open_dd] = useState<boolean>(false)
-
-    const drop_down_ref = useRef<HTMLDivElement | null>(null);
-    const track_click = useFindClickPosition();
 
     // GET CURRENT LIST OF CLIENT NAMES
     async function fetch_client_list(){
@@ -46,96 +40,24 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
         };
     }
 
-    function handle_input_change({value}:{value:string}){
-        if(value === "" || value === undefined){
-            send_table_data({input: "", db_column:"client_name"})
-            set_open_dd(false)
-        }else{
-            set_open_dd(true)
-        }
-        set_client(value)
-    }
-
-    useMemo(()=>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for client_list`,'\n' ,client_list);
-        const searched_clients: string[] = [];
-        client_list.forEach((item:string)=>{
-            const search_client_name = client.toLowerCase();
-            const client_name:string = item.toLowerCase();
-            if(client_name.includes(search_client_name)){
-                searched_clients.push(item)
-            }
-        });
-
-        if(searched_clients.length > 0){
-            const new_list:ReactElement[] = searched_clients.map((item:string, index:number)=>{
-                return(
-                    <button
-                        key={`dd_input_${index}`}
-                        type="button"
-                        className="form_dd_list_btn"
-                        onClick={()=>{
-                            set_client(item)
-                            set_open_dd(false)
-                            send_table_data({input: item, db_column:"client_name"})
-                        }}
-                    >
-                        {item}
-                    </button>
-                )
-            })
-            set_matched_clients(new_list)
-        } else {
-            const blank_input = (
-                <p 
-                key={`dd_blank`}
-                className="form_dd_blank_input"
-                > 
-                    Client does not Exist
-                </p>
-            )
-            send_table_data({input: "", db_column:"client_name"})
-            set_matched_clients([blank_input])
-        }
-
-        
-    },[client, client_list])
 
     useEffect(() =>{
       fetch_client_list()
     },[])
 
-    useEffect(() =>{
-        open_dd && track_click({
-            active: true, 
-            ele_pos:drop_down_ref.current?.getBoundingClientRect(), 
-            update_func:(value:boolean)=>{value && set_open_dd(false)}
-        })
-    },[open_dd])
 
     // RETURNED VALUES 
     return(
         <label className="form_dd auto_form_input">
             <p>Client:</p>
-            <div ref={drop_down_ref}>
-                <input
-                    className="form_dd_input"
-                    value={client}
-                    placeholder="Client"
-                    type="text"
-                    onClick={()=>{set_open_dd(true)}}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                        let value:string = e.target.value;
-                        handle_input_change({value:value})
-                    }}
-
-                />
-                <div 
-                    className={`${open_dd ? "form_dd_list_open" : "form_dd_list_close"} form_dd_list`}
-                >
-                {matched_clients}  
-                </div>
-            </div>
+            <Input_drop_down
+                table_name={{main:"Client"}}
+                string_table_data={client_list}
+                send_table_data={(
+                    {input_value}:{input_value:string})=>
+                        send_table_data({input:input_value, db_column:"client_name"}
+                )}
+            />
         </label>
     ); 
 }

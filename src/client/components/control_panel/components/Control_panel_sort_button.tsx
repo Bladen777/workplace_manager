@@ -58,6 +58,7 @@ export default function Control_panel_sort_button() {
     
     useEffect(() =>{
         clicked && track_click({
+            ele_name:"Sort options Button" ,
             active: true, 
             ele_pos:options_menu_ref.current?.getBoundingClientRect(), 
             update_func:(value:boolean)=>{value && set_clicked(false)}

@@ -3,6 +3,7 @@ import axios from "axios";
 
 // COMPONENT IMPORTS 
 import P_employee_edit from "./P_employee_edit.js";
+import Input_drop_down from "../../../../../_universal/drop_downs/Input_drop_down.js";
 
 // CONTEXT IMPORTS 
 
@@ -27,14 +28,10 @@ interface Types_props{
 export default function Employee_dd({send_table_data, department_name}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_dd for: `, department_name);
 
-    const [employee, set_employee] = useState<string>("");
-    const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
-    const [matched_employees, set_matched_employees] = useState<ReactElement[]>([]);
-    const [selected_employees, set_selected_employess] = useState<ReactElement[]>([]);
-    const [open_dd, set_open_dd] = useState<boolean>(false)
 
-    const drop_down_ref = useRef<HTMLDivElement | null>(null);
-    const track_click = useFindClickPosition();
+    const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
+    const [selected_employees, set_selected_employess] = useState<ReactElement[]>([]);
+
 
     // GET CURRENT LIST OF CLIENT NAMES
     async function fetch_employee_list(){
@@ -67,22 +64,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
             set_employee_list(employee_data);
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
-        };
-
-        
-        
-    }
-
-    function handle_input_change({value}:{value:string}){
-        
-        if(value === "" || value === undefined){
-            //send_table_data({input:"", db_column:"client_name"})
-            set_open_dd(false)
-        }else{
-            set_open_dd(true)
-        };
-        set_employee(value);
-      
+        };    
     }
 
     function add_employee(item:string){
@@ -102,90 +84,24 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
         });
     }
 
-    useMemo(()=>{
-        const searched_employees: string[] = [];
-        employee_list.forEach((item:Types_form_data)=>{
-            let employee_name:string = "";
-            if(typeof(item.name) === "string"){
-                employee_name = item.name!.toLowerCase();
-            }
-            const search_employee_name = employee.toLowerCase();
-
-            if(employee_name.includes(search_employee_name)){
-                searched_employees.push(employee_name)
-            }
-        });
-
-        if(searched_employees.length > 0){
-            const new_list:ReactElement[] = searched_employees.map((item:string, index:number)=>{
-                return(
-                    <button
-                        key={`dd_input_${index}`}
-                        type="button"
-                        className="form_dd_list_btn"
-                        onClick={()=>{
-                            set_employee("")
-                            set_open_dd(false)
-                            //send_table_data({input: item, db_column:"name",})
-                            add_employee(item)
-                        }}
-                    >
-                        {item}
-                    </button>
-                )
-            })
-            set_matched_employees(new_list)
-        }else {
-            const blank_input = (
-                <p 
-                key={`dd_blank`}
-                className="form_dd_blank_input"
-                > 
-                    Employee does not Exist
-                </p>
-            )
-            set_matched_employees([blank_input])
-        }
-
-        
-    },[employee, employee_list])
-
     useEffect(() =>{
       fetch_employee_list()
     },[])
-
-    useMemo(() =>{
-        open_dd && track_click({
-            active: true, 
-            ele_pos:drop_down_ref.current?.getBoundingClientRect(), 
-            update_func:(value:boolean)=>{value && set_open_dd(false)}
-        })
-    },[open_dd])
 
     // RETURNED VALUES 
     return(
         <label className="form_dd auto_form_input pd_employee_dd">
             <p>Selected Employees</p>
-            <div ref={drop_down_ref}>
-                <div>
-                    {selected_employees}
-                </div>
-                <input
-                    className="form_dd_input"
-                    value={employee}
-                    placeholder="Add Employee"
-                    type="text"
-                    onClick={()=>{set_open_dd(true)}}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                        let value:string = e.target.value;
-                        handle_input_change({value:value})
-                    }}
-
-                />
-                <div className={`${open_dd ? "form_dd_list_open" : "form_dd_list_close"} form_dd_list`}>
-                {matched_employees}  
-                </div>
+            <div>
+                {selected_employees}
             </div>
+            <Input_drop_down 
+                table_name={{main:"Employee", specific:department_name}} 
+                form_table_data={employee_list} 
+                send_table_data={({input}:{input:string})=>{
+                    add_employee(input)
+                }}                    
+            />
         </label>
     ); 
 }

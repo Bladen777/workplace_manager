@@ -6,6 +6,7 @@ import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 interface Types_props{
+    ele_name:string;
     active:boolean;
     ele_pos?: Types_click_ele_pos | undefined;
     update_func?: Function;
@@ -20,25 +21,25 @@ interface Types_click_ele_pos{
 
 export default function useFindClickPosition() {
   console.log(`%c HOOK `, `background-color:${ log_colors.hook }`,`for Find Click Position`);  
-    const is_active = useRef<boolean>(false);
-  
+
     // function to check if the current click is on the targetted element
-    function track_click({active, ele_pos, update_func}:Types_props){
-        is_active.current = active;
-        document.body.onclick = (e)=>{
-            e.stopPropagation();
-            if(is_active.current){
-                console.log(`   %c HOOK UPDATE `, `background-color:${ log_colors.hook }`,`for Click_Location`, is_active.current);
-                /*
-                    let clicked  = e.target;
-                    console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for clicked`,'\n' ,clicked);
-                */
+    function track_click({ele_name, active, ele_pos, update_func}:Types_props){
+        let is_active = active;
+        document.body.addEventListener("click", (e)=>{
+            if(is_active){
+                console.log(`   %c CLICK TRACK ACTIVE `, `background-color:${ log_colors.hook }`, `for ${ele_name}` );
+
                 const screen_pos = {
                     x: e.clientX, 
                     y: e.clientY
                 }
  
-                console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for track_ele_pos`,  ele_pos);
+                console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for track_ele_pos`,  ele_pos,
+                    '\n', "right", ele_pos!.right,
+                    '\n', "left", ele_pos!.left,
+                    '\n', "top", ele_pos!.top,
+                    '\n', "bottom", ele_pos!.bottom,
+                );
                 console.log("   the screen_pos: ", screen_pos.x , ", ", screen_pos.y);
 
                 if( screen_pos.x > ele_pos!.right || 
@@ -48,10 +49,13 @@ export default function useFindClickPosition() {
                 ){
                     console.log(`%c CLICKED OUTSIDE `, `background-color:${ log_colors.important }`);
                     update_func!(true);
-                    is_active.current = false;
+                    is_active = false;
                 } 
             };
-        };
+            e.stopPropagation()
+        });
+        
+
     };
     
 return track_click;
