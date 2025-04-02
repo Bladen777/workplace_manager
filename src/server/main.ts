@@ -97,9 +97,17 @@ import { filter } from "framer-motion/client";
 app.get("/user_info",
   (req, res) => {
 
-    const user_info = {
+    let user_info = {
       email:req.user,
     }
+
+    // *** DELETE THIS LATER ***
+    if(user_info.email === undefined){
+      user_info = {
+        email:"test_user"
+      }
+    }
+
     console.log("the user_info: ", user_info);
     res.send(user_info);
   }

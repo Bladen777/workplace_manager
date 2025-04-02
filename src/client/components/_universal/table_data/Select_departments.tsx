@@ -39,7 +39,6 @@ export default function Select_departments({submit_method, send_table_data}:Type
     function handle_input_change({input, db_column}:Types_input_change){
         set_input_data({...input_data, [db_column]:input })
         
-
         send_table_data({
             table_name:"employee_departments",
             form_data:{
@@ -59,10 +58,12 @@ export default function Select_departments({submit_method, send_table_data}:Type
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for initial_department_data`,'\n' ,initial_department_data);
         
             initial_department_data.map((item:Types_department_data)=>{
+                const dep_name = `dep_id_${item.department.id}`
                 dep_names.push({
-                    [item.department.name]: "0"
+                    department_name: item.department.name,
+                    [dep_name]: "0"
                 })
-                form_data[item.department.name] = "0";
+                form_data[dep_name] = "0";
                 
             })
             set_departments(dep_names);
@@ -116,7 +117,8 @@ export default function Select_departments({submit_method, send_table_data}:Type
 
             {  departments.map((item)=>{
 
-                const key_name = Object.keys(item)[0];
+
+                const key_name = Object.keys(item)[1];
                 const item_val = input_data[key_name];
                 
                 return(
@@ -124,7 +126,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
                         className="auto_form_input_label"
                         key={key_name}
                     >
-                        <p>{key_name}:</p>   
+                        <p>{item.department_name}:</p>   
                         <input
 
                             type="checkbox"
