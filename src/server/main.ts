@@ -96,14 +96,11 @@ import { filter } from "framer-motion/client";
 
 app.get("/user_info",
   (req, res) => {
-    const admin = true;
 
-    console.log("the req.user: ", req.user);
     const user_info = {
       email:req.user,
-      is_admin: admin
     }
-
+    console.log("the user_info: ", user_info);
     res.send(user_info);
   }
 );
@@ -114,17 +111,18 @@ app.get("/user_info",
   // GENERAL REQUESTS TO GET INFORMATION
   app.post("/get_table_info",
     async (req, res) => {
+      
       const sort_field = req.body.sort_field ? `"${req.body.sort_field}"` : "*";
       const table_name: string = req.body.table_name;
       const filter_key: string = req.body.filter_key;
       const filter_item: string = req.body.filter_item;
       let order_key: string = req.body.order_key;
       const order_direction:string = req.body.order_direction; 
-      console.log("get_table_info: ", req.body);
+      console.log("\n","get_table_info requested for: ", table_name)
 
       let search_condition = "";
       if(filter_key){
-        search_condition = `WHERE ${filter_key}=${filter_item}`
+        search_condition = `WHERE ${filter_key}='${filter_item}'`
       };
 
           // FIND COLUMN NAME BASED ON ORDER KEY PROVIDED
@@ -158,6 +156,7 @@ app.get("/user_info",
         }
       }
         try {
+          console.log(`SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`)
           const response = await db.query(
             `SELECT ${sort_field} FROM ${table_name} ${search_condition} ${order_condition};`
           )
@@ -188,7 +187,9 @@ app.get("/user_info",
   // GET THE COLUMN NAMES
   app.post("/get_columns",
     async (req, res) => {
+      
       const table_name = req.body.table_name
+      console.log("\n","get_columns requested for: ", table_name)
       try {
         const response = await db.query(
           "SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = $1 AND NOT column_name = 'id' ORDER BY ordinal_position;",
@@ -230,7 +231,7 @@ app.get("/user_info",
       const column_names: string[]  = req.body.db_column_info;
 
   
-
+      console.log("\n","edit_form_data requested for: ", table_name )
       console.log("the recieved data: ", submit_data,"\n",
                   "the recieved column names: ", column_names,"\n",
                   "the sent_submit_method: ", sent_submit_method
@@ -300,6 +301,7 @@ app.get("/user_info",
             "the name_columns: ", table_data.name_columns,'\n',
             "the name_values: ", table_data.name_values,'\n',
           );
+          console.log(`INSERT INTO ${table_name}(${table_data.name_columns}) VALUES(${table_data.name_values});`)
           try {
             const response = await db.query(
               `INSERT INTO ${table_name}(${table_data.name_columns}) VALUES(${table_data.name_values});`
@@ -314,6 +316,7 @@ app.get("/user_info",
             "the edit_values: ", table_data.edit_values,'\n',
             "the search_condition: ", table_data.search_condition
           );
+          console.log(`UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition};`)
           try {
             const response = await db.query(
               `UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition};`,
@@ -324,6 +327,7 @@ app.get("/user_info",
             res.send(`Error editing data in ${table_name}: ${error}`);
           } 
         }else if (submit_method === "delete"){
+          console.log(`DELETE FROM ${table_name} ${table_data.search_condition};`)
             try {
               const response = await db.query(
                 `DELETE FROM ${table_name} ${table_data.search_condition};`
@@ -362,8 +366,9 @@ app.get("/user_info",
 
   app.post("/edit_employee_deps_cols",
     async (req, res) => {
+      console.log("edit_employee_deps_cols requested", "\n");
 
-      const dep_name = req.body.dep_name;
+      const dep_name = `dep_id_${req.body.dep_id}`;
       const submit_method = req.body.submit_method;
 
       if(submit_method === "add"){
@@ -374,9 +379,8 @@ app.get("/user_info",
           )
         
         } catch (error){
-          console.log(`%c  has the following error, when adding columns from employee deps: `, 'background-color:darkred', error); 
+          console.log(`%c  Error when adding columns to employee deps: `, 'background-color:darkred', error); 
         };
-
       } else if (submit_method === "delete"){
         try{
           const response = await db.query(
@@ -385,93 +389,16 @@ app.get("/user_info",
           )
         
         } catch (error){
-          console.log(`%c  has the following error, when removing columns from employee deps: `, 'background-color:darkred', error); 
+          console.log(`%c  Error when removing columns from employee deps: `, 'background-color:darkred', error); 
         };
       }
 
 
 
 
+
     }
   );      
-
-
-
-
-  // ADD EMPOYEES
-
-    // HAS A NEW, EDIT, AND DELETE OPTIONS
-
-    // 1. retrieve information from a form
-
-    // 2. have admin as a yes/no option
-
-    // 3. have section to add user departments from a pool of existing departments
-      // make the selection of departments be a yes/no option in the query
-
-  // ADDING DEPARTMENTS
-
-    // HAS A NEW, EDIT, AND DELETE OPTIONS
-
-    // 1. get input for department name
-
-    // 2. add name to departments table & the employee_departments table
-
-    /* 3. add color for department
-          ensure colours used on website can't be selected, as well as white and black.
-    */
-
-    /* 4. select order position for department
-          preferably a drag and drop to change the order of departments on the fly.
-
-          * This will require other entries to updated should the new departments position
-            an existing entry position
-
-    */    
-
-  // ADD CLIENTS
-
-    // GET CLIENTS IN DATABASE
-
-    // HAS A NEW, EDIT, AND DELETE OPTIONS
-
-  // ADD PROJECTS
-
-    // HAS A NEW, EDIT, AND DELETE OPTIONS
-
-    // 1. select client from a dropdown
-    
-    // 2. get info from a form
-      // * have info text saying production budget is just for departments.
-
-
-  
-  // DEPARTMENT BUDGETS
-
-    // 1. select a project from the dropdown (filter out complete projects)
-
-    // 2. retrieve production budget from projects table
-
-    /* 3. has fields for each department (based on order) 
-          with total budget visible above (which adjusts)
-    */
-
-    /* 4. each department field has a column for % of budget, $ amount, and hours for department. 
-          all are editable and adjust based on input
-          
-          also has a dropdown at the end to select employee to add to job
-            dropdown filters through employess with that department assigned to them
-            gets the employees rate, and affects hours input respectively.
-            hours needs to round to whole numbers
-          
-          has button below each department to add addtional worker
-    */
-
-    /* 5. have a section that shows production dates breakdown
-          based on shipping date 
-          ability to add buffer days between departments  
-
-    */
 
 // *** SQL DATABASE END ***
 

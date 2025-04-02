@@ -57,7 +57,7 @@ export default function Project_department_input({total_production_budget, edit_
         <form className="auto_form" id="edit_project_employee_select_box">
             <h3>Employee Select</h3>
             {edit_btn_clicked && departments.map((item)=>{
-                const department_name = item.department.name;
+                const department_name = `dep_id_${item.department.id}`;
                 return(
                     <div 
                         className="project_department_input_box"

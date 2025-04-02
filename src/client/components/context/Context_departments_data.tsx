@@ -30,6 +30,7 @@ interface Types_context_function {   };
 
 export interface Types_department_data{
     department: {
+        id:number;
         name:string;
         color:string;
     };
@@ -38,6 +39,7 @@ export interface Types_department_data{
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = [{
     department:{
+        id:0,
         name:"",
         color:""
     }
@@ -70,6 +72,7 @@ console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for send_
             const data = response.data.map((item:Types_form_data)=>{
                 return{
                     department:{
+                        id:item.id,
                         name:item.department_name,
                         color:item.department_color
                     }
