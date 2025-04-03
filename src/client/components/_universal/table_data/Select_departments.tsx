@@ -86,13 +86,15 @@ export default function Select_departments({submit_method, send_table_data}:Type
                 table_name: "employee_departments",
                 filter_key: "employee_id",
                 filter_item: current_employee_id
-            })
+            });
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for response.data`,'\n' ,response.data);
             const form_data:Types_form_data = {};
             Object.keys(response.data[0]).map((column_name)=>{
-                if(!column_name.includes("id")){
+                if(!column_name.includes("employee_id") && column_name !== "id"){
                 form_data[column_name] = response.data[0][column_name];
                 }
-            })
+            });
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for Fetched form_data`,'\n' ,form_data);
             set_input_data(form_data);
             send_table_data({
                 table_name:"employee_departments",
@@ -116,8 +118,6 @@ export default function Select_departments({submit_method, send_table_data}:Type
             <h3> Select Departments </h3>
 
             {  departments.map((item)=>{
-
-
                 const key_name = Object.keys(item)[1];
                 const item_val = input_data[key_name];
                 

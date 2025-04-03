@@ -82,16 +82,12 @@ console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_i
                     <Employee_input_form 
                         send_table_data = {handle_form_change} 
                     />
-                    {
-             
-                        <Select_departments 
+                    
+                    <Select_departments 
                         submit_method={submit_method}
                         send_table_data = {handle_form_change}
                     />
-                
-                    } 
-                    
-                    </div>
+                </div>
                 : 
                 <div id="cpe_input_box" className="cp_content_box">
                     <form className="auto_form">

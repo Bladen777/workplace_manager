@@ -312,12 +312,15 @@ app.get("/user_info",
           console.log(`INSERT INTO ${table_name}(${table_data.name_columns}) VALUES(${table_data.name_values});`)
           try {
             const response = await db.query(
-              `INSERT INTO ${table_name}(${table_data.name_columns}) VALUES(${table_data.name_values});`
+              `INSERT INTO ${table_name}(${table_data.name_columns}) VALUES(${table_data.name_values}) RETURNING id;`
             )
-     
+            res.send({
+              item_id: response.rows[0].id,
+              message: `successfully ${sent_submit_method}ed`
+            });
           } catch (error) {
             console.log(`Error adding data to ${table_name}: `,error);
-            res.send(`Error adding data in ${table_name}: ${error}`);
+            res.send({message:`Error adding data in ${table_name}: ${error}`});
           }
         } else if(submit_method === "edit"){
           console.log(
@@ -329,10 +332,12 @@ app.get("/user_info",
             const response = await db.query(
               `UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition};`,
             );
-
+            res.send({
+              message: `successfully ${sent_submit_method}ed`
+            });
           } catch (error) {
             console.log(`Error editing data in ${table_name}: `,error);
-            res.send(`Error editing data in ${table_name}: ${error}`);
+            res.send({message:`Error editing data in ${table_name}: ${error}`});
           } 
         }else if (submit_method === "delete"){
           console.log(`DELETE FROM ${table_name} ${table_data.search_condition};`)
@@ -340,15 +345,18 @@ app.get("/user_info",
               const response = await db.query(
                 `DELETE FROM ${table_name} ${table_data.search_condition};`
               );
+              res.send({
+                message: `successfully ${sent_submit_method}ed`
+              });
             } catch (error) {
               console.log(`Error deleting data in ${table_name}: `,error);
-              res.send(`Error deleting data in ${table_name}: ${error}`);
+              res.send({message:`Error deleting data in ${table_name}: ${error}`});
             }
         }
       }
 
       if(Array.isArray(submit_data)){
-        submit_data.map((item:Types_entry_item)=>{
+        for await(let item of submit_data){
           let adjust_submit_method = sent_submit_method;
           if(sent_submit_method === "add" && item.id){
             adjust_submit_method = "edit"
@@ -359,12 +367,10 @@ app.get("/user_info",
             submit_method:adjust_submit_method
           });
           access_db({table_data:table_data, submit_method: adjust_submit_method});
-        });
-        res.send(`successfully ${sent_submit_method}ed`);
+        };
       } else {
         const table_data:Types_table_data = string_data({entry_item: submit_data, entry_filter_item: filter_item, submit_method:sent_submit_method});
         access_db({table_data:table_data, submit_method:sent_submit_method});
-        res.send(`successfully ${sent_submit_method}ed`);
       }
 
     }

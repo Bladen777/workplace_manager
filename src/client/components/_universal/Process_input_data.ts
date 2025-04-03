@@ -54,7 +54,7 @@ export default function Process_input_data() {
     const update_departments_data = useContext(Use_Context_departments_data).update_func;
 
     const table_data_ref = useRef<Types_table_form_data>({});
-    console.log(`%c Process_input_data `, `background-color:${ log_colors.helper_function }`, `for ${table_data_ref.current}`);
+    console.log(`%c Process_input_data `, `background-color:${ log_colors.helper_function }`, `for`,table_data_ref.current);
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({table_name, form_data}:Types_data_change){
@@ -113,6 +113,19 @@ export default function Process_input_data() {
         if(missing_input !== ""){
             return (`Please enter values for ${missing_input}`)
         }
+        
+        if(section_name === "employees"){
+            const adjust_table_data_ref = {
+                employees: table_data_ref.current.employees,
+                employee_departments: table_data_ref.current.employee_departments
+            }
+            table_data_ref.current = adjust_table_data_ref;
+            const employee_data = table_data_ref.current["employees"][0];
+            if(employee_data.name === ""){
+                const update_form_data = {...table_data_ref.current["employees"][0], name:employee_data.email};
+                table_data_ref.current["employees"] = [update_form_data];
+            }
+        }
 
         let status_message:string = "";
         for await(let table_name of Object.keys(table_data_ref.current)){
@@ -129,15 +142,18 @@ export default function Process_input_data() {
             if(table_name === "employee_departments"){
                 filter_key = "employee_id"
                 if(submit_method === "add"){
-
+                    const update_form_data = {...table_data_ref.current["employee_departments"][0], employee_id:current_item_id.current};
+                    table_data_ref.current["employee_departments"] = [update_form_data];
+                    db_column_names.push(filter_key);
                 }
             } else if (table_name === "departments"){
                 await update_departments_data.now({});
             } else if (table_name === "projects"){
                 filter_item = current_project.id 
             }
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
 
-    
+
             try {
                 const response = await axios.post("/edit_form_data",{
                     table_name: table_name,
@@ -154,19 +170,22 @@ export default function Process_input_data() {
                 }
        
                 console.log("The success_message: ",response.data);
-                status_message = (`${response.data}`);
-
+                status_message = (`${response.data.message}`);
+                if(submit_method === "add"){
+                    current_item_id.current = response.data.item_id;
+                }
             } catch (error) {
                 console.log('%cError posting info to database: ', 'background-color:darkred',error);
                 status_message =("Failed to submit data"); 
             }
+
 
         }
 
         if(section_name === "departments"){
             let dep_id: number = 0; 
             if(submit_method === "add"){
-                
+
                 console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_name`,'\n' ,dep_id);
             } else if(submit_method === "delete"){
 
@@ -184,15 +203,7 @@ export default function Process_input_data() {
             };  
         }
 
-        if(section_name === "employees"){
-            const adjust_table_data_ref = {
-                employees: table_data_ref.current.employees,
-                employee_departments: table_data_ref.current.employee_departments
-            }
-            table_data_ref.current = adjust_table_data_ref;
-        }
-
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for blah`,'\n' , status_message);
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for status_message`,'\n' , status_message);
         return status_message;
     }
 
