@@ -20,7 +20,7 @@ import { Types_form_data } from "../../context/Context_db_table_info.js";
 
 
 interface Types_props{
-    track_selection: Function;
+    is_active:boolean;
     item_data: Types_form_data;
     item_index: number;
     send_selected_ele: Function;
@@ -28,35 +28,39 @@ interface Types_props{
 
 
 // THE COMPONENT 
-function Control_panel_entry({track_selection, item_data, item_index, send_selected_ele}:Types_props) {
+function Control_panel_entry({is_active, item_data, item_index, send_selected_ele}:Types_props) {
     console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Control_panel_entry for ${item_data.name}`);
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
-    const still_selected = track_selection();
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for track_selection`,'\n' ,track_selection);
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for still_selcted for ${item_data.name}`,'\n' ,still_selected);
 
+    useEffect(() =>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for is_active`,'\n' ,is_active);
+    },[is_active])
 
-    const [is_selected, set_is_selected] = useState<boolean>(false);
+    useEffect(() =>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item_data`,'\n' ,item_data);
+    },[item_data])
 
-    if(is_selected === true){
-        
-    } else if(is_selected !== false) {
-        set_is_selected(false);
-    }
+    useEffect(() =>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item_index`,'\n' ,item_index);
+    },[item_index])
+
+    useEffect(() =>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_selected_ele`,'\n' ,send_selected_ele);
+    },[send_selected_ele])
+
 
     // RETURNED VALUES 
     return(            
         <figure
             onClick={()=>{
                 console.log(`%c CONTROL PANEL ENTRY CLICKED `, `background-color:${ log_colors.data }`,`for item_data`,'\n' ,item_data);
-                set_is_selected(true);
-                send_selected_ele(item_data);
+                send_selected_ele({item:item_data, index:item_index});
             }}
             className={
                 item_index % 2 === 0 ? 
-                `cpv_entry ${is_selected && "selected_cpv_entry"}` 
+                `cpv_entry ${is_active && "selected_cpv_entry"}` 
                 : 
-                `cpv_entry cpv_entry_odd ${is_selected && "selected_cpv_entry"}`   
+                `cpv_entry cpv_entry_odd ${is_active && "selected_cpv_entry"}`   
             } 
         >
             <div className="control_panel_entry">
