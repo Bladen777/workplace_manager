@@ -182,7 +182,7 @@ export default function Process_input_data() {
 
         }
 
-        if(section_name === "departments"){
+        if(section_name === "departments" && submit_method !== "edit"){
             let dep_id: number = 0; 
             if(submit_method === "add"){
 

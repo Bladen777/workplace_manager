@@ -287,11 +287,14 @@ app.get("/user_info",
             }
           // PATH IF EDIT IS THE METHOD
           } else if (submit_method === "edit"){
-            if(edit_values === ""){
-              edit_values += `"${column}" = ${data_value}`;
-            } else {
-              edit_values += `, "${column}" = ${data_value}`;
-            };
+            if(column !== 'id'){
+              if(edit_values === ""){
+                edit_values += `"${column}" = ${data_value}`;
+              } else {
+                edit_values += `, "${column}" = ${data_value}`;
+              };
+
+            }
           };
         });
         return {
@@ -302,7 +305,7 @@ app.get("/user_info",
         }
       };
 
-      async function access_db({table_data, submit_method}:{table_data:Types_table_data, submit_method:string}){
+      async function access_db({table_data, submit_method, array_edit}:{table_data:Types_table_data, submit_method:string, array_edit:boolean}){
  
         if(submit_method === "add"){
           console.log(
@@ -314,10 +317,13 @@ app.get("/user_info",
             const response = await db.query(
               `INSERT INTO ${table_name}(${table_data.name_columns}) VALUES(${table_data.name_values}) RETURNING id;`
             )
-            res.send({
-              item_id: response.rows[0].id,
-              message: `successfully ${sent_submit_method}ed`
-            });
+            if(!array_edit){
+              res.send({
+                item_id: response.rows[0].id,
+                message: `successfully ${sent_submit_method}ed`
+              });
+              console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
+            }
           } catch (error) {
             console.log(`Error adding data to ${table_name}: `,error);
             res.send({message:`Error adding data in ${table_name}: ${error}`});
@@ -332,9 +338,12 @@ app.get("/user_info",
             const response = await db.query(
               `UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition};`,
             );
-            res.send({
-              message: `successfully ${sent_submit_method}ed`
-            });
+            if(!array_edit){
+              res.send({
+                message: `successfully ${sent_submit_method}ed`
+              });
+              console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
+            }
           } catch (error) {
             console.log(`Error editing data in ${table_name}: `,error);
             res.send({message:`Error editing data in ${table_name}: ${error}`});
@@ -345,9 +354,12 @@ app.get("/user_info",
               const response = await db.query(
                 `DELETE FROM ${table_name} ${table_data.search_condition};`
               );
-              res.send({
-                message: `successfully ${sent_submit_method}ed`
-              });
+              if(!array_edit){
+                res.send({
+                  message: `successfully ${sent_submit_method}ed`
+                });
+                console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
+              }
             } catch (error) {
               console.log(`Error deleting data in ${table_name}: `,error);
               res.send({message:`Error deleting data in ${table_name}: ${error}`});
@@ -366,11 +378,15 @@ app.get("/user_info",
             entry_filter_item:item.id ? item.id : filter_item, 
             submit_method:adjust_submit_method
           });
-          access_db({table_data:table_data, submit_method: adjust_submit_method});
+          access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
         };
+        res.send({
+          message: `successfully ${sent_submit_method}ed`
+        });
+        console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
       } else {
         const table_data:Types_table_data = string_data({entry_item: submit_data, entry_filter_item: filter_item, submit_method:sent_submit_method});
-        access_db({table_data:table_data, submit_method:sent_submit_method});
+        access_db({table_data:table_data, submit_method:sent_submit_method, array_edit:false});
       }
 
     }

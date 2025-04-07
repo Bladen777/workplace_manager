@@ -1,14 +1,14 @@
 import { useContext, useRef, useState, useEffect } from "react";
 
 // HOOK IMPORTS
-import useFindClickPosition from "../../hooks/useFindClickPosition.js";
+import useFindClickPosition from "../../../hooks/useFindClickPosition.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_table_info } from "../context/Context_db_table_info.js";
-import { Use_Context_table_data } from "../context/Context_get_table_data.js";
+import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
+import { Use_Context_table_data } from "../../context/Context_get_table_data.js";
 
 // LOG STYLE IMPORTS
-import { log_colors } from "../../../styles/_log_colors.js";
+import { log_colors } from "../../../../styles/_log_colors.js";
 
 interface Types_active_sort_btn{
     order_key?:string;

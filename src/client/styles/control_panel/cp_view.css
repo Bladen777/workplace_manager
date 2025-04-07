@@ -1,9 +1,12 @@
 /* CONTROL PANEL VIEW */
 /* *** classes and ids with "cpv" are abbreviated for control panel view ****/
+.selected_cpv_entry{
+    border: var(--section_attention) .25rem solid ;
+}
+
 .cpv_entry{
     background-color: var(--section_accent);
     cursor: pointer;
-
 }
 
 .cpv_entry_odd{

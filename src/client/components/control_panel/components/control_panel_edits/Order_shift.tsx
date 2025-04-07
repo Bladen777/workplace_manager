@@ -181,13 +181,13 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 return item;
             };
         });
-
         entry_indexes.current = new_entry_indexes;
     }
 
  
     // SEND DATA TO PARENT, AND UPDATE CURRENT TABLE DATA FROM THE CHILD COMPONENT
     function change_table_data(form_data:Types_change_input_data){
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
         let changed_entry_index = table_data_ref.current.findIndex((item)=>{
             return item.id === form_data.id;
         });
@@ -202,7 +202,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     }
 
     // SET THE INITIAL DATA VALUES
-    useEffect(() =>{
+    function assign_initial_data(){
         console.log(`%c ENTRY ELEMENTS SET `, `background-color:${ log_colors.important} `);
         let temp_table_data:Types_form_data[] = [...initial_table_data];
         if(submit_method === "add"){
@@ -244,13 +244,14 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
         send_table_data({form_data:temp_table_data});
         set_table_data(temp_table_data);
         set_entry_data(entries);
-    },[]);
+    };
+ 
   
-
     // CREATE THE ELEMENTS TO BE DISPLAYED
     function create_inputs(){
         const inputs = table_data.map((item:Types_form_data, index:number)=>{
             let key_name = `order_ele_${index}`
+            
             const index_adjust = entry_indexes.current[index]
             const row =  index_adjust + 1;
 
@@ -295,14 +296,18 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                     >
                         <p>☰</p>
                     </button>
-                    {entry_data[index_adjust]}
+                    {entry_data[index]}
                 </figure>
             )
         })
         return inputs;
     }
 
+    useEffect(() =>{
+        assign_initial_data()
+    },[]);
 
+    // RETURNED VALUES 
     return (
         <div id={`${table_info.table_name}_o_shift_box`} className="o_shift_box cp_content_box">
             {table_data && create_inputs()}

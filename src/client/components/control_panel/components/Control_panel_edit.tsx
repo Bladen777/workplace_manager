@@ -50,6 +50,7 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
     }
 
     async function post_form(){
+        console.log(`%c POST FORM `, `background-color:${ log_colors.data }`);
         const response:string = await process_data.post_form({submit_method:submit_method});
         console.log(`%c THE STATUS MESSAGE `, `background-color:${ log_colors.data }`,`for response`,'\n' ,response);
         set_status_message(response)

@@ -1,19 +1,19 @@
 import { useContext} from "react";
 
 // CONTEXT IMPORTS
-import { Use_Context_table_info } from "../context/Context_db_table_info.js";
+import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
 
 
 // LOG STYLES
-import { log_colors } from "../../../styles/_log_colors.js";
+import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
-import { Types_column_info } from "../context/Context_db_table_info.js";
-import { Types_form_data } from "../context/Context_db_table_info.js";
+import { Types_column_info } from "../../context/Context_db_table_info.js";
+import { Types_form_data } from "../../context/Context_db_table_info.js";
 
 
 // THE COMPONENT
-export default function Control_panel_entries({table_item}:{table_item:Types_form_data}) {
+export default function Control_panel_entry_data({table_item}:{table_item:Types_form_data}) {
     const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_entries`,'\n' ,table_item);
 
