@@ -40,7 +40,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
                 table_name: "employee_departments",
                 sort_field: "employee_id",
                 filter_key: `"${department_name}"`,
-                filter_item: "5::Bit(1)"
+                filter_item: "1"
 
             })
             const employee_ids = response.data;

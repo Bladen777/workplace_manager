@@ -1,15 +1,19 @@
 
-import { createContext, ReactNode, useEffect, useRef, useState } from "react"
+import { useCallback} from "react"
 
 // LOG STYLE IMPORTS
 import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-interface Types_props{
+interface Types_click_track{
     ele_name:string;
     active:boolean;
     ele_pos?: Types_click_ele_pos | undefined;
     update_func?: Function;
+}
+
+interface Types_callback_click_track extends Types_click_track{
+    e:MouseEvent;
 }
 
 interface Types_click_ele_pos{
@@ -19,45 +23,49 @@ interface Types_click_ele_pos{
     bottom: number;
 }
 
-export default function useFindClickPosition() {
-  console.log(`%c HOOK `, `background-color:${ log_colors.hook }`,`for Find Click Position`);  
+interface Types_client_position{
+    x:number;
+    y:number;
+}
 
-    // function to check if the current click is on the targetted element
-    function track_click({ele_name, active, ele_pos, update_func}:Types_props){
-        let is_active = active;
-        document.body.addEventListener("click", (e)=>{
+export default function useFindClickPosition() {
+    console.log(`%c HOOK `, `background-color:${ log_colors.hook }`,`for Find Click Position`);
+
+    function track_click({ele_name, active, ele_pos, update_func }:Types_click_track){
+        document.body.addEventListener("click", handle_click);
+
+        function handle_click(e:MouseEvent){
+
+            let is_active:boolean = active;
+
+            const click_pos:Types_client_position = {
+                x: e.clientX, 
+                y: e.clientY
+            }
+            
             if(is_active){
                 console.log(`   %c CLICK TRACK ACTIVE `, `background-color:${ log_colors.hook }`, `for ${ele_name}` );
-
-                const screen_pos = {
-                    x: e.clientX, 
-                    y: e.clientY
-                }
- 
                 console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for track_ele_pos`,  ele_pos,
                     '\n', "right", ele_pos!.right,
                     '\n', "left", ele_pos!.left,
                     '\n', "top", ele_pos!.top,
                     '\n', "bottom", ele_pos!.bottom,
                 );
-                console.log("   the screen_pos: ", screen_pos.x , ", ", screen_pos.y);
-
-                if( screen_pos.x > ele_pos!.right || 
-                    screen_pos.x < ele_pos!.left ||
-                    screen_pos.y > ele_pos!.bottom ||
-                    screen_pos.y < ele_pos!.top
+                console.log("   the click_pos: ", click_pos.x , ", ", click_pos.y);
+    
+                if( click_pos.x > ele_pos!.right || 
+                    click_pos.x < ele_pos!.left ||
+                    click_pos.y > ele_pos!.bottom ||
+                    click_pos.y < ele_pos!.top
                 ){
                     console.log(`%c CLICKED OUTSIDE `, `background-color:${ log_colors.important }`);
                     update_func!(true);
                     is_active = false;
+                    document.body.removeEventListener("click",handle_click);
                 } 
             };
-            e.stopPropagation()
-        });
-        
+        }
+    }
 
-    };
-    
 return track_click;
 }
-
