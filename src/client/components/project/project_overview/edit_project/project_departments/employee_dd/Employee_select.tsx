@@ -11,9 +11,7 @@ import Input_drop_down from "../../../../../_universal/drop_downs/Input_drop_dow
 import useFindClickPosition from "../../../../../hooks/useFindClickPosition.js";
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../../../../styles/_log_colors.js"
+  /* LOGS */ import { log_colors } from "../../../../../../styles/_log_colors.js"
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../../control_panel/context/Context_db_table_info.js";
@@ -25,7 +23,7 @@ interface Types_props{
 
 
 // THE COMPONENT 
-export default function Employee_dd({send_table_data, department_name}:Types_props) {
+export default function Employee_select({send_table_data, department_name}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_dd for: `, department_name);
 
 
@@ -33,7 +31,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
     const [selected_employees, set_selected_employess] = useState<ReactElement[]>([]);
 
 
-    // GET CURRENT LIST OF CLIENT NAMES
+    // GET CURRENT LIST OF MATCHING EMPLOYEES
     async function fetch_employee_list(){
         try{
             const response = await axios.post("/get_table_info",{
@@ -60,7 +58,7 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
                   console.log(`%c  has the following error: `, 'background-color:darkred', error); 
                 };
             };
-            //console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
+            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
             set_employee_list(employee_data);
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
@@ -71,7 +69,8 @@ export default function Employee_dd({send_table_data, department_name}:Types_pro
 
         const employee_rate:number = 0;
 
-        const employee_input = <P_employee_edit 
+        const employee_input = <P_employee_edit
+            key={`${item}`} 
             name = {item}
             rate = {employee_rate}
         />

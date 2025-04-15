@@ -10,9 +10,7 @@ import { Use_Context_current_table_item } from "../../context/Context_current_ta
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_column_info } from "../../context/Context_db_table_info.js";
@@ -56,7 +54,9 @@ export default function Employee_input_form({send_table_data}:Types_props) {
         send_table_data({form_data:{input: input, db_column:db_column}})
     }
 
-    // RETURNED VALUES 
+// MEMOS AND EFFECTS    
+
+// RETURNED VALUES 
     return(
             <form className="auto_form">
                 <Form_auto_input 

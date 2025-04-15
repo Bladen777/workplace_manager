@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {useContext, useState } from "react";
 
 // COMPONENT IMPORTS
 import Money_input from "./Money_input.js";
@@ -7,13 +7,14 @@ import Money_input from "./Money_input.js";
 import { Use_Context_table_info } from "../../control_panel/context/Context_db_table_info.js";
 import { Use_Context_current_table_item } from "../../control_panel/context/Context_current_table_item.js";
 
+// HOOK IMPORTS
+
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+
 // TYPE DEFINITIONS 
 import { Types_column_info } from "../../control_panel/context/Context_db_table_info.js";
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
-
-// LOG STYLES
-import { log_colors } from "../../../styles/_log_colors.js";
-
 
 export interface Types_new_entry{
     column_info: Types_column_info;
@@ -33,7 +34,7 @@ export interface Types_input_change{
     db_column:string;
 }
 
-
+// THE COMPONENT
 export default function Form_auto_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
 
     let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
@@ -64,11 +65,17 @@ export default function Form_auto_input({column_info, table_data_object, send_ta
             send_table_data({input: input, db_column:db_column})
         }
 
+// MEMOS AND EFFECTS        
+        /*
         useMemo(()=>{
-            table_data_object && set_input_data(table_data_object!)
+            if(current_table_data !== table_data_object){
+                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_object`,'\n' ,table_data_object);
+                table_data_object && set_input_data(table_data_object!)
+            }
         },[table_data_object])
+        */
       
-  
+// RETRURNED VALUES
         if(item_data.input_type === "order" ) {
             return
         }else if (item_data.name === "pay_type") {

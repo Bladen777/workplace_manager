@@ -7,9 +7,7 @@ import { useRef, useEffect, useState } from "react";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_entry_input } from "./Form_auto_input.js";
@@ -135,12 +133,13 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
         }
     }
 
+// MEMOS AND EFFECTS    
     useEffect(() =>{
         const cursor_pos:number = input_cursor_pos.current !== -1 ? input_cursor_pos.current : 0;
         money_input_ref.current?.setSelectionRange(cursor_pos, cursor_pos);
     })
     
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <div className="auto_form_input" >
             <label className="auto_form_input_label">

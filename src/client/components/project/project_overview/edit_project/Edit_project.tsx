@@ -12,12 +12,9 @@ import { Use_Context_project } from "../../context/Context_projects.js";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 import "../../../../styles/project/edit_project.css"
 import "../../../../styles/_universal/form_dd.css"
-
-// LOG STYLE 
-import { log_colors } from "../../../../styles/_log_colors.js";
-
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../control_panel/context/Context_db_table_info.js";
@@ -162,13 +159,15 @@ export default function Edit_project() {
         set_status_message(response)
     }
 
+// MEMOS AND EFFECTS    
     useEffect(() =>{
         handle_form_change({table_name:"projects", form_data:starting_data})
         },[])
 
 
         console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for production_budget`,'\n' ,production_budget);
-    // RETURNED VALUES 
+
+// RETURNED VALUES 
     return(
         <section id="edit_project_container" >
             <button 
@@ -205,18 +204,6 @@ export default function Edit_project() {
                                         send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
                                     />
                                 )
-                            } else if(column.column_name.includes("budget")){
-                                return(
-                                    <Form_auto_input
-                                        key={`input_for_${column.column_name}`}
-                                        column_info = {column}
-                                        table_data_object={initial_form_data}
-                                        send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
-                                    />
-                                )
-
-
-
                             } else {
                                 return(
                                     <Form_auto_input

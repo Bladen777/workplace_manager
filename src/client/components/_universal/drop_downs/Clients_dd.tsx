@@ -9,11 +9,7 @@ import Input_drop_down from "./Input_drop_down.js";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
-
-
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 
@@ -40,13 +36,13 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
         };
     }
 
-
+// MEMOS AND EFFECTS
     useEffect(() =>{
       fetch_client_list()
     },[])
 
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <label className="form_dd auto_form_input">
             <p>Client:</p>

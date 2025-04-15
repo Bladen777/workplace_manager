@@ -8,9 +8,7 @@ import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
@@ -29,16 +27,18 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
     const [department_budget, set_department_budget] = useState<number>(0);
     const [department_percent, set_department_percent] = useState<number>(0);
 
+
     function find_percent(){        
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for percent ran`);
         let budget_percent:number = 0
         if(total_budget !== 0){
             budget_percent = Number(((department_budget/total_budget)*100).toFixed(0));
         }
 
+
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total_budget`,'\n' ,total_budget);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget_percent`,'\n' ,budget_percent); 
+
 
        set_department_percent(budget_percent);
     }
@@ -61,15 +61,12 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
         adjust_budget_used({used:(new_department_budget - department_budget)});
     }
 
+// MEMOS AND EFFECTS    
     useMemo(()=>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for memochanged`);
-        find_percent()
+        //find_percent()
     },[ department_budget,total_budget])
 
-
-
-
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <div className="project_department_budget_box">
         <Form_auto_input 

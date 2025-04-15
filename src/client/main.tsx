@@ -12,6 +12,7 @@ import App from "./App.js";
 
 
 // STYLE IMPORTS
+  /* LOGS */ import "./styles/_log_colors.js"
 import "./styles/_universal/main.css";
 import "./styles/_universal/general_styling.css"
 import "./styles/_universal/colors.css"

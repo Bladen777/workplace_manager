@@ -8,10 +8,7 @@ import { Use_Context_departments_data } from "../../../context/Context_departmen
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-
-import { log_colors } from "../../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_department_data } from "../../../context/Context_departments_data.js";
@@ -51,11 +48,12 @@ export default function Employee_deps({employee_id}:Types_props) {
 
     }
 
+// MEMOS AND EFFECTS
     useEffect(() =>{
       fetch_employee_deps()
     },[])
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <div className="employee_deps_view_box">
             {employee_departments.map(({department})=>{

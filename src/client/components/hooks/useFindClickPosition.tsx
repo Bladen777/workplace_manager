@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
-// LOG STYLE IMPORTS
-import { log_colors } from "../../styles/_log_colors.js";
+// STYLE IMPORTS
+  /* LOGS */import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 interface Types_click_track{
@@ -24,7 +24,7 @@ interface Types_client_position{
 }
 
 export default function useFindClickPosition() {
-    console.log(`%c HOOK `, `background-color:${ log_colors.hook }`,`for Find Click Position`);
+    //console.log(`%c HOOK `, `background-color:${ log_colors.hook }`,`for Find Click Position`);
     const trackers_open = useRef<number>(0);
 
     function track_click({ele_name, active, ele_pos, update_func }:Types_click_track){

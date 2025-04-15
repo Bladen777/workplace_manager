@@ -6,11 +6,18 @@ import AnimatedOutlet from "./routes/_Animated_Outlet.js";
 // CONTEXT IMPORTS
 import {Provide_Context_user_info} from "./components/user_info/Context_user_info.js";
 
-// LOG STYLE IMPORTS
-import { log_colors } from "./styles/_log_colors.js";
+// HOOK IMPORTS
+
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "./styles/_log_colors.js";
+// TYPE DEFINITIONS
 
 function App() {
   console.log(`%c ROUTE `, `background-color:${log_colors.route}`, `App`);
+
+// MEMOS AND EFFECTS
+
+// RETURNED VALUES
   return (
     <>
         <Provide_Context_user_info>
@@ -23,3 +30,4 @@ function App() {
 }
 
 export default App
+

@@ -1,7 +1,7 @@
 import { memo, useContext, useEffect, useMemo, useState } from "react";
 
 // COMPONENT IMPORTS 
-import Employee_dd from "./employee_dd/Employee_dd.js";
+import Employee_select from "./employee_dd/Employee_select.js";
 import Pd_budgets from "./Pd_budget.js";
 
 import Process_input_data from "../../../../_universal/Process_input_data.js";
@@ -12,10 +12,8 @@ import { Use_Context_departments_data } from "../../../../context/Context_depart
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
 import "../../../../../styles/project/pd_input.css"
-
-// LOG STYLE 
-import { log_colors } from "../../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_data_change } from "../../../../_universal/Process_input_data.js";
@@ -28,27 +26,11 @@ interface Types_props {
 }
 
 
-
-
 // THE COMPONENT 
 function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used}:Types_props) {
     console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_input`);
 
-    useEffect(()=>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_name`,'\n' ,total_production_budget);
-    },[total_production_budget])
-
-    useEffect(()=>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total_budget`,'\n' ,edit_btn_clicked);
-    },[edit_btn_clicked])
-
-    useEffect(()=>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for adjust_budget_used`,'\n' ,adjust_budget_used);
-    },[adjust_budget_used])
-
-
     const departments = useContext(Use_Context_departments_data).show_context;
-
     const process_data = Process_input_data();
 
     function handle_form_change({form_data}:Types_data_change){
@@ -64,8 +46,9 @@ function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used
         return new_text;
     }
 
+// MEMOS AND EFFECTS
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <form className="auto_form" id="edit_project_employee_select_box">
             <h3>Employee Select</h3>
@@ -84,7 +67,7 @@ function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used
                             adjust_budget_used={(value:number)=>{adjust_budget_used(value)}}
                         />
                 
-                        <Employee_dd
+                        <Employee_select
                             department_name = {department_name}
                             send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
                         />

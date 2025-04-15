@@ -10,9 +10,7 @@ import { Use_Context_departments_data } from "../../context/Context_departments_
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
@@ -105,6 +103,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
         };
     }
 
+// MEMOS AND EFFECTS    
     useEffect(() =>{
         define_department_inputs()
         if(submit_method === "edit"){
@@ -112,7 +111,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
         }
     },[])
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <form className="select_departments_form">
             <h3> Select Departments </h3>

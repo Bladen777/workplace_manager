@@ -1,15 +1,18 @@
-
-
 // COMPONENT IMPORTS
 import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
 import Date_tracker from "./project_overview_comps/Date_tracker.js"
-import Project_details from "./project_overview_comps/Project_details.js"
+import Project_details from "./project_overview_comps/Project_details.js" 
 
-// STYLE IMPORTS 
+// CONTEXT IMPORTS 
+
+// HOOK IMPORTS 
+
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 import "../../../styles/project/project_overview.css"
-import { log_colors } from "../../../styles/_log_colors.js";
 
+// TYPE DEFINITIONS
 
 // THE COMPONENT
 export default function Project_overview() {
@@ -33,6 +36,9 @@ export default function Project_overview() {
       *** EMPLOYEES ONLY GET TO VIEW THE INFORMATION RELAVENT TO THEIR ASSIGNED PROJECTS
   */
 
+// MEMOS AND EFFECTS      
+
+// RETURNED VALUES      
   return (
     <div id="project_overview" className="general_section">
       <h1 id="project_overview_title">Project Overview</h1>

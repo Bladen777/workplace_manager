@@ -13,12 +13,13 @@ import { Provide_Context_current_table_item } from "../components/control_panel/
 import { Provide_Context_project } from "../components/project/context/Context_projects.js";
 import { Provide_Context_departments_data } from "../components/context/Context_departments_data.js";
 
+// HOOK IMPORTS
+
 // STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
 import "../styles/home.css"
 
-// LOG STYLE IMPORTS
-import { log_colors } from "../styles/_log_colors.js";
-
+// TYPE DEFINITIONS
 
 // THE COMPONENT
 export default function Home() {
@@ -27,9 +28,12 @@ export default function Home() {
   const update_user_info = useContext(Use_Context_user_info).update_func;
   const user_info = useContext(Use_Context_user_info).show_context;
 
+// MEMOS AND EFFECTS  
   useEffect(() =>{
     update_user_info.now();
   },[])
+
+// RETRURNED VALUES  
   if(user_info.email !== "wait"){
     return (
       <>

@@ -9,9 +9,7 @@ import { Use_Context_table_info } from "./Context_db_table_info.js";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
 import { Types_form_data } from "./Context_db_table_info.js";

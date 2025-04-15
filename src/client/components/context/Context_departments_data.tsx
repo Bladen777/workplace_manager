@@ -8,9 +8,7 @@ import axios from "axios";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
 import { Types_form_data } from "../control_panel/context/Context_db_table_info.js";

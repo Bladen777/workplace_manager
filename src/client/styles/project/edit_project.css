@@ -72,7 +72,7 @@
 
 @keyframes toggle_input_box_visibility {
     0%{
-        height: 20rem;
+        height: 40rem;
         padding: 1rem;
         
     }

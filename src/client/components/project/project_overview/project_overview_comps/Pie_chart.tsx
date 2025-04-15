@@ -1,8 +1,18 @@
+// COMPONENT IMPORTS 
+
+// CONTEXT IMPORTS 
+
+// HOOK IMPORTS 
+
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+
+// TYPE DEFINITIONS
+
+// THE COMPONENT 
 export default function Pie_chart() {
+    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pie_chart`);
 
-
-    // Degree will need to be retrieved from employee budgets
-    // color will be retrieved from departments 
 
     const chart_data = [
         {
@@ -24,18 +34,21 @@ export default function Pie_chart() {
         .map(item => `${item.color} 0 ${item.degree}deg`)
         .join(", ")
     })`;
- 
- 
-    return (
-    <div id="pie_chart" className="project_overview_content_box">
-        Pie_chart
-        <div    id="pie_chart_graphic"
-                style={{backgroundImage: gradient
-             
-                }}
-        >
 
+// MEMOS AND EFFECTS
+
+
+// RETURNED VALUES 
+    return (
+        <div id="pie_chart" className="project_overview_content_box">
+            Pie_chart
+            <div    id="pie_chart_graphic"
+                    style={{backgroundImage: gradient
+                
+                    }}
+            >
+
+            </div>
         </div>
-    </div>
-  )
+    );
 }

@@ -10,13 +10,10 @@ import { Use_Context_current_table_item } from "../control_panel/context/Context
 import { Use_Context_departments_data } from "../context/Context_departments_data.js";
 import { Use_Context_project } from "../project/context/Context_projects.js";
 
-
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../control_panel/context/Context_db_table_info.js";
@@ -36,7 +33,7 @@ export interface Types_data_change {
     form_data: Types_input_change | Types_form_data[];
 }
 
-// THE COMPONENT 
+// THE HELPER FUNCTION 
 export default function Process_input_data() {
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
@@ -209,7 +206,7 @@ export default function Process_input_data() {
 
 
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return({
         handle_form_change: ({table_name, form_data}:Types_data_change) => handle_form_change({table_name, form_data}),
         post_form: async ({submit_method}:Types_post_form) => await post_form({submit_method})

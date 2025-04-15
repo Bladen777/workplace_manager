@@ -8,9 +8,7 @@ import { createContext, useContext, useState, ReactNode } from "react"
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
 interface Types_context {

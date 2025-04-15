@@ -10,11 +10,11 @@ import { Use_Context_table_data } from "./context/Context_get_table_data.js"
 import { Use_Context_current_table_item } from "./context/Context_current_table_item.js"
 import { Provide_Context_current_table_item } from "./context/Context_current_table_item.js"
 
-// STYLE IMPORTS
-import "../../styles/control_panel/control_panel.css"
+// HOOK IMPORTS
 
-// LOG STYLE IMPORTS
-import { log_colors } from "../../styles/_log_colors.js"
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js"
+import "../../styles/control_panel/control_panel.css"
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "./context/Context_db_table_info.js"
@@ -53,12 +53,13 @@ export default function Control_panel() {
         };
     }
 
-    // SETTING CURRENT ITEM
-    
+
+// MEMOS AND EFFECTS
     useMemo(() =>{
         update_context("clients")
       },[])
 
+// RETRURNED VALUES      
     return (
         <section id="control_panel" className="general_section">
             <h1 id="control_panel_title">Control Panel</h1>

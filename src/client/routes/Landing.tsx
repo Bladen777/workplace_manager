@@ -1,18 +1,30 @@
 import {  Link } from "react-router-dom";
 
+// COMPONENT IMPORTS 
+
+// CONTEXT IMPORTS 
+
+// HOOK IMPORTS 
+
 // STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
 import "../styles/landing.css"
 
-// LOG STYLE IMPORTS
-import { log_colors } from "../styles/_log_colors.js";
+// TYPE DEFINITIONS
 
-// THE COMPONENT
+// THE COMPONENT 
 export default function Landing() {
-    console.log(`%c ROUTE `, `background-color:${log_colors.route}`, `Landing`);
+  console.log(`%c ROUTE `, `background-color:${log_colors.route}`, `Landing`);
 
   const location = {
     this_location: 0,
   }
+
+
+// MEMOS AND EFFECTS
+
+
+// RETURNED VALUES 
   return (
     <main id="landing_page" className="main_page">
 

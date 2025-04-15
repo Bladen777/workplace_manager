@@ -13,11 +13,11 @@ import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 import { Use_Context_current_table_item } from "../context/Context_current_table_item.js";
 import { Use_Context_departments_data } from "../../context/Context_departments_data.js";
 
-// STYLE IMPORTS
-import "../../../styles/control_panel/cp_edit.css"
+// HOOK IMPORTS
 
-// LOG STYLE IMPORTS
-import { log_colors } from "../../../styles/_log_colors.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+import "../../../styles/control_panel/cp_edit.css"
 
 // TYPE DEFINITIONS 
 import { Types_form_data } from "../context/Context_db_table_info.js";
@@ -56,14 +56,15 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
         set_status_message(response)
     }
 
+// MEMOS AND EFFECTS    
     useEffect(() =>{
         handle_form_change({table_name:section_name, form_data:starting_data})
       },[])
   
 
-console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
+    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return (
         <article id="control_panel_edits" className="control_panel_action_box">
             <h3>{submit_method === "add" ? "Add" : "Edit"} {section_name}</h3>

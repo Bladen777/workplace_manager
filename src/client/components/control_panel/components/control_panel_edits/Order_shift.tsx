@@ -7,11 +7,11 @@ import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
 import { Use_Context_table_data } from "../../context/Context_get_table_data.js";
 
-// STYLE IMPORTS
-import "../../../../styles/control_panel/cp_order_shift.css"
+// HOOK IMPORTS
 
-// LOG STYLES
-import { log_colors } from "../../../../styles/_log_colors.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+import "../../../../styles/control_panel/cp_order_shift.css"
 
 // TYPE DEFINITIONS
 import { Types_form_data} from "../../context/Context_db_table_info.js";
@@ -303,11 +303,12 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
         return inputs;
     }
 
+// MEMOS AND EFFECTS
     useEffect(() =>{
         assign_initial_data()
     },[]);
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return (
         <div id={`${table_info.table_name}_o_shift_box`} className="o_shift_box cp_content_box">
             {table_data && create_inputs()}

@@ -1,19 +1,18 @@
-import { ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
 import Control_panel_sort_button from "./control_panel_view/Control_panel_sort_button.js";
 import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 import Control_panel_entry from "./control_panel_view/Control_panel_entry.js";
 
-
 // CONTEXT IMPORTS
 import { Use_Context_table_info } from "../context/Context_db_table_info.js";
 
-// STYLE IMPORTS
-import "../../../styles/control_panel/cp_view.css"
+// HOOK IMPORTS
 
-// LOG STYLE IMPORTS
-import { log_colors } from "../../../styles/_log_colors.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+import "../../../styles/control_panel/cp_view.css"
 
 // TYPE DEFINITIONS 
 import { Types_form_data } from "../context/Context_db_table_info.js";
@@ -61,6 +60,11 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
         set_entries(create_initial_entries())
     },[section_name])
 
+
+    const handle_callback_selected_entry = useCallback(({item, index}:{item:Types_form_data, index:number})=>{
+        handle_selected_entry(item, index)
+    },[entry_selected])
+
     function handle_selected_entry(item:Types_form_data, index:number){
         if(!entry_selected){
             set_entry_selected(true)
@@ -77,12 +81,10 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
         selected_entry.current = {data:item, index:index};
     };
 
-    const handle_callback_selected_entry = useCallback(({item, index}:{item:Types_form_data, index:number})=>{
-        handle_selected_entry(item, index)
-    },[entry_selected])
 
+// MEMOS AND EFFECTS    
 
-    // RETURNED VALUES
+// RETURNED VALUES
     return (
         <article id="control_panel_views" className="control_panel_action_box">
             <div id="cpv_entry_box" className="cp_content_box">

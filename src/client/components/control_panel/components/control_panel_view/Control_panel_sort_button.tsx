@@ -1,15 +1,18 @@
 import { useContext, useRef, useState, useEffect } from "react";
 
-// HOOK IMPORTS
-import useFindClickPosition from "../../../hooks/useFindClickPosition.js";
+// COMPONENT IMPORTS
 
 // CONTEXT IMPORTS
 import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
 import { Use_Context_table_data } from "../../context/Context_get_table_data.js";
 
-// LOG STYLE IMPORTS
-import { log_colors } from "../../../../styles/_log_colors.js";
+// HOOK IMPORTS
+import useFindClickPosition from "../../../hooks/useFindClickPosition.js";
 
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+
+// TYPE DEFINITIONS
 interface Types_active_sort_btn{
     order_key?:string;
     direction?:string;
@@ -55,7 +58,8 @@ export default function Control_panel_sort_button() {
             </button>
         )
     }
-    
+
+// MEMOS AND EFFECTS    
     useEffect(() =>{
         clicked && track_click({
             ele_name:"Sort options Button" ,
@@ -65,7 +69,7 @@ export default function Control_panel_sort_button() {
         })
     },[clicked])
 
-
+// RETRURNED VALUES
     return (
         <div id="cpv_sort_btn" >
         {clicked &&

@@ -1,11 +1,14 @@
 import { useContext} from "react";
 
+// COMPONENT IMPORTS
+
 // CONTEXT IMPORTS
 import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
 
+// HOOK IMPORTS
 
-// LOG STYLES
-import { log_colors } from "../../../../styles/_log_colors.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
 import { Types_column_info } from "../../context/Context_db_table_info.js";
@@ -27,7 +30,6 @@ export default function Control_panel_entry_data({table_item}:{table_item:Types_
                 text = first_letter + text.slice(1);
                 return text;
             }
-
             if(column_name.includes("name")){
                 entry_name = table_item[column_name];
             } else if(column_name.includes("color")){
@@ -47,11 +49,14 @@ export default function Control_panel_entry_data({table_item}:{table_item:Types_
             };
         });
 
-        return(
-            <>
-                <h3>{entry_name}</h3>
-                {entry_item}
-            </>
-        ); 
+// MEMOS AND EFFECTS
+
+// RETRURNED VALUES        
+    return(
+        <>
+            <h3>{entry_name}</h3>
+            {entry_item}
+        </>
+    ); 
       
 }

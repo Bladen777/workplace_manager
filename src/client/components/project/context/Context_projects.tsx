@@ -8,9 +8,7 @@ import axios from "axios";
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
@@ -105,9 +103,7 @@ export function Provide_Context_project({children}:{children:ReactNode}) {
         };
     } 
 
-    useEffect(() =>{
-      fetch_project_table_info();
-    },[])
+
 
     // GET THE PROJECTES IN THE DATABASE
     async function fetch_projects({ section_name, sort_field, filter_key, filter_item, order_key, order_direction }:Types_get_table_data = {}){
@@ -128,7 +124,6 @@ export function Provide_Context_project({children}:{children:ReactNode}) {
         }
     }
 
-
     // UPDATE THE CONTEXT 
     async function update_context({current_project_id }:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project`);
@@ -141,6 +136,13 @@ export function Provide_Context_project({children}:{children:ReactNode}) {
             table_info: send_context.table_info
         });
     }
+
+
+// MEMOS AND EFFECTS
+
+    useEffect(() =>{
+        fetch_project_table_info();
+      },[])
 
 // RETURN THE CONTEXT PROVIDER 
     return (

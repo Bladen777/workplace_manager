@@ -8,9 +8,7 @@ import { useState, useRef, useEffect, useMemo, ReactElement } from "react";
 import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 
 // STYLE IMPORTS
-
-// LOG STYLE 
-import { log_colors } from "../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
@@ -99,7 +97,7 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
 
 
     function find_matched_items(){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for DD Table Data`,'\n' ,table_data);
+        console.log(`       %c DATA `, `background-color:${ log_colors.data }`,`for DD Table Data`,'\n' ,table_data);
         
         const searched_items: string[] = [];
 
@@ -115,9 +113,7 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
             form_table_data.forEach((item:Types_form_data)=>{
                 let item_name:string = "";  
                 Object.keys(item).forEach((obj_name:string)=>{
-                    //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for obj_name`,'\n' ,obj_name);
                     if(obj_name.includes("name")){
-                        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item[obj_name]`,'\n' ,item[obj_name]);
                         if(typeof(item[obj_name]) === "string"){
                             item_name = item[obj_name]
                         }
@@ -128,10 +124,6 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
                 if(search_name.includes(search_input)){
                     searched_items.push(item_name)
                 }
-
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item_name`,'\n' ,item_name);
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
-
             })
         }
             
@@ -159,6 +151,7 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
         }
     }
 
+// MEMOS AND EFFECTS
     useMemo(()=>{
         find_matched_items()
     },[selected_item, table_data])
@@ -168,7 +161,7 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
         handle_click_track()
     },[open_dd])
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <div ref={drop_down_ref}>
             <input

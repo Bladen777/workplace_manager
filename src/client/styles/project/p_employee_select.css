@@ -1,0 +1,8 @@
+.employee_select_box{
+    height: 8rem;
+    width: 6rem;
+    background-color: var(--section_primary) ;
+    margin: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
