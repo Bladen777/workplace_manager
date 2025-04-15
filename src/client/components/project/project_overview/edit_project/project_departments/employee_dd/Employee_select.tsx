@@ -8,13 +8,13 @@ import Input_drop_down from "../../../../../_universal/drop_downs/Input_drop_dow
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
-import useFindClickPosition from "../../../../../hooks/useFindClickPosition.js";
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../../../../../styles/_log_colors.js"
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../../control_panel/context/Context_db_table_info.js";
+import { Types_search_item } from "../../../../../_universal/drop_downs/Input_drop_down.js";
 
 interface Types_props{
     send_table_data:Function;
@@ -58,20 +58,26 @@ export default function Employee_select({send_table_data, department_name}:Types
                   console.log(`%c  has the following error: `, 'background-color:darkred', error); 
                 };
             };
-            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
+            //console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
             set_employee_list(employee_data);
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };    
     }
 
-    function add_employee(item:string){
+    function add_employee(item:Types_search_item){
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
+        const selected_index:number = employee_list.findIndex((s_item:Types_form_data)=>{
+            if(s_item.id === item.id){
+                return s_item;
+            } 
+        });
 
-        const employee_rate:number = 0;
+        const employee_rate:number = Number(employee_list[selected_index].pay_rate);
 
         const employee_input = <P_employee_edit
-            key={`${item}`} 
-            name = {item}
+            key={`${item.name}`} 
+            name = {item.name}
             rate = {employee_rate}
         />
 
@@ -83,11 +89,13 @@ export default function Employee_select({send_table_data, department_name}:Types
         });
     }
 
+
+// MEMOS AND EFFECTS    
     useEffect(() =>{
       fetch_employee_list()
     },[])
 
-    // RETURNED VALUES 
+// RETURNED VALUES 
     return(
         <label className="form_dd auto_form_input pd_employee_dd">
             <p>Selected Employees</p>
@@ -97,7 +105,7 @@ export default function Employee_select({send_table_data, department_name}:Types
             <Input_drop_down 
                 table_name={{main:"Employee", specific:department_name}} 
                 form_table_data={employee_list} 
-                send_table_data={({input}:{input:string})=>{
+                send_table_data={({input}:{input:Types_search_item})=>{
                     add_employee(input)
                 }}                    
             />

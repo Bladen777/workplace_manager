@@ -12,6 +12,7 @@ import Input_drop_down from "./Input_drop_down.js";
   /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
+import { Types_search_item } from "./Input_drop_down.js";
 
 // THE COMPONENT 
 export default function Clients_dd({send_table_data}:{send_table_data:Function}) {
@@ -50,8 +51,8 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
                 table_name={{main:"Client"}}
                 string_table_data={client_list}
                 send_table_data={(
-                    {input_value}:{input_value:string})=>
-                        send_table_data({input:input_value, db_column:"client_name"}
+                    {input_value}:{input_value:Types_search_item})=>
+                        send_table_data({input:input_value.name, db_column:"client_name"}
                 )}
             />
         </label>

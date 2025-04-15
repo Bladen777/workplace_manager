@@ -14,15 +14,20 @@ import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
 
 interface Types_props{
-    table_name: Types_table_names;
+    table_name: Types_table_name;
     string_table_data?: string[] 
     form_table_data?: Types_form_data[];
     send_table_data:Function;
 }
 
-interface Types_table_names{
+interface Types_table_name{
     main: string;
     specific?:string;
+}
+
+export interface Types_search_item{
+    name: string;
+    id?: number;
 }
 
 // THE COMPONENT 
@@ -99,14 +104,14 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
     function find_matched_items(){
         console.log(`       %c DATA `, `background-color:${ log_colors.data }`,`for DD Table Data`,'\n' ,table_data);
         
-        const searched_items: string[] = [];
+        const searched_items: Types_search_item[] = [];
 
         if(string_table_data){
             string_table_data.forEach((item:string)=>{
                 const search_input = selected_item.toLowerCase();
                 const search_name:string = item.toLowerCase();
                 if(search_name.includes(search_input)){
-                    searched_items.push(item)
+                    searched_items.push({name:item})
                 }
             });
         } else if(form_table_data){
@@ -122,26 +127,29 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
                 const search_input = selected_item.toLowerCase();
                 const search_name:string = item_name.toLowerCase();
                 if(search_name.includes(search_input)){
-                    searched_items.push(item_name)
+                    searched_items.push({
+                        name:item_name,
+                        id:item.id
+                    })
                 }
             })
         }
             
 
         if(searched_items.length > 0){
-            const new_list:ReactElement[] = searched_items.map((item:string, index:number)=>{
+            const new_list:ReactElement[] = searched_items.map((item:Types_search_item, index:number)=>{
                 return(
                     <button
                         key={`dd_input_${index}`}
                         type="button"
                         className="form_dd_list_btn"
                         onClick={()=>{
-                            set_selected_item(item)
+                            set_selected_item(item.name)
                             set_open_dd(false)
                             send_table_data({input: item})
                         }}
                     >
-                        {item}
+                        {item.name}
                     </button>
                 )
             })
