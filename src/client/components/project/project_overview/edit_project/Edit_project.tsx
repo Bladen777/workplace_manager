@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
@@ -77,6 +77,11 @@ export default function Edit_project() {
         remaining: 0,
         percent: 0
     })
+    const production_budget_ref = useRef<Types_budget>({
+        total: 0,
+        remaining: 0,
+        percent: 0
+    })
 
     function handle_edit_project_click(){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for edit_btn_clicked`,'\n' ,edit_btn_clicked);
@@ -98,13 +103,13 @@ export default function Edit_project() {
         if(!Array.isArray(form_data)){
             if(form_data.db_column === "production_budget"){
                 const budget = Number(form_data.input);
-                adjust_budget({total:budget});
+                callback_adjust_budget({total:budget});
             }
         } else {
             if( typeof(form_data[0].db_column) === "string"){
-                if(form_data[0]["prodction_budget"]){
+                if(form_data[0]["production_budget"]){
                     const budget = Number(form_data[0]["production_budget"]);
-                    adjust_budget({total:budget})
+                    callback_adjust_budget({total:budget})
           
                 }
             }
@@ -112,21 +117,43 @@ export default function Edit_project() {
         process_data.handle_form_change({table_name: "Projects", form_data: form_data})
     }
 
+
+    
+    const callback_adjust_budget = useCallback(({total, used}:Types_adjust_budget)=>{
+        adjust_budget({total ,used})
+    },[production_budget.total])
+
+
     function adjust_budget({total, used}:Types_adjust_budget){
-        let budget:Types_budget = production_budget;
+        //let budget:Types_budget = {...production_budget};
+        let budget:Types_budget ={...production_budget_ref.current};
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget`,'\n' ,budget);
+
+        if(total){
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total`,'\n' ,total);
+            budget.total = total
+            if(production_budget_ref.current.remaining < 0){
+                budget.remaining = Number((budget.total + production_budget_ref.current.remaining).toFixed(2));
+            } else {
+                budget.remaining = Number((budget.total - production_budget_ref.current.remaining).toFixed(2));
+            }
+            
+        }
     
         if(used){
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for used`,'\n' ,used);
-            budget.remaining = Number((production_budget.total - (production_budget.remaining + used)).toFixed(2));
-        } else if (total){
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total`,'\n' ,total);
-            budget.total = total
-        }
+            budget.remaining = Number((production_budget_ref.current.remaining - used).toFixed(2));
+        } 
 
-        budget.percent = Number((((budget.total - budget.remaining)/budget.total)*100).toFixed(2));
+        if(budget.total > 0){
+            budget.percent = Number((((budget.total - budget.remaining)/budget.total)*100).toFixed(2));
+        } else {
+            budget.percent = 100;
+        }
+        
 
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget`,'\n' ,budget);
+        production_budget_ref.current = budget;
         set_production_budget(budget);
     }
 
@@ -204,17 +231,17 @@ export default function Edit_project() {
                     </form>
                     <div 
                         id="project_budget_tracker"      
-                        className={production_budget.remaining > production_budget.total ? "over_budget" : "under_budget"}
+                        className={production_budget.remaining < 0 ? "over_budget" : "under_budget"}
                     >
                         <p>Total Budget: ${production_budget.total}</p>
                         <p>Remaining Budget: ${production_budget.remaining}</p>
-                        <p>Remaining Budget: {production_budget.percent}%</p>
+                        <p>Budget Used: {production_budget.percent}%</p>
                     </div>
 
                     <Pd_input 
                         total_production_budget={production_budget.total} 
                         edit_btn_clicked={edit_btn_clicked}
-                        adjust_budget_used={(value:number) => {adjust_budget({used:value})}} 
+                        adjust_budget_used={callback_adjust_budget} 
                     />
 
                     <div className="edit_project_utility_bar">

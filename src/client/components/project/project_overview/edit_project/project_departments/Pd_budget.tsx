@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
@@ -29,19 +29,18 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
     const [department_budget, set_department_budget] = useState<number>(0);
     const [department_percent, set_department_percent] = useState<number>(0);
 
-
     function find_percent(){        
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for percent ran`);
         let budget_percent:number = 0
         if(total_budget !== 0){
             budget_percent = Number(((department_budget/total_budget)*100).toFixed(0));
         }
-/*
+
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total_budget`,'\n' ,total_budget);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget_percent`,'\n' ,budget_percent); 
 
-*/        set_department_percent(budget_percent);
+       set_department_percent(budget_percent);
     }
 
     function handle_pd_budget_change({input, db_column}:Types_input_change){
@@ -57,16 +56,18 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
             new_department_budget = total_budget*(input_number/100);
             set_department_percent(input_number);
         }
+
         set_department_budget(new_department_budget);
-        adjust_budget_used(new_department_budget - department_budget);
+        adjust_budget_used({used:(new_department_budget - department_budget)});
     }
 
     useMemo(()=>{
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for memochanged`);
         find_percent()
-    },[ department_budget])
+    },[ department_budget,total_budget])
 
-    
+
+
 
     // RETURNED VALUES 
     return(

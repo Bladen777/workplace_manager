@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { memo, useContext, useEffect, useMemo, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Employee_dd from "./employee_dd/Employee_dd.js";
@@ -31,8 +31,21 @@ interface Types_props {
 
 
 // THE COMPONENT 
-export default function Project_department_input({total_production_budget, edit_btn_clicked, adjust_budget_used}:Types_props) {
+function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used}:Types_props) {
     console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_input`);
+
+    useEffect(()=>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_name`,'\n' ,total_production_budget);
+    },[total_production_budget])
+
+    useEffect(()=>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total_budget`,'\n' ,edit_btn_clicked);
+    },[edit_btn_clicked])
+
+    useEffect(()=>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for adjust_budget_used`,'\n' ,adjust_budget_used);
+    },[adjust_budget_used])
+
 
     const departments = useContext(Use_Context_departments_data).show_context;
 
@@ -81,3 +94,5 @@ export default function Project_department_input({total_production_budget, edit_
         </form>
     ); 
 }
+
+export default memo(Pd_input)
