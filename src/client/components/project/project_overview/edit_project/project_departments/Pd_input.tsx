@@ -4,8 +4,6 @@ import { memo, useContext, useEffect, useMemo, useState } from "react";
 import Employee_select from "./employee_dd/Employee_select.js";
 import Pd_budgets from "./Pd_budget.js";
 
-import Process_input_data from "../../../../_universal/Process_input_data.js";
-
 // CONTEXT IMPORTS 
 import { Use_Context_departments_data } from "../../../../context/Context_departments_data.js";
 
@@ -16,9 +14,6 @@ import { Use_Context_departments_data } from "../../../../context/Context_depart
 import "../../../../../styles/project/pd_input.css"
 
 // TYPE DEFINITIONS
-import { Types_data_change } from "../../../../_universal/Process_input_data.js";
-import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
-
 interface Types_props {
     total_production_budget: number;
     edit_btn_clicked: boolean | null;
@@ -31,13 +26,6 @@ function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used
     console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_input`);
 
     const departments = useContext(Use_Context_departments_data).show_context;
-    const process_data = Process_input_data();
-
-    function handle_form_change({form_data}:Types_data_change){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
-        process_data.handle_form_change({table_name: "Projects", form_data: form_data})
-    }
-
     
     function convert_text({text}:{text:string}){
         let new_text = text.replaceAll("_"," ")
@@ -69,7 +57,6 @@ function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used
                 
                         <Employee_select
                             department_name = {department_name}
-                            send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
                         />
                     </div> 
                 )   

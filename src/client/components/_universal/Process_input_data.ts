@@ -8,7 +8,7 @@ import { Use_Context_table_data } from "../control_panel/context/Context_get_tab
 import { Use_Context_table_info } from "../control_panel/context/Context_db_table_info.js";
 import { Use_Context_current_table_item } from "../control_panel/context/Context_current_table_item.js";
 import { Use_Context_departments_data } from "../context/Context_departments_data.js";
-import { Use_Context_project } from "../project/context/Context_projects.js";
+import { Use_Context_project_data } from "../project/context/Context_project_data.js";
 
 // HOOK IMPORTS 
 
@@ -37,11 +37,11 @@ export interface Types_data_change {
 export default function Process_input_data() {
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
-    const project_db_column_info = useContext(Use_Context_project).show_context.table_info.db_column_info;
+    const project_db_column_info = useContext(Use_Context_project_data).show_context.table_info.db_column_info;
     const current_db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
 
     const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
-    const current_project = useContext(Use_Context_project).show_context.current_project;
+    const current_project = useContext(Use_Context_project_data).show_context.current_project;
 
     const current_item_id = useRef<number>();
     current_item_id.current = current_table_item.id;
@@ -146,7 +146,7 @@ export default function Process_input_data() {
             } else if (table_name === "departments"){
                 await update_departments_data.now({});
             } else if (table_name === "projects"){
-                filter_item = current_project.id 
+                filter_item = current_project.current_table_item.id 
             }
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
 

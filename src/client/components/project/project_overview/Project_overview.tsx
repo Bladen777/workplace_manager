@@ -1,3 +1,5 @@
+import { useContext, useEffect, useMemo, useState } from "react"
+
 // COMPONENT IMPORTS
 import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
@@ -5,6 +7,7 @@ import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import Project_details from "./project_overview_comps/Project_details.js" 
 
 // CONTEXT IMPORTS 
+import { Use_Context_project_data } from "../context/Context_project_data.js"
 
 // HOOK IMPORTS 
 
@@ -13,11 +16,28 @@ import Project_details from "./project_overview_comps/Project_details.js"
 import "../../../styles/project/project_overview.css"
 
 // TYPE DEFINITIONS
+import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js"
+
+interface Types_change_project{
+  id:number;
+}
 
 // THE COMPONENT
 export default function Project_overview() {
   console.log(`%c COMPONENT `, `background-color:${log_colors.component}`, `Project_overview`);
 
+  const all_projects = useContext(Use_Context_project_data).show_context.all_projects;
+  const current_project = useContext(Use_Context_project_data).show_context.current_project;
+  const update_current_project = useContext(Use_Context_project_data).update_func; 
+
+  const [display_project, set_display_project] = useState<Types_form_data>(current_project.current_table_item) 
+
+
+
+
+  function change_current_project({id}:Types_change_project){
+
+  }
   // Need data from departments table 
   // Need data from employee budget table
   // Need data from projects table
@@ -36,12 +56,19 @@ export default function Project_overview() {
       *** EMPLOYEES ONLY GET TO VIEW THE INFORMATION RELAVENT TO THEIR ASSIGNED PROJECTS
   */
 
-// MEMOS AND EFFECTS      
+// MEMOS AND EFFECTS
+
+useMemo(()=>{
+  if(current_project.submit_method !== "add"){
+    set_display_project(current_project.current_table_item);
+  }
+},[current_project])
 
 // RETURNED VALUES      
   return (
     <div id="project_overview" className="general_section">
       <h1 id="project_overview_title">Project Overview</h1>
+      <h3>{display_project.project_name}</h3>
       <div id="project_department_legend" className="project_overview_content_box">
         Legend
       </div>

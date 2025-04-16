@@ -7,7 +7,7 @@ import Clients_dd from "../../../_universal/drop_downs/Clients_dd.js";
 import Pd_input from "./project_departments/Pd_input.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_project } from "../../context/Context_projects.js";
+import { Use_Context_project_data } from "../../context/Context_project_data.js";
 
 // HOOK IMPORTS 
 
@@ -47,20 +47,16 @@ interface Types_adjust_budget{
 export default function Edit_project() {
     console.log(`%c COMPONENT `, `background-color:${ log_colors.component }`, `Edit_project`);
 
-    const initial_form_data = useContext(Use_Context_project).show_context.table_info.initial_form_data;
-    const db_column_info = useContext(Use_Context_project).show_context.table_info.db_column_info;
-    const current_project = useContext(Use_Context_project).show_context.current_project;
+    const initial_form_data = useContext(Use_Context_project_data).show_context.table_info.initial_form_data;
+    const db_column_info = useContext(Use_Context_project_data).show_context.table_info.db_column_info;
+    const current_project = useContext(Use_Context_project_data).show_context.current_project;
+
+    const update_current_project = useContext(Use_Context_project_data).update_func;
 
     const process_data = Process_input_data();
     
-    //const update_current_project = useContext(Use_Context_project).update_func;
-
-    const submit_method = "add";
-
-    let starting_data: Types_form_data[] = [current_project];
-    if(submit_method === "add"){
-        starting_data = [initial_form_data] 
-    } 
+    //const update_current_project = useContext(Use_Context_project_data).update_func;
+    let starting_data: Types_form_data[] = [current_project.current_table_item];
 
     const [status_message, set_status_message] = useState<string>("");
     const [edit_btn_clicked, set_edit_btn_clicked] = useState<boolean | null>(null);
@@ -80,7 +76,7 @@ export default function Edit_project() {
         percent: 0
     })
 
-    function handle_edit_project_click(){
+    async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for edit_btn_clicked`,'\n' ,edit_btn_clicked);
         if(edit_btn_clicked === null){
             set_edit_btn_clicked(true);
@@ -88,6 +84,13 @@ export default function Edit_project() {
             set_edit_btn_clicked(!edit_btn_clicked)
         }
         const new_key = Math.random();
+        
+        if(submit_method && submit_method !== current_project.submit_method){
+            console.log(`%c IMPORTANT `, `background-color:${ log_colors.important }`,`for submit_method ${submit_method} and current_project submit_method: ${current_project.submit_method}`);
+            const current_project_update = await update_current_project.wait({submit_method:submit_method})
+            await update_current_project.update_context(current_project_update)
+        }
+
         set_edit_project_keys({
             btn_key: new_key,
             input_box_key: new_key + 1
@@ -155,7 +158,7 @@ export default function Edit_project() {
     }
 
     async function post_form(){
-        const response:string = await process_data.post_form({submit_method:submit_method})
+        const response:string = await process_data.post_form({submit_method:current_project.submit_method})
         set_status_message(response)
     }
 
@@ -170,18 +173,30 @@ export default function Edit_project() {
 // RETURNED VALUES 
     return(
         <section id="edit_project_container" >
-            <button 
+            <div
                 key={edit_project_keys.btn_key}
                 className={
-                    edit_btn_clicked ? "edit_project_btn_close edit_project_btn" : 
-                    edit_btn_clicked === false ? "edit_project_btn_open edit_project_btn" :
-                    "edit_project_btn"
+                    edit_btn_clicked ? "edit_project_btn_box_close edit_project_btn_box" : 
+                    edit_btn_clicked === false ? "edit_project_btn_box_open edit_project_btn_box" :
+                    "edit_project_btn_box"
                 }
-                onClick={handle_edit_project_click}
             >
-                <h2>New Project</h2>
-            </button>
-            
+
+                <button 
+                    className="add_project_btn edit_project_btn"
+                    onClick={()=>handle_edit_project_click({submit_method:"add"})}
+                >
+                    <h2>New Project</h2>
+                </button>
+
+                <button 
+                    className="edit_project_btn edit_project_btn"
+                    onClick={()=>handle_edit_project_click({submit_method:"edit"})}
+                >
+                    <h2>Edit Project</h2>
+                </button>
+            </div>
+
             <article 
                 key={edit_project_keys.input_box_key}
                 className={
@@ -192,7 +207,7 @@ export default function Edit_project() {
 
                 {edit_btn_clicked && 
                 <div className="edit_project_input_box">
-                    <h2> New Project</h2>
+                    <h2> {current_project.submit_method} Project</h2>
                     <form 
                         className="auto_form"
                     >
@@ -240,7 +255,9 @@ export default function Edit_project() {
                         </button>
                         <button id="edit_project_cancel_btn" type="button" 
                                 className="general_btn" 
-                                onClick={handle_edit_project_click}> {status_message !== "" ? "Return" : "Cancel"}
+                                onClick={()=>handle_edit_project_click()}
+                        > 
+                        {status_message !== "" ? "Return" : "Cancel"}
                         </button>
                         {status_message !== "" &&
                             <h3>{status_message}</h3>

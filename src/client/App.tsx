@@ -10,6 +10,7 @@ import {Provide_Context_user_info} from "./components/user_info/Context_user_inf
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "./styles/_log_colors.js";
+  
 // TYPE DEFINITIONS
 
 function App() {

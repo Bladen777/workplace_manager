@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
 // STYLE IMPORTS
-  /* LOGS */import { log_colors } from "../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
 interface Types_click_track{

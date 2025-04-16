@@ -2,10 +2,10 @@ import { useCallback, useContext, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
 import Control_panel_sort_button from "./control_panel_view/Control_panel_sort_button.js";
-import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 import Control_panel_entry from "./control_panel_view/Control_panel_entry.js";
 
 // CONTEXT IMPORTS
+import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 import { Use_Context_table_info } from "../context/Context_db_table_info.js";
 
 // HOOK IMPORTS
@@ -35,7 +35,6 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
     const initial_form_data = useContext(Use_Context_table_info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_table_data).show_context;
 
-    
 
     const [entries, set_entries] = useState<Types_entries[]>(create_initial_entries());
 

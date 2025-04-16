@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo,  useRef,  useState } from "react";
+import { ReactElement, useContext, useEffect, useMemo,  useRef,  useState } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
@@ -6,6 +6,7 @@ import P_employee_edit from "./P_employee_edit.js";
 import Input_drop_down from "../../../../../_universal/drop_downs/Input_drop_down.js";
 
 // CONTEXT IMPORTS 
+import { Use_Context_project_data } from "../../../../context/Context_project_data.js";
 
 // HOOK IMPORTS 
 
@@ -15,20 +16,38 @@ import Input_drop_down from "../../../../../_universal/drop_downs/Input_drop_dow
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../../control_panel/context/Context_db_table_info.js";
 import { Types_search_item } from "../../../../../_universal/drop_downs/Input_drop_down.js";
+import { Types_input_change } from "../../../../../_universal/inputs/Form_auto_input.js";
 
 interface Types_props{
-    send_table_data:Function;
     department_name:string;
 }
 
 
 // THE COMPONENT 
-export default function Employee_select({send_table_data, department_name}:Types_props) {
+export default function Employee_select({department_name}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_dd for: `, department_name);
 
+    const current_project = useContext(Use_Context_project_data).show_context.current_project;
 
     const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
     const [selected_employees, set_selected_employess] = useState<ReactElement[]>([]);
+
+
+    // CHECK IF THERE ARE EXISTING EMPLOYEES ASIGNED TO THIS PROJECT
+    async function fetch_selected_employees(){
+        try{
+            const response = await axios.post("/get_table_info",{
+                table_name: "employee_budgets",
+                filter_key: "project_id",
+                filter_item: `"${current_project.current_table_item.id}"`
+            })
+
+
+        } catch (error){
+          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+        };
+
+    }
 
 
     // GET CURRENT LIST OF MATCHING EMPLOYEES
