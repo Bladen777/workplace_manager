@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 
 // COMPONENT IMPORTS
-import Project_overview from "../components/project/project_overview/Project_overview.js"
-import Edit_project from "../components/project/project_overview/edit_project/Edit_project.js";
+import Project_overview from "../components/project/project_overview_comps/Project_overview.js"
+import Edit_project from "../components/project/project_edit/Edit_project.js";
 import Control_panel from "../components/control_panel/Control_panel.js"
 
 // CONTEXT IMPORTS

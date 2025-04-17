@@ -5,13 +5,13 @@ import Employee_select from "./employee_dd/Employee_select.js";
 import Pd_budgets from "./Pd_budget.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_departments_data } from "../../../../context/Context_departments_data.js";
+import { Use_Context_departments_data } from "../../../context/Context_departments_data.js";
 
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
-import "../../../../../styles/project/pd_input.css"
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+import "../../../../styles/project/pd_input.css"
 
 // TYPE DEFINITIONS
 interface Types_props {

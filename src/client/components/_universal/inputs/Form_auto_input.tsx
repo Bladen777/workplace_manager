@@ -38,6 +38,7 @@ export interface Types_input_change{
 function Form_auto_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
 
 
+/*
     useEffect(() =>{
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for column_info`,'\n' ,column_info);
     },[column_info])
@@ -50,6 +51,7 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
     },[send_table_data])
 
+*/
 
     let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
     if(table_data_object){current_table_data = table_data_object}
@@ -97,11 +99,11 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
                 )
             } else {
                 input = (
-                    <label className="auto_form_input">
+                    <label className="auto_form_input_label">
                         <p>{item_data.name_text}:</p>   
                         <input
                             id={item_data.name}
-                            className={`auto_form_${item_data.input_type}`}
+                            className={`auto_form_${item_data.input_type} auto_form_input`}
                             name={item_data.name}
                             type={item_data.input_type}
                             placeholder={item_data.name_text}
@@ -137,10 +139,15 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
         */
 
     useEffect(() =>{
-        console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
-      create_inputs()
+        if(column_info.column_name){
+            console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
+            create_inputs()
+            return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `background-color:${ log_colors.important_2 }`);}
+        }
+    },[])
 
-        return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `background-color:${ log_colors.important_2 }`);}
+    useEffect(() =>{
+        create_inputs()
     },[input_data])
       
 // RETRURNED VALUES

@@ -1,20 +1,21 @@
 import { useState } from "react";
 
 // COMPONENT IMPORTS 
-import Process_input_data from "../../../../../_universal/Process_input_data.js";
+import Process_input_data from "../../../../_universal/Process_input_data.js";
+import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../../../styles/_log_colors.js";
-import "../../../../../../styles/project/p_employee_select.css"
+  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+import "../../../../../styles/project/p_employee_select.css"
 
 // TYPE DEFINITIONS
-import { Types_data_change } from "../../../../../_universal/Process_input_data.js";
-import { Types_input_change } from "../../../../../_universal/inputs/Form_auto_input.js";
-import { Types_form_data } from "../../../../../control_panel/context/Context_db_table_info.js";
+import { Types_data_change } from "../../../../_universal/Process_input_data.js";
+import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
+import { Types_form_data } from "../../../../control_panel/context/Context_db_table_info.js";
 
 
 interface Types_props{
@@ -42,6 +43,7 @@ export default function P_employee_edit({name, rate}:Types_props) {
 
     }
 
+
 // MEMOS AND EFFECTS
 
 // RETURNED VALUES 
@@ -57,14 +59,18 @@ export default function P_employee_edit({name, rate}:Types_props) {
 
 
             {/* INPUT FOR BUDGET */}
-            <label>
-                <p>Budget:</p>
-                <input
-                    className="p_employee_input"
-            
-                />
-            </label>
-            
+
+            <Form_auto_input 
+                column_info={{
+                    column_name: `budget`,
+                    is_nullable: "yes",
+                    input_type: "budget"
+                }} 
+                send_table_data = {({input, db_column}:Types_input_change)=>{
+                    handle_input_change({input:input, db_column:db_column})
+                }}
+            />
+
             {/* INPUT FOR HOURS */}
             <label>
                 <p>Hours:</p>

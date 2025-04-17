@@ -11,6 +11,7 @@
 
 .auto_form_input{
     width: fit-content;
+    max-width: 100%;
 }
 
 

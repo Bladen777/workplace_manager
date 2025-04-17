@@ -3,20 +3,20 @@ import axios from "axios";
 
 // COMPONENT IMPORTS 
 import P_employee_edit from "./P_employee_edit.js";
-import Input_drop_down from "../../../../../_universal/drop_downs/Input_drop_down.js";
+import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_project_data } from "../../../../context/Context_project_data.js";
+import { Use_Context_project_data } from "../../../context/Context_project_data.js";
 
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../../../styles/_log_colors.js"
+  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js"
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../../../../control_panel/context/Context_db_table_info.js";
-import { Types_search_item } from "../../../../../_universal/drop_downs/Input_drop_down.js";
-import { Types_input_change } from "../../../../../_universal/inputs/Form_auto_input.js";
+import { Types_form_data } from "../../../../control_panel/context/Context_db_table_info.js";
+import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
+import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
 
 interface Types_props{
     department_name:string;

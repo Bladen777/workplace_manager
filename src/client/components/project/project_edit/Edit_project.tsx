@@ -1,26 +1,26 @@
 import { ReactElement, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
-import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
-import Process_input_data from "../../../_universal/Process_input_data.js";
-import Clients_dd from "../../../_universal/drop_downs/Clients_dd.js";
+import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
+import Process_input_data from "../../_universal/Process_input_data.js";
+import Clients_dd from "../../_universal/drop_downs/Clients_dd.js";
 import Pd_input from "./project_departments/Pd_input.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_project_data } from "../../context/Context_project_data.js";
+import { Use_Context_project_data } from "../context/Context_project_data.js";
 
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
-import "../../../../styles/project/edit_project.css"
-import "../../../../styles/_universal/form_dd.css"
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+import "../../../styles/project/edit_project.css"
+import "../../../styles/_universal/form_dd.css"
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../../control_panel/context/Context_db_table_info.js";
-import { Types_column_info } from "../../../control_panel/context/Context_db_table_info.js";
-import { Types_data_change } from "../../../_universal/Process_input_data.js";
-import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
+import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
+import { Types_column_info } from "../../control_panel/context/Context_db_table_info.js";
+import { Types_data_change } from "../../_universal/Process_input_data.js";
+import { Types_input_change } from "../../_universal/inputs/Form_auto_input.js";
 
 
 interface Types_project_keys {
@@ -157,7 +157,6 @@ export default function Edit_project() {
         function adjust_animation_2(){
             end.ele.style.animation = "";
             end.ele.removeEventListener("animationend", adjust_animation_2);
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for animation done`);
             if(!open){
                 button_animation()
             }
@@ -168,6 +167,8 @@ export default function Edit_project() {
     async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for edit_btn_clicked`,'\n' ,edit_btn_clicked);
         
+        process_data.clear_form;
+
         if(edit_btn_clicked){
             set_edit_btn_clicked(false)
             run_animation(false);
@@ -288,7 +289,7 @@ export default function Edit_project() {
                 className="edit_project_box general_section box_closed"
             >
                 <div className="edit_project_input_box">
-                    <h2> {current_project.submit_method} Project</h2>
+                    <h2> {current_project.submit_method === "add" ? "New" : "Edit"} Project</h2>
                     <form 
                         className="auto_form"
                     >

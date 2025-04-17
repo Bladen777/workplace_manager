@@ -106,7 +106,7 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
                     <label className="auto_form_input_label">
                         <input
                             id="hourly_pay"
-                            className="auto_form_radio"
+                            className="auto_form_radio auto_form_input"
                             name="pay_type"
                             value="hourly"
                             type="radio"
@@ -118,7 +118,7 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
                     <label className="auto_form_input_label">
                         <input
                             id="annual_pay"
-                            className="auto_form_radio"
+                            className="auto_form_radio auto_form_input"
                             name="pay_type"
                             value="annually"
                             type="radio"
@@ -147,7 +147,7 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
                 <input
                     ref = {money_input_ref}
                     id={item_data.name}
-                    className={`auto_form_${item_data.input_type}`}
+                    className={`auto_form_${item_data.input_type} auto_form_input`}
                     name={item_data.name}
                     type={item_data.input_type}
                     placeholder={item_data.name_text}

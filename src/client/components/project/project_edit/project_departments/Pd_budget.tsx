@@ -1,17 +1,17 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
-import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
+import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
 
 
 interface Types_props{
@@ -63,7 +63,7 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
 
 // MEMOS AND EFFECTS    
     useMemo(()=>{
-        //find_percent()
+        find_percent()
     },[ department_budget,total_budget])
 
 // RETURNED VALUES 

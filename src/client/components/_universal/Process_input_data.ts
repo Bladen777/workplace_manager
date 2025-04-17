@@ -55,7 +55,7 @@ export default function Process_input_data() {
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({table_name, form_data}:Types_data_change){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
+        console.log(`%c Process_input_data FORM_DATA `, `background-color:${ log_colors.helper_function }`,`for form_data for ${table_name}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
         let form_data_array: Types_form_data[] = []; 
 
         if(table_name === null || table_name === undefined){
@@ -69,6 +69,8 @@ export default function Process_input_data() {
         } else {
             table_data_ref.current[table_name] = form_data;
         }
+        console.log(`%c Process_input_data CURRENT_DATA`, `background-color:${ log_colors.helper_function }`, `for`,table_data_ref.current);
+
     }
 
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
@@ -100,6 +102,12 @@ export default function Process_input_data() {
 
         console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for missing_input_strings`,'\n' ,missing_input_strings);
         return missing_input_strings;
+    }
+
+    function clear_form(){
+        table_data_ref.current = {};
+        console.log(`%c Process_input_data DATA CLEARED`, `background-color:${ log_colors.helper_function }`, `for`,table_data_ref.current);
+
     }
 
     // SEND THE INFOMATION TO THE DATABASE TO BE ADDED/EDITED
@@ -209,6 +217,7 @@ export default function Process_input_data() {
 // RETURNED VALUES 
     return({
         handle_form_change: ({table_name, form_data}:Types_data_change) => handle_form_change({table_name, form_data}),
+        clear_form: clear_form(),
         post_form: async ({submit_method}:Types_post_form) => await post_form({submit_method})
     }); 
 }
