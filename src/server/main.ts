@@ -394,7 +394,7 @@ app.get("/user_info",
 
   // ADJUST DEPARTMENT NAME COLUMNS IN THE EMPLOYEE_DEPARTMENTS TABLE
 
-  app.post("/edit_employee_deps_cols",
+  app.post("/edit_deps_cols",
     async (req, res) => {
       console.log("edit_employee_deps_cols requested", "\n");
 
@@ -403,8 +403,12 @@ app.get("/user_info",
 
       if(submit_method === "add"){
         try{
-          const response = await db.query(
+          const employee_deps_response = await db.query(
             `ALTER TABLE employee_departments ADD COLUMN "${dep_name}" bit(1)`,
+            []
+          )
+          const pd_budgets_response = await db.query(
+            `ALTER TABLE project_department_budgets ADD COLUMN "${dep_name}" bit(1)`,
             []
           )
         
@@ -413,8 +417,12 @@ app.get("/user_info",
         };
       } else if (submit_method === "delete"){
         try{
-          const response = await db.query(
+          const employee_deps_response = await db.query(
             `ALTER TABLE employee_departments DROP COLUMN "${dep_name}"`,
+            []
+          )
+          const pd_budgets_response = await db.query(
+            `ALTER TABLE project_department_budgets DROP COLUMN "${dep_name}"`,
             []
           )
         

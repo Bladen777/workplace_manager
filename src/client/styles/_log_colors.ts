@@ -7,7 +7,8 @@ export const log_colors = {
     context: "rebeccapurple",
     hook: "mediumslateblue",
     memo: "darkblue",
+    animation: "darksalmon",
     data: "olive",
     important: "gold; color:black;",
-    important_2: "darkorange"
+    important_2: "darkorange; color:black"
 }

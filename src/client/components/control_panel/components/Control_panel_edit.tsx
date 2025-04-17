@@ -5,13 +5,13 @@ import Order_shift from "./control_panel_edits/Order_shift.js";
 import Employee_input_form from "./control_panel_edits/Employee_input_form.js";
 import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
 import Select_departments from "../../_universal/table_data/Select_departments.js";
-import Process_input_data from "../../_universal/Process_input_data.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_table_info } from "../context/Context_db_table_info.js";
 import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 import { Use_Context_current_table_item } from "../context/Context_current_table_item.js";
 import { Use_Context_departments_data } from "../../context/Context_departments_data.js";
+import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS
 
@@ -42,11 +42,11 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
     } 
 
     const [status_message, set_status_message] = useState<string>("");
-    const process_data = Process_input_data()
+    const process_data = useContext(Use_Process_input_data);
 
     function handle_form_change({table_name, form_data}:Types_data_change){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
-        process_data.handle_form_change({table_name: table_name, form_data: form_data})
+        process_data.handle_form_change({table_name: table_name, form_data: form_data});
     }
 
     async function post_form(){
@@ -58,10 +58,8 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
 
 // MEMOS AND EFFECTS    
     useEffect(() =>{
-        handle_form_change({table_name:section_name, form_data:starting_data})
-      },[])
-  
-
+        process_data.handle_form_change({table_name:section_name, form_data:starting_data});
+    },[])
     console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
 
 // RETURNED VALUES 

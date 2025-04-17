@@ -140,7 +140,7 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
 
     useEffect(() =>{
         if(column_info.column_name){
-            console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
+            //console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
             create_inputs()
             return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `background-color:${ log_colors.important_2 }`);}
         }

@@ -46,6 +46,13 @@ date_added date,
 ship_date date
 );
 
+CREATE TABLE project_department_budgets(
+id SERIAL PRIMARY KEY UNIQUE NOT NULL,
+project_id int REFERENCES projects(id)
+-- DEPARTMENT COLUMNS WILL BE ADDED ON THE FRONT END
+-- THEIR VALUES WILL BE 0 OR 1 FOR FALSE AND TRUE
+)
+
 CREATE TABLE employee_budgets(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 employee_id int REFERENCES employees(id),

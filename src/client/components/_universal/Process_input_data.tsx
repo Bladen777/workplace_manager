@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { createContext, ReactNode, useContext, useRef } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
@@ -20,6 +20,13 @@ import { Types_form_data } from "../control_panel/context/Context_db_table_info.
 import { Types_input_change } from "./inputs/Form_auto_input.js";
 import { Types_column_info } from "../control_panel/context/Context_db_table_info.js";
 
+
+interface Types_context{
+    handle_form_change: Function;
+    clear_form:Function;
+    post_form:Function;
+}
+
 interface Types_table_form_data {
     [key:string]:Types_form_data[];
 }
@@ -33,8 +40,20 @@ export interface Types_data_change {
     form_data: Types_input_change | Types_form_data[];
 }
 
-// THE HELPER FUNCTION 
-export default function Process_input_data() {
+
+
+
+// CONTEXT TO USE 
+export const Use_Process_input_data = createContext<Types_context>({
+    handle_form_change: ()=>{},
+    clear_form:()=>{},
+    post_form: ()=>{}
+});
+
+
+// CONTEXT PROVIDER & UPDATE 
+export function Provide_Process_input_data({children}:{children:ReactNode}) {
+
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
     const project_db_column_info = useContext(Use_Context_project_data).show_context.table_info.db_column_info;
@@ -55,13 +74,14 @@ export default function Process_input_data() {
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({table_name, form_data}:Types_data_change){
-        console.log(`%c Process_input_data FORM_DATA `, `background-color:${ log_colors.helper_function }`,`for form_data for ${table_name}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
         let form_data_array: Types_form_data[] = []; 
 
         if(table_name === null || table_name === undefined){
             table_name = section_name;
         }
+        console.log(`%c Process_input_data FORM_DATA `, `background-color:${ log_colors.helper_function }`,`for form_data for ${table_name}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
 
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
         if(!Array.isArray(form_data)){
             const update_form_data = {...table_data_ref.current[table_name][0], [form_data.db_column]:form_data.input};
             form_data_array.push(update_form_data);
@@ -107,7 +127,7 @@ export default function Process_input_data() {
     function clear_form(){
         table_data_ref.current = {};
         console.log(`%c Process_input_data DATA CLEARED`, `background-color:${ log_colors.helper_function }`, `for`,table_data_ref.current);
-
+        return true
     }
 
     // SEND THE INFOMATION TO THE DATABASE TO BE ADDED/EDITED
@@ -197,7 +217,7 @@ export default function Process_input_data() {
             }
             
             try{
-                const response = await axios.post("edit_employee_deps_cols",{
+                const response = await axios.post("edit_deps_cols",{
                     dep_id: dep_id,
                     submit_method: submit_method 
     
@@ -214,10 +234,19 @@ export default function Process_input_data() {
 
 
 
-// RETURNED VALUES 
-    return({
-        handle_form_change: ({table_name, form_data}:Types_data_change) => handle_form_change({table_name, form_data}),
-        clear_form: clear_form(),
-        post_form: async ({submit_method}:Types_post_form) => await post_form({submit_method})
-    }); 
+
+// RETURNED VALUES
+    return(
+        <Use_Process_input_data.Provider value={{
+            handle_form_change: ({table_name, form_data}:Types_data_change) => handle_form_change({table_name, form_data}),
+            clear_form:()=>clear_form(),
+            post_form: async ({submit_method}:Types_post_form) => await post_form({submit_method})
+        }}
+
+        > 
+        {children} 
+        </Use_Process_input_data.Provider> 
+    ) 
+
 }
+

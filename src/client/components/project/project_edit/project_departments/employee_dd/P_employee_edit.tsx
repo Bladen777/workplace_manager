@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // COMPONENT IMPORTS 
-import Process_input_data from "../../../../_universal/Process_input_data.js";
 import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
+import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
@@ -27,7 +27,7 @@ interface Types_props{
 export default function P_employee_edit({name, rate}:Types_props) {
     console.log(`%c INPUT_COMPONENT `, `background-color:${ log_colors.input_component }`, `P_employee_edit`);
 
-    const process_data = Process_input_data()
+    const process_data = useContext(Use_Process_input_data);
 
     const [input_data, set_input_data] = useState<Types_form_data>()
 

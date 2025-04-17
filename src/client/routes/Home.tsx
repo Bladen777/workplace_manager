@@ -12,6 +12,7 @@ import { Provide_Context_table_data } from "../components/control_panel/context/
 import { Provide_Context_current_table_item } from "../components/control_panel/context/Context_current_table_item.js";
 import { Provide_Context_project_data } from "../components/project/context/Context_project_data.js";
 import { Provide_Context_departments_data } from "../components/context/Context_departments_data.js";
+import { Provide_Process_input_data } from "../components/_universal/Process_input_data.js";
 
 // HOOK IMPORTS
 
@@ -42,14 +43,17 @@ export default function Home() {
             <Provide_Context_current_table_item>
               <Provide_Context_departments_data>
                 <Provide_Context_project_data>
-                  <Project_overview />
-                    {user_info.is_admin && <Edit_project />}
-                  </Provide_Context_project_data>
-                  {user_info.is_admin && <Control_panel />}
-                  </Provide_Context_departments_data>
-              </Provide_Context_current_table_item> 
+                  <Provide_Process_input_data>
+                    <Project_overview />
+                      {user_info.is_admin && <Edit_project />}
+                      {user_info.is_admin && <Control_panel />}
+                  </Provide_Process_input_data>
+                </Provide_Context_project_data>
+              </Provide_Context_departments_data>
+            </Provide_Context_current_table_item> 
           </Provide_Context_table_data>
         </Provide_Context_table_info>
+
       </>
     )
   }

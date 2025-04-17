@@ -1,9 +1,10 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
+import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
@@ -26,6 +27,8 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
 
     const [department_budget, set_department_budget] = useState<number>(0);
     const [department_percent, set_department_percent] = useState<number>(0);
+
+    const process_data = useContext(Use_Process_input_data);
 
 
     function find_percent(){        
@@ -57,6 +60,9 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
             set_department_percent(input_number);
         }
 
+        process_data.handle_form_change({table_name: "project_department_budgets", form_data: {input:String(new_department_budget) , db_column:department_name}});
+
+
         set_department_budget(new_department_budget);
         adjust_budget_used({used:(new_department_budget - department_budget)});
     }
@@ -65,6 +71,10 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
     useMemo(()=>{
         find_percent()
     },[ department_budget,total_budget])
+
+    useEffect(() =>{
+        //process_data.handle_form_change({table_name:"project_department_budgets", form_data: [{input:String(0) , db_column:department_name}]});
+    },[])
 
 // RETURNED VALUES 
     return(
