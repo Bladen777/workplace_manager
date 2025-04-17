@@ -8,5 +8,6 @@ export const log_colors = {
     hook: "mediumslateblue",
     memo: "darkblue",
     data: "olive",
-    important: "gold; color:black;"
+    important: "gold; color:black;",
+    important_2: "darkorange"
 }

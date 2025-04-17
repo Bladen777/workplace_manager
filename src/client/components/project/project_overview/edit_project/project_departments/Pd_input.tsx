@@ -16,13 +16,12 @@ import "../../../../../styles/project/pd_input.css"
 // TYPE DEFINITIONS
 interface Types_props {
     total_production_budget: number;
-    edit_btn_clicked: boolean | null;
     adjust_budget_used: Function;
 }
 
 
 // THE COMPONENT 
-function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used}:Types_props) {
+function Pd_input({total_production_budget, adjust_budget_used}:Types_props) {
     console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_input`);
 
     const departments = useContext(Use_Context_departments_data).show_context;
@@ -40,7 +39,7 @@ function Pd_input({total_production_budget, edit_btn_clicked, adjust_budget_used
     return(
         <form className="auto_form" id="edit_project_employee_select_box">
             <h3>Employee Select</h3>
-            {edit_btn_clicked && departments.map((item)=>{
+            {departments.map((item)=>{
                 const department_name = `dep_id_${item.department.id}`;
                 return(
                     <div 

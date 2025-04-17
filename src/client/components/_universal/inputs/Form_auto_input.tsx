@@ -1,4 +1,4 @@
-import {memo, useContext, useEffect, useState } from "react";
+import {memo, ReactElement, useCallback, useContext, useEffect, useState } from "react";
 
 // COMPONENT IMPORTS
 import Money_input from "./Money_input.js";
@@ -38,7 +38,6 @@ export interface Types_input_change{
 function Form_auto_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
 
 
-/*
     useEffect(() =>{
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for column_info`,'\n' ,column_info);
     },[column_info])
@@ -50,14 +49,13 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
     useEffect(() =>{
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
     },[send_table_data])
-*/
+
 
     let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
     if(table_data_object){current_table_data = table_data_object}
     const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
+    const [input, set_input] = useState<ReactElement>();
 
-
-    console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${column_info.column_name}`, "\n",   input_data);
 
         function convert_text(){
             let text = column_info.column_name.replaceAll("_"," ")
@@ -80,6 +78,54 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
             send_table_data({input: input, db_column:db_column})
         }
 
+        function create_inputs(){
+            console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${column_info.column_name}`, "\n",   input_data);
+
+            let input:ReactElement; 
+            if(item_data.input_type === "order" ) {
+                return
+            }else if (item_data.name === "pay_type") {
+                return         
+            } else if (item_data.name === "pay_rate" || item_data.name.includes("budget")) {
+                input = (
+                    <Money_input 
+                        item_data = {item_data}
+                        pay_type_value = {input_data.pay_type}
+                        send_table_data = {({input, db_column}:Types_input_change)=>{handle_input_change({input:input, db_column:db_column})}}
+                        key={`input_for_${item_data.name}`}
+                    />
+                )
+            } else {
+                input = (
+                    <label className="auto_form_input">
+                        <p>{item_data.name_text}:</p>   
+                        <input
+                            id={item_data.name}
+                            className={`auto_form_${item_data.input_type}`}
+                            name={item_data.name}
+                            type={item_data.input_type}
+                            placeholder={item_data.name_text}
+                            value={item_data.value ===  null ? "" : item_data.value}
+                            checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
+                                let value = e.target.value;
+                                if(item_data.input_type === "checkbox"){
+                                    if(e.target.checked){
+                                        value="1"
+                                    } else { 
+                                        value="0"
+                                    }
+                                }
+                                handle_input_change({input:value, db_column:item_data.name})
+                            }}
+                        />
+                    </label>
+                )
+            }
+
+            set_input(input)
+        }
+
 // MEMOS AND EFFECTS        
         /*
         useMemo(()=>{
@@ -89,48 +135,18 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
             }
         },[table_data_object])
         */
+
+    useEffect(() =>{
+        console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
+      create_inputs()
+
+        return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `background-color:${ log_colors.important_2 }`);}
+    },[input_data])
       
 // RETRURNED VALUES
-    if(item_data.input_type === "order" ) {
-        return
-    }else if (item_data.name === "pay_type") {
-        return         
-    } else if (item_data.name === "pay_rate" || item_data.name.includes("budget")) {
-        return(
-            <Money_input 
-                item_data = {item_data}
-                pay_type_value = {input_data.pay_type}
-                send_table_data = {({input, db_column}:Types_input_change)=>{handle_input_change({input:input, db_column:db_column})}}
-                key={`input_for_${item_data.name}`}
-            />
+        return (
+            input
         )
-    } else {
-        return(
-            <label className="auto_form_input">
-                <p>{item_data.name_text}:</p>   
-                <input
-                    id={item_data.name}
-                    className={`auto_form_${item_data.input_type}`}
-                    name={item_data.name}
-                    type={item_data.input_type}
-                    placeholder={item_data.name_text}
-                    value={item_data.value ===  null ? "" : item_data.value}
-                    checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                        let value = e.target.value;
-                        if(item_data.input_type === "checkbox"){
-                            if(e.target.checked){
-                                value="1"
-                            } else { 
-                                value="0"
-                            }
-                        }
-                        handle_input_change({input:value, db_column:item_data.name})
-                    }}
-                />
-            </label>
-        )
-    }
 }
 
 
