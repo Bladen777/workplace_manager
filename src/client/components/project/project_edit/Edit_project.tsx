@@ -76,6 +76,7 @@ export default function Edit_project() {
 
         if(edit_btn_clicked){
             set_edit_btn_clicked(false)
+            process_data.clear_form("projects");
             animate.run_animation({animate_forwards:false})
 
         } else {
@@ -87,16 +88,14 @@ export default function Edit_project() {
                 btn_type: submit_method, 
                 add_btn_ele: add_btn_ref.current!, 
                 edit_btn_ele: edit_btn_ref.current!
-
             })
+            process_data.handle_form_change({section_name:"projects", table_name:"projects", form_data:[current_project.current_table_item]})
         }
         
         if(submit_method && submit_method !== current_project.submit_method){
-            //process_data.clear_form();
             console.log(`%c IMPORTANT `, `background-color:${ log_colors.important }`,`for submit_method ${submit_method} and current_project submit_method: ${current_project.submit_method}`);
             const current_project_update = await update_current_project.wait({submit_method:submit_method})
             await update_current_project.update_context(current_project_update)
-            //process_data.handle_form_change({table_name:"projects", form_data:[current_project.current_table_item]})
         }
     }
 
@@ -117,7 +116,7 @@ export default function Edit_project() {
                 }
             }
         }
-        process_data.handle_form_change({table_name: "projects", form_data: form_data})
+        process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: form_data})
     }
 
 
@@ -200,6 +199,7 @@ export default function Edit_project() {
                 ref = {edit_input_box_ref} 
                 className="edit_project_box general_section box_closed"
             >
+            {edit_btn_clicked && 
                 <div className="edit_project_input_box">
                     <h2> {current_project.submit_method === "add" ? "New" : "Edit"} Project</h2>
                     <form 
@@ -236,7 +236,6 @@ export default function Edit_project() {
 
                     <Pd_input 
                         total_production_budget={production_budget.total} 
-                       // edit_btn_clicked={edit_btn_clicked}
                         adjust_budget_used={callback_adjust_budget} 
                     />
 
@@ -258,7 +257,7 @@ export default function Edit_project() {
                         }
                     </div>                    
                 </div>
-                
+            }
             </article>
         </section>
     ); 

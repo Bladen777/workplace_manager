@@ -306,7 +306,7 @@ app.get("/user_info",
       };
 
       async function access_db({table_data, submit_method, array_edit}:{table_data:Types_table_data, submit_method:string, array_edit:boolean}){
- 
+
         if(submit_method === "add"){
           console.log(
             "the name_columns: ", table_data.name_columns,'\n',
@@ -323,6 +323,8 @@ app.get("/user_info",
                 message: `successfully ${sent_submit_method}ed`
               });
               console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
+            } else {
+              return response.rows[0].id;
             }
           } catch (error) {
             console.log(`Error adding data to ${table_name}: `,error);
@@ -348,42 +350,51 @@ app.get("/user_info",
             console.log(`Error editing data in ${table_name}: `,error);
             res.send({message:`Error editing data in ${table_name}: ${error}`});
           } 
-        }else if (submit_method === "delete"){
-          console.log(`DELETE FROM ${table_name} ${table_data.search_condition};`)
-            try {
-              const response = await db.query(
-                `DELETE FROM ${table_name} ${table_data.search_condition};`
-              );
-              if(!array_edit){
-                res.send({
-                  message: `successfully ${sent_submit_method}ed`
-                });
-                console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
-              }
-            } catch (error) {
-              console.log(`Error deleting data in ${table_name}: `,error);
-              res.send({message:`Error deleting data in ${table_name}: ${error}`});
-            }
         }
       }
 
-      if(Array.isArray(submit_data)){
+      if(sent_submit_method === "delete"){
+     
+        const search_condition = `WHERE ${filter_key}=${filter_item}`
+        console.log(`DELETE FROM ${table_name} ${search_condition};`)
+        try {
+          const response = await db.query(
+            `DELETE FROM ${table_name} ${search_condition};`
+          );
+          res.send({
+            message: `successfully ${sent_submit_method}d`
+          });
+          console.log(`successfully ${sent_submit_method}d to ${table_name}`)
+          
+        } catch (error) {
+          console.log(`Error deleting data in ${table_name}: `,error);
+          res.send({message:`Error deleting data in ${table_name}: ${error}`});
+        }
+
+      } else if(Array.isArray(submit_data)){
+        let added_id:number = 0;
         for await(let item of submit_data){
           let adjust_submit_method = sent_submit_method;
           if(sent_submit_method === "add" && item.id){
             adjust_submit_method = "edit"
-          }; 
+          };
           const table_data:Types_table_data = string_data({
             entry_item: item, 
             entry_filter_item:item.id ? item.id : filter_item, 
             submit_method:adjust_submit_method
           });
-          access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
+          if(adjust_submit_method === "add"){
+            added_id = await access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
+          } else {
+            access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
+          }
         };
         res.send({
+          item_id: added_id !== 0 ? added_id : "",
           message: `successfully ${sent_submit_method}ed`
         });
         console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
+
       } else {
         const table_data:Types_table_data = string_data({entry_item: submit_data, entry_filter_item: filter_item, submit_method:sent_submit_method});
         access_db({table_data:table_data, submit_method:sent_submit_method, array_edit:false});
@@ -393,10 +404,9 @@ app.get("/user_info",
   );
 
   // ADJUST DEPARTMENT NAME COLUMNS IN THE EMPLOYEE_DEPARTMENTS TABLE
-
   app.post("/edit_deps_cols",
     async (req, res) => {
-      console.log("edit_employee_deps_cols requested", "\n");
+      console.log("edit_deps_cols requested", "\n");
 
       const dep_name = `dep_id_${req.body.dep_id}`;
       const submit_method = req.body.submit_method;
@@ -407,34 +417,39 @@ app.get("/user_info",
             `ALTER TABLE employee_departments ADD COLUMN "${dep_name}" bit(1)`,
             []
           )
+        } catch (error){
+          console.log(`%c  Error when adding columns to employee deps: `, 'background-color:darkred', error); 
+        };
+        try{
           const pd_budgets_response = await db.query(
             `ALTER TABLE project_department_budgets ADD COLUMN "${dep_name}" bit(1)`,
             []
           )
-        
         } catch (error){
-          console.log(`%c  Error when adding columns to employee deps: `, 'background-color:darkred', error); 
+          console.log(`%c  Error when adding columns to project_department_budgets: `, 'background-color:darkred', error); 
         };
+
+
       } else if (submit_method === "delete"){
         try{
           const employee_deps_response = await db.query(
             `ALTER TABLE employee_departments DROP COLUMN "${dep_name}"`,
             []
           )
+        } catch (error){
+          console.log(`%c  Error when removing columns from employee deps: `, 'background-color:darkred', error); 
+        };
+        try{
           const pd_budgets_response = await db.query(
             `ALTER TABLE project_department_budgets DROP COLUMN "${dep_name}"`,
             []
           )
-        
         } catch (error){
-          console.log(`%c  Error when removing columns from employee deps: `, 'background-color:darkred', error); 
+          console.log(`%c  Error when removing columns from project_department_budgets: `, 'background-color:darkred', error); 
         };
       }
-
-
-
-
-
+      res.send("edit_deps_cols finished")
+      console.log("edit_deps_cols finished")
     }
   );      
 

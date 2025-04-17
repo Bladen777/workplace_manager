@@ -7,6 +7,7 @@ import Control_panel_entry from "./control_panel_view/Control_panel_entry.js";
 // CONTEXT IMPORTS
 import { Use_Context_table_data } from "../context/Context_get_table_data.js";
 import { Use_Context_table_info } from "../context/Context_db_table_info.js";
+import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS
 
@@ -31,12 +32,15 @@ interface Types_selected_entry{
 
 // THE COMPONENT
 export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_btn_click:Function}) {
-    const section_name = useContext(Use_Context_table_info).show_context.table_name;
+    const active_table = useContext(Use_Context_table_info).show_context.table_name;
     const initial_form_data = useContext(Use_Context_table_info).show_context.initial_form_data;
     const initial_table_data = useContext(Use_Context_table_data).show_context;
+    const process_data = useContext(Use_Process_input_data);
 
+    const update_table_data = useContext(Use_Context_table_data).update_func;
 
     const [entries, set_entries] = useState<Types_entries[]>(create_initial_entries());
+    const [status_message, set_status_message] = useState<string>("");
 
     function create_initial_entries(){
         const initial_entries:Types_entries[] = initial_table_data.map((item:Types_form_data)=>{
@@ -48,25 +52,32 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
         return initial_entries
     }
 
-    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_view for`, section_name, "\n", initial_table_data);
+    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_view for`, active_table, "\n", initial_table_data);
 
     const [entry_selected, set_entry_selected] = useState<boolean>(false);
     const selected_entry = useRef<Types_selected_entry | null>(null);
 
     useMemo(()=>{
-        set_entry_selected(false)
+        set_entry_selected(false);
         selected_entry.current = null;
-        set_entries(create_initial_entries())
-    },[section_name])
+        set_entries(create_initial_entries());
+        set_status_message("")
+    },[active_table]);
+
+    useMemo(()=>{
+        set_entry_selected(false);
+        selected_entry.current = null;
+        set_entries(create_initial_entries());
+    },[initial_table_data])
 
 
     const handle_callback_selected_entry = useCallback(({item, index}:{item:Types_form_data, index:number})=>{
-        handle_selected_entry(item, index)
-    },[entry_selected])
+        handle_selected_entry(item, index);
+    },[entry_selected]);
 
     function handle_selected_entry(item:Types_form_data, index:number){
         if(!entry_selected){
-            set_entry_selected(true)
+            set_entry_selected(true);
         }
         const prev_entry = {...selected_entry.current! }
         // Find previous selected entry and set is_active to false
@@ -79,6 +90,13 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
         });
         selected_entry.current = {data:item, index:index};
     };
+
+    async function handle_delete_entry(){
+        const item_id = selected_entry.current!.data.id;
+        const response:string = await process_data.delete_entry({section_name: "control_panel", table_name:active_table, item_id:item_id}); 
+        await update_table_data.now();
+        set_status_message(response);
+    }
 
 
 // MEMOS AND EFFECTS    
@@ -111,8 +129,11 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
                 }
                 {entry_selected &&
                 <button id="cpv_delete_btn" className="cp_utility_bar_btn general_btn"
-                        onClick={()=>{handle_edit_btn_click({submit_method:"delete", table_item:selected_entry.current?.data})}}
+                        onClick={()=>{handle_delete_entry()}}
                 > Delete  </button>
+                }
+                {status_message !== "" &&
+                    <h3>{status_message}</h3>
                 }
                 <Control_panel_sort_button />
                 

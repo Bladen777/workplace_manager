@@ -23,7 +23,7 @@ interface Types_context {
 interface Types_context_content extends Types_initial_data {};
 
 interface Types_context_function {
-  section_name:string;
+  active_table:string;
 };
 
 export interface Types_column_info{
@@ -66,12 +66,12 @@ export function Provide_Context_table_info({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
     // UPDATE THE CONTEXT 
-    async function update_context({section_name }:Types_context_function){
+    async function update_context({active_table }:Types_context_function){
   
-      console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `db_table_info for ${section_name}`);
+      console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `db_table_info for ${active_table}`);
       try {
           const response = await axios.post("/get_columns",{
-              table_name: section_name
+              table_name: active_table
           })
           // set input types
           const form_data: Types_form_data = {};
@@ -116,7 +116,7 @@ export function Provide_Context_table_info({children}:{children:ReactNode}) {
           })
 
         return({
-            table_name: section_name, 
+            table_name: active_table, 
             db_column_info: column_info, 
             initial_form_data:form_data
         }) 

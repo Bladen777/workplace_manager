@@ -28,13 +28,13 @@ import { Types_data_change } from "../../_universal/Process_input_data.js";
 
 // THE COMPONENT
 export default function Control_panel_edit({handle_cancel_edit_click}:{handle_cancel_edit_click:Function}) {
-    const section_name = useContext(Use_Context_table_info).show_context.table_name;
-    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `,section_name);
+    const active_table = useContext(Use_Context_table_info).show_context.table_name;
+    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `,active_table);
 
     const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
     const initial_form_data = useContext(Use_Context_table_info).show_context.initial_form_data;
     const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
-    const submit_method = useContext(Use_Context_current_table_item).show_context.submit_method
+    const submit_method = useContext(Use_Context_current_table_item).show_context.submit_method;
 
     let starting_data: Types_form_data[] = [current_table_item];
     if(submit_method === "add"){
@@ -46,37 +46,38 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
 
     function handle_form_change({table_name, form_data}:Types_data_change){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
-        process_data.handle_form_change({table_name: table_name, form_data: form_data});
+        process_data.handle_form_change({section_name: "control_panel", table_name: table_name, form_data: form_data});
     }
 
     async function post_form(){
         console.log(`%c POST FORM `, `background-color:${ log_colors.data }`);
-        const response:string = await process_data.post_form({submit_method:submit_method});
+        const response:string = await process_data.post_form({section_name: "control_panel", submit_method:submit_method});
         console.log(`%c THE STATUS MESSAGE `, `background-color:${ log_colors.data }`,`for response`,'\n' ,response);
         set_status_message(response)
     }
 
 // MEMOS AND EFFECTS    
     useEffect(() =>{
-        process_data.handle_form_change({table_name:section_name, form_data:starting_data});
+        process_data.clear_form("control_panel");
+        process_data.handle_form_change({section_name: "control_panel", table_name:active_table, form_data:starting_data});
     },[])
     console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
 
 // RETURNED VALUES 
     return (
         <article id="control_panel_edits" className="control_panel_action_box">
-            <h3>{submit_method === "add" ? "Add" : "Edit"} {section_name}</h3>
+            <h3>{submit_method === "add" ? "Add" : "Edit"} {active_table}</h3>
             {   
-                section_name === "departments"
+                active_table === "departments"
                 ? 
                 <Order_shift
                     submit_method = {submit_method} 
-                    ele_names = {`cp_${section_name}`}
+                    ele_names = {`cp_${active_table}`}
                     send_table_data = {handle_form_change} 
                 /> 
 
                 :
-                section_name === "employees" 
+                active_table === "employees" 
                 ?
                 <div id="cpe_input_box" className="cp_content_box">
                     <Employee_input_form 
