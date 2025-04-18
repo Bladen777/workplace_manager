@@ -2,7 +2,7 @@ import { memo, useContext, useEffect, useMemo, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Employee_select from "./employee_dd/Employee_select.js";
-import Pd_budgets from "./Pd_budget.js";
+import Pd_budget from "./Pd_budget.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_departments_data } from "../../../context/Context_departments_data.js";
@@ -47,8 +47,8 @@ function Pd_input({total_production_budget, adjust_budget_used}:Types_props) {
                         key={`dropdown_for_${department_name}`} 
                         style={{backgroundColor:item.department.color}}
                     >
-                        <h4>{convert_text({text:department_name})}</h4>
-                        <Pd_budgets 
+                        <h4>{convert_text({text:item.department.name})}</h4>
+                        <Pd_budget
                             department_name = {department_name}
                             total_budget = {total_production_budget}
                             adjust_budget_used={(value:number)=>{adjust_budget_used(value)}}

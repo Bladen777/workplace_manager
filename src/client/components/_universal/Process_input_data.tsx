@@ -136,7 +136,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             }   
         })
 
-        console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for missing_input_strings`,'\n' ,missing_input_strings);
         return missing_input_strings;
     }
 
@@ -173,15 +172,16 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         })
 
         if(missing_inputs !== ""){
+            console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for missing_input_strings`,'\n' ,missing_inputs);
             return (`Please enter values for ${missing_inputs}`)
         }
         
         if(active_table === "employees"){
             const adjust_table_data_ref = {
-                employees: table_data_ref.current.employees,
-                employee_departments: table_data_ref.current.employee_departments
+                employees: table_data_ref.current[section_name].employees,
+                employee_departments: table_data_ref.current[section_name].employee_departments
             }
-            table_data_ref.current = adjust_table_data_ref;
+            table_data_ref.current[section_name] = adjust_table_data_ref;
             const employee_data = table_data_ref.current[section_name]["employees"][0];
             if(employee_data.name === ""){
                 const update_form_data = {...table_data_ref.current[section_name]["employees"][0], name:employee_data.email};

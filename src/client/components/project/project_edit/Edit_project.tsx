@@ -64,10 +64,9 @@ export default function Edit_project() {
         remaining: 0,
         percent: 0
     })
-    const production_budget_ref = useRef<Types_budget>({
+    const production_budget_ref = useRef<Types_adjust_budget>({
         total: 0,
-        remaining: 0,
-        percent: 0
+        used: 0,
     })
 
     async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){
@@ -127,34 +126,31 @@ export default function Edit_project() {
 
 
     function adjust_budget({total, used}:Types_adjust_budget){
-        let budget:Types_budget ={...production_budget_ref.current};
+        let budget:Types_budget ={...production_budget};
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget`,'\n' ,budget);
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`total used: `,production_budget_ref.current.used ,`for used` ,used);
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`total: `,production_budget_ref.current.total ,`for total` ,total);
 
-        if(total){
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total`,'\n' ,total);
-            budget.total = total
-            if(production_budget_ref.current.remaining < 0){
-                budget.remaining = Number((budget.total + production_budget_ref.current.remaining).toFixed(2));
-            } else {
-                budget.remaining = Number((budget.total - production_budget_ref.current.remaining).toFixed(2));
-            }
-            
-        }
-    
         if(used){
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for used`,'\n' ,used);
-            budget.remaining = Number((production_budget_ref.current.remaining - used).toFixed(2));
-        } 
+            production_budget_ref.current.used =   (production_budget_ref.current.used! + used);
+        } else if(total){
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for total`,'\n' ,total);
+            production_budget_ref.current.total = total;
+        }
+
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`total used: `,production_budget_ref.current.used ,`for used` ,used);
+
+        budget.total = production_budget_ref.current.total! 
+        budget.remaining = production_budget_ref.current.total! - production_budget_ref.current.used!
 
         if(budget.total > 0){
             budget.percent = Number((((budget.total - budget.remaining)/budget.total)*100).toFixed(2));
         } else {
             budget.percent = 100;
         }
-        
-
+            
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for budget`,'\n' ,budget);
-        production_budget_ref.current = budget;
+        //production_budget_ref.current = budget;
         set_production_budget(budget);
     }
 

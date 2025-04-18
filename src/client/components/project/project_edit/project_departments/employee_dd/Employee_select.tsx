@@ -29,8 +29,9 @@ export default function Employee_select({department_name}:Types_props) {
 
     const current_project = useContext(Use_Context_project_data).show_context.current_project;
 
+    const [initial_employee_list, set_initial_employee_list] = useState<Types_form_data[]>([])
     const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
-    const [selected_employees, set_selected_employess] = useState<ReactElement[]>([]);
+    const [selected_employees, set_selected_employees] = useState<ReactElement[]>([]);
 
 
     // CHECK IF THERE ARE EXISTING EMPLOYEES ASIGNED TO THIS PROJECT
@@ -42,16 +43,14 @@ export default function Employee_select({department_name}:Types_props) {
                 filter_item: `"${current_project.current_table_item.id}"`
             })
 
-
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
 
     }
 
-
     // GET CURRENT LIST OF MATCHING EMPLOYEES
-    async function fetch_employee_list(){
+    async function fetch_initial_employee_list(){
         try{
             const response = await axios.post("/get_table_info",{
                 table_name: "employee_departments",
@@ -78,6 +77,7 @@ export default function Employee_select({department_name}:Types_props) {
                 };
             };
             //console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
+            set_initial_employee_list(employee_data);
             set_employee_list(employee_data);
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
@@ -86,21 +86,38 @@ export default function Employee_select({department_name}:Types_props) {
 
     function add_employee(item:Types_search_item){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
-        const selected_index:number = employee_list.findIndex((s_item:Types_form_data)=>{
+
+        const selected_employee = initial_employee_list.find((s_item)=>{
             if(s_item.id === item.id){
                 return s_item;
-            } 
-        });
+            }
+        })
+        const employee_pay_type:string = String(selected_employee!.pay_type); 
 
-        const employee_rate:number = Number(employee_list[selected_index].pay_rate);
+        let employee_rate:number;
+        if(employee_pay_type === "hourly"){
+            employee_rate = Number(selected_employee!.pay_rate);
+        } else {
+            employee_rate = Number((Number(selected_employee!.pay_rate)/2080).toFixed(2));
+        }
+        
 
         const employee_input = <P_employee_edit
             key={`${item.name}`} 
-            name = {item.name}
+            data = {item}
             rate = {employee_rate}
+            remove_employee = {(id:number)=>remove_employee(id)}
         />
 
-        set_selected_employess(prev_state => {
+        let remaining_employees:Types_form_data[] = [] 
+        employee_list.forEach((employee_data)=>{
+            if(employee_data.id !== item.id){
+                remaining_employees.push(employee_data)
+            }
+        })
+
+        set_employee_list(remaining_employees);
+        set_selected_employees(prev_state => {
             return[
                 ...prev_state,
                 employee_input
@@ -108,10 +125,16 @@ export default function Employee_select({department_name}:Types_props) {
         });
     }
 
+    function remove_employee(id:number){
+        let remaining_selected_employees:ReactElement[] = [];
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for selected_employees`,'\n' ,selected_employees);
+
+    }
+
 
 // MEMOS AND EFFECTS    
     useEffect(() =>{
-      fetch_employee_list()
+      fetch_initial_employee_list()
     },[])
 
 // RETURNED VALUES 

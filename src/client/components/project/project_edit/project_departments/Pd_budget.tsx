@@ -22,7 +22,7 @@ interface Types_props{
 }
 
 // THE COMPONENT 
-export default function Pd_budgets({department_name, total_budget, adjust_budget_used}:Types_props) {
+export default function Pd_budget({department_name, total_budget, adjust_budget_used}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budgets`);
 
     const [department_budget, set_department_budget] = useState<number>(0);
@@ -60,7 +60,7 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
             set_department_percent(input_number);
         }
 
-        process_data.handle_form_change({table_name: "project_department_budgets", form_data: {input:String(new_department_budget) , db_column:department_name}});
+        process_data.handle_form_change({section_name: "projects", table_name: "project_department_budgets", form_data: {input:new_department_budget , db_column:department_name}});
 
 
         set_department_budget(new_department_budget);
@@ -73,7 +73,7 @@ export default function Pd_budgets({department_name, total_budget, adjust_budget
     },[ department_budget,total_budget])
 
     useEffect(() =>{
-        //process_data.handle_form_change({table_name:"project_department_budgets", form_data: [{input:String(0) , db_column:department_name}]});
+        process_data.handle_form_change({section_name: "projects", table_name:"project_department_budgets", form_data: [{input:0 , db_column:department_name}]});
     },[])
 
 // RETURNED VALUES 

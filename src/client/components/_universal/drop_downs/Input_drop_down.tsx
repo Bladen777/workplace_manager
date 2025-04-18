@@ -164,10 +164,15 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
         find_matched_items()
     },[selected_item, table_data])
 
+    useMemo(()=>{
+        set_selected_item("");
+    },[form_table_data])
 
     useEffect(() =>{
         handle_click_track()
     },[open_dd])
+
+
 
 // RETURNED VALUES 
     return(
