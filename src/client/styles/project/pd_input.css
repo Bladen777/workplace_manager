@@ -1,5 +1,6 @@
 .project_department_input_box{
-
+    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem;
     padding: 0.5rem;
 }
 

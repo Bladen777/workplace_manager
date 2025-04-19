@@ -97,7 +97,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         }
         console.log(`%c Process_input_data FORM_DATA `, `background-color:${ log_colors.helper_function }`,`for ${section_name} form_data for ${table_name}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
 
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
         if(!Array.isArray(form_data)){
             const update_form_data = {...table_data_ref.current[section_name][table_name][0], [form_data.db_column]:form_data.input};
             form_data_array.push(update_form_data);

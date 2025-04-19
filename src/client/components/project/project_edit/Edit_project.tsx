@@ -30,13 +30,10 @@ interface Types_budget {
 
 }
 
-interface Types_adjust_budget{
+export interface Types_adjust_budget{
     total?: number;
     used?: number;
 }
-
-
-
 
 // THE COMPONENT 
 export default function Edit_project() {

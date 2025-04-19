@@ -51,8 +51,8 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
                 table_name={{main:"Client"}}
                 string_table_data={client_list}
                 send_table_data={(
-                    {input_value}:{input_value:Types_search_item})=>
-                        send_table_data({input:input_value.name, db_column:"client_name"}
+                    {input}:{input:Types_search_item})=>
+                        send_table_data({input:input.name, db_column:"client_name"}
                 )}
             />
         </label>

@@ -59,5 +59,6 @@ employee_id int REFERENCES employees(id),
 project_id int REFERENCES projects(id),
 department_name int REFERENCES departments(id),
 start_date date,
+budget int,
 budget_hours int
 );

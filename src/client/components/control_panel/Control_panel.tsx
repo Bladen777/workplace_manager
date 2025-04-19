@@ -58,6 +58,7 @@ export default function Control_panel() {
         update_context("clients")
       },[])
 
+      console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for active_table`,'\n' ,active_table);
 // RETRURNED VALUES      
     return (
         <section id="control_panel" className="general_section">
@@ -65,7 +66,7 @@ export default function Control_panel() {
 
             <div id="control_panel_nav">
                 <button id="clients_btn"
-                        className={active_table === "clients" ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
+                        className={active_table === "clients"  ? "cp_nav_btn_active cp_nav_btn" : "cp_nav_btn"}
                         onClick={()=>{handle_cp_nav_btn_click("clients")}}
                 >
                     <h3>Clients</h3>

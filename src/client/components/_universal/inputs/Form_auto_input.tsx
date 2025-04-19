@@ -1,4 +1,4 @@
-import {memo, ReactElement, useCallback, useContext, useEffect, useState } from "react";
+import {memo, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 // COMPONENT IMPORTS
 import Money_input from "./Money_input.js";
@@ -54,7 +54,7 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
 */
 
     let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
-    if(table_data_object){current_table_data = table_data_object}
+
     const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
     const [input, set_input] = useState<ReactElement>();
 
@@ -129,16 +129,17 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
         }
 
 // MEMOS AND EFFECTS        
-        /*
+        
         useMemo(()=>{
             if(current_table_data !== table_data_object){
                 console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_object`,'\n' ,table_data_object);
                 table_data_object && set_input_data(table_data_object!)
             }
         },[table_data_object])
-        */
+        
 
     useEffect(() =>{
+        if(table_data_object){current_table_data = table_data_object}
         if(column_info.column_name){
             //console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
             create_inputs()

@@ -1,0 +1,63 @@
+.selected_employees{
+    display: flex;
+    flex-direction: row;
+    border-radius: 0.5rem; 
+}
+
+.e_select_box{
+    width: 9rem;
+    height: 13.5rem;
+    background-color: var(--section_primary) ;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    display: grid;
+    grid-template-rows: 2rem 8rem 2.5rem;
+    grid-template-columns: 100%;
+    overflow: hidden;
+}
+
+
+@keyframes toggle_e_select_box {
+    0%{
+        pointer-events: none;
+        margin: 0 0.5rem;
+        padding: 0 0.5rem;
+        height: 0;
+    }
+
+    99%{
+        pointer-events: none;
+    }
+
+    100%{
+        pointer-events: all;
+        height:13.5rem;
+    }
+
+}
+
+
+.e_select_input_box{
+    grid-row: 2;
+}
+
+
+.e_select_del_btn{
+    cursor: pointer;
+    grid-row: 3;
+    margin: 0.5rem auto;
+    padding: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--section_bg);
+    border-radius: 35%;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    transition: 0.25s;
+}
+
+.e_select_del_btn:hover{
+    transform: scale(1.05);
+    background-color: var(--section_btn_hover) !important;
+}
