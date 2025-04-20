@@ -29,7 +29,6 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
 
             })
             const client_names = response.data.map((item:{name:string})=>item.name)
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for client_names`,'\n' ,client_names);
             set_client_list(client_names)
         
         } catch (error){

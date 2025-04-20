@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react"
+import { createContext, useContext, useState, ReactNode, useEffect, useRef, useMemo } from "react"
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
@@ -20,20 +20,23 @@ interface Types_context {
 };
 
 interface Types_context_content {
-    total_budget: number;
+    total: number;
+    used: number;
     [key:string]:number;
    };
 
 
 
 interface Types_context_function {
-    department: string;
+    total?:boolean
+    dep_id_name?: string;
     budget:number;
 };
 
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = {
-    total_budget:0
+    total:0,
+    used:0
 };
 
 // CONTEXT TO USE 
@@ -49,44 +52,60 @@ export const Use_Context_project_budgets = createContext<Types_context>({
 // CONTEXT PROVIDER & UPDATE 
 export function Provide_Context_project_budgets({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
+    const budgets = useRef<Types_context_content>(initial_context_content);
 
     const departments = useContext(Use_Context_departments_data).show_context;
 
     function setup_department_budgets(){
-        const department_budgets = departments.map((department)=>{
-            return{
-                [department.department.name]:0
-            }
+        const department_budgets:Types_context_content = {
+            total:send_context.total,
+            used: send_context.used
+        }
 
+        departments.forEach((department)=>{
+            department_budgets[`dep_id_${department.department.id}`] = 0;
         })
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budgets`,'\n' ,department_budgets);
 
+        budgets.current = department_budgets;
+        set_send_context(department_budgets)
+        console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for department_budgets`,'\n' ,department_budgets);
     }
 
     // UPDATE THE CONTEXT 
-    async function update_context({department, budget}:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_budgets`);
+    async function update_context({total, dep_id_name, budget}:Types_context_function){
+        console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_budgets`, `total: `,total);
 
-        const existing_budgets = [...send_context]
-
-        if(department === "total_budget"){
-            return({
-                total_budget:budget
-            });
-        } else {
-            const department_name = `dep_id_${department}`;
-            return({
-                [department_name]:budget
-            });
-
+        console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for send_context`,'\n' ,send_context);
+        let update_budget: Types_context_content = {
+            ...budgets.current!
         }
+        console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for update_budget`,'\n' ,update_budget);
+        let used_budget:number;
+
+
+        if(total){
+            update_budget = {
+                ...update_budget,
+                total:budget
+            }
+        } else{
+            used_budget = Number((send_context.used + (budget - update_budget[dep_id_name!])).toFixed(2));
+            update_budget = {
+                ...update_budget,
+                used:used_budget,
+                [dep_id_name!]:budget
+            }
+        }
+        console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.important }`,`for update_budget`,'\n' ,update_budget);
+        budgets.current = update_budget;
+        return update_budget;
     }
 
 // MEMOS AND EFFECTS
 
-useEffect(() =>{
+useMemo(() =>{
   setup_department_budgets()
-},[])
+},[departments])
 
 // RETURN THE CONTEXT PROVIDER 
     return (

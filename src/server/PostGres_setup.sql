@@ -57,7 +57,7 @@ CREATE TABLE employee_budgets(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 employee_id int REFERENCES employees(id),
 project_id int REFERENCES projects(id),
-department_name int REFERENCES departments(id),
+department_id int REFERENCES departments(id),
 start_date date,
 budget int,
 budget_hours int

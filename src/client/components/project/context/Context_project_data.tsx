@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react"
+import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from "react"
 import axios from "axios";
 
 // COMPONENT IMPORTS 
@@ -74,6 +74,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
 
     // GET THE COLUMN NAMES
     async function fetch_project_table_info(){
+        console.log(`%c CONTEXT PROJECT INITIAL DATA `, `background-color:${ log_colors.context }`);
         try{
             const response = await axios.post("/get_columns",{
                 table_name: "projects"
@@ -129,6 +130,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
+        console.log(`%c CONTEXT PROJECT INITIAL DATA FINISHED`, `background-color:${ log_colors.context }`);
     } 
 
 
@@ -188,7 +190,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
 
 // MEMOS AND EFFECTS
 
-    useEffect(() =>{
+    useMemo(() =>{
         fetch_project_table_info();
       },[])
 

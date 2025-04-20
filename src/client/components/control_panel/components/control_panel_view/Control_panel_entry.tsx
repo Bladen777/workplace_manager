@@ -26,7 +26,7 @@ interface Types_props{
 
 // THE COMPONENT 
 function Control_panel_entry({is_active, item_data, item_index, send_selected_ele}:Types_props) {
-    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Control_panel_entry for ${item_data.name}`);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Control_panel_entry for ${item_data.name}`);
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
 // MEMOS AND EFFECTS

@@ -23,6 +23,8 @@ interface Types_client_position{
     y:number;
 }
 
+
+
 export default function useFindClickPosition() {
     //console.log(`%c HOOK `, `background-color:${ log_colors.hook }`,`for Find Click Position`);
     const trackers_open = useRef<number>(0);
@@ -69,6 +71,7 @@ export default function useFindClickPosition() {
             };
         }
     }
+    
 
 return track_click;
 }

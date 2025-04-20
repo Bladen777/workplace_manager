@@ -133,11 +133,6 @@ export default function animate_edit_project() {
         }
     }
 
-
-
-
-
-
 // MEMOS AND EFFECTS
 
 

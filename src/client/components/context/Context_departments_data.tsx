@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useEffect } from "react"
+import { createContext, useState, ReactNode, useEffect, useMemo } from "react"
 import axios from "axios";
 
 // COMPONENT IMPORTS 
@@ -76,14 +76,15 @@ console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for send_
                     }
                 }
             })
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for data`,'\n' ,data);
+            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for department data`,'\n' ,data);
             return(data)
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
     }
 
-    useEffect(() =>{
+// MEMOS AND EFFECTS     
+    useMemo(() =>{
         (async () =>{
             set_send_context(await update_context({}))
         })()

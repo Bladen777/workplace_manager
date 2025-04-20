@@ -18,16 +18,16 @@ import { Use_Context_project_data } from "../../../context/Context_project_data.
 import { Types_form_data } from "../../../../control_panel/context/Context_db_table_info.js";
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
 import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
+import { Types_department_data } from "../../../../context/Context_departments_data.js";
 
 interface Types_props{
-    department_name:string;
-    department_budget:number;
+    department_data: Types_department_data;
 }
 
 
 // THE COMPONENT 
-export default function Employee_select({department_name, department_budget}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_select for: `, department_name);
+export default function Employee_select({department_data}:Types_props) {
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_select for: `, department_data.department.name);
 
     const current_project = useContext(Use_Context_project_data).show_context.current_project;
 
@@ -36,10 +36,7 @@ export default function Employee_select({department_name, department_budget}:Typ
     const [selected_employees, set_selected_employees] = useState<ReactElement[]>([]);
     const selected_employees_ref = useRef<ReactElement[]>([]);
     
-    
-    const dep_budget = useRef<number>(0);
-    dep_budget.current = department_budget;
-
+    const dep_id = `dep_id_${department_data.department.id}`
 
     // CHECK IF THERE ARE EXISTING EMPLOYEES ASIGNED TO THIS PROJECT
     async function fetch_selected_employees(){
@@ -62,7 +59,7 @@ export default function Employee_select({department_name, department_budget}:Typ
             const response = await axios.post("/get_table_info",{
                 table_name: "employee_departments",
                 sort_field: "employee_id",
-                filter_key: `"${department_name}"`,
+                filter_key: `"${dep_id}"`,
                 filter_item: "1"
 
             })
@@ -113,7 +110,7 @@ export default function Employee_select({department_name, department_budget}:Typ
 
         const employee_input = <P_employee_edit
             key={`${item.id}`}
-            department_budget = {()=>get_dep_budget()}
+            dep_id = {department_data.department.id}
             data = {item}
             rate = {employee_rate}
             remove_employee = {()=>remove_employee(item.id!)}
@@ -168,20 +165,11 @@ export default function Employee_select({department_name, department_budget}:Typ
         set_employee_list(remaining_employees);
     }
 
-    function get_dep_budget(){
-        return dep_budget.current
-    }
-
-
 
 // MEMOS AND EFFECTS    
     useEffect(() =>{
       fetch_initial_employee_list()
     },[])
-
-
-    
-
 
 
 // RETURNED VALUES 
@@ -192,7 +180,7 @@ export default function Employee_select({department_name, department_budget}:Typ
                 {selected_employees}
             </div>
             <Input_drop_down 
-                table_name={{main:"Employee", specific:department_name}} 
+                table_name={{main:"Employee", specific:dep_id}} 
                 form_table_data={employee_list} 
                 send_table_data={({input}:{input:Types_search_item})=>{
                     add_employee(input)

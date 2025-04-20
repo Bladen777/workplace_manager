@@ -52,6 +52,8 @@ export function Provide_Context_current_table_item({children}:{children:ReactNod
         return({current_table_item:current_table_item , submit_method:submit_method});
     }
 
+// MEMOS AND EFFECTS 
+
 // RETURN THE CONTEXT PROVIDER 
     return (
         <Use_Context_current_table_item.Provider value={{

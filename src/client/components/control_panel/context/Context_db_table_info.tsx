@@ -125,7 +125,7 @@ export function Provide_Context_table_info({children}:{children:ReactNode}) {
           return(initial_context_content)   
       }
     }
-    
+// MEMOS AND EFFECTS     
 
 // RETURN THE CONTEXT PROVIDER 
     return (

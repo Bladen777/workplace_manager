@@ -81,7 +81,7 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
         }
 
         function create_inputs(){
-            console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${column_info.column_name}`, "\n",   input_data);
+            console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${column_info.column_name}`, `\n  `,   input_data);
 
             let input:ReactElement; 
             if(item_data.input_type === "order" ) {
@@ -132,7 +132,6 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
         
         useMemo(()=>{
             if(current_table_data !== table_data_object){
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_object`,'\n' ,table_data_object);
                 table_data_object && set_input_data(table_data_object!)
             }
         },[table_data_object])

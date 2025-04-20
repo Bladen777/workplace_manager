@@ -78,6 +78,8 @@ export function Provide_Context_table_data({children}:{children:ReactNode}) {
       
     }
 
+// MEMOS AND EFFECTS     
+
 // RETURN THE CONTEXT PROVIDER 
     return (
         <Use_Context_table_data.Provider value={{

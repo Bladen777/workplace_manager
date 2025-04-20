@@ -58,7 +58,6 @@ export default function Control_panel() {
         update_context("clients")
       },[])
 
-      console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for active_table`,'\n' ,active_table);
 // RETRURNED VALUES      
     return (
         <section id="control_panel" className="general_section">

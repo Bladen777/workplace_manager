@@ -5,6 +5,7 @@ import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
 import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
+import { Use_Context_project_budgets } from "../../../context/Context_project_budgets.js";
 
 // HOOK IMPORTS 
 
@@ -20,8 +21,8 @@ import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_
 
 
 interface Types_props{
-    department_budget:Function
     data:Types_search_item;
+    dep_id:number;
     rate:number;
     remove_employee: Function;
 }
@@ -32,10 +33,13 @@ interface Types_employee_data{
 }
 
 // THE COMPONENT 
-export default function P_employee_edit({department_budget, data, rate, remove_employee}:Types_props) {
-    console.log(`%c INPUT_COMPONENT `, `background-color:${ log_colors.input_component }`, `P_employee_edit`);
+export default function P_employee_edit({dep_id, data, rate, remove_employee}:Types_props) {
+    console.log(`       %c INPUT_COMPONENT `, `background-color:${ log_colors.input_component }`, `P_employee_edit`);
 
+    const dep_id_name = `dep_id_${dep_id}`
     const process_data = useContext(Use_Process_input_data);
+    const department_budget = useContext(Use_Context_project_budgets).show_context[dep_id_name]
+
 
     const [employee_budget, set_employee_budget] = useState<number>(0)
     const [employee_hours, set_employee_hours] = useState<number>(0)
@@ -54,7 +58,7 @@ export default function P_employee_edit({department_budget, data, rate, remove_e
 
         if(db_column === "hours"){
             update_hours = Number(input);
-            update_budget = update_hours * rate;
+            update_budget = Number((update_hours * rate).toFixed(2));
         } else {
             update_budget = Number(input);
             update_hours = Number((update_budget/rate).toFixed(2));
@@ -68,20 +72,17 @@ export default function P_employee_edit({department_budget, data, rate, remove_e
         set_employee_budget(update_budget);
         set_employee_hours(update_hours);
 
-/*
-        const budget_form_data: Types_input_change = {
-            input: String(update_budget),
-            db_column: "budget"
-        }
-        const hour_form_data: Types_input_change = {
-            input: String(update_hours),
-            db_column: "budget_hours"
+
+        const budget_form_data:Types_form_data = {
+            budget_hours: update_hours,
+            budget: update_budget,
+            employee_id: data.id,
+            department_id: dep_id
         }
 
-        process_data.handle_form_change({section_name:"projects" , table_name: "employee_budgets", form_data: budget_form_data})
-        process_data.handle_form_change({section_name:"projects" , table_name: "employee_budgets", form_data: hour_form_data})
 
-*/
+        process_data.handle_form_change({section_name:"projects" , table_name: "employee_budgets", form_data:budget_form_data })
+
     }
 
     function handle_remove_employee(){
@@ -109,6 +110,19 @@ useEffect(() =>{
     }
 },[])
 
+useEffect(() =>{
+    process_data.handle_form_change({
+        section_name: "projects", 
+        table_name:"employee_budgets", 
+        form_data: [{
+            budget_hours: 0,
+            budget: 0,
+            employee_id: data.id,
+            department_id: dep_id
+        }]
+    });
+},[])
+
 /*
 
 useEffect(() =>{
@@ -124,17 +138,14 @@ useEffect(() =>{
   },[remove_employee])  
 */
 
-useEffect(() =>{
-    console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for department_budget`,'\n' ,department_budget());
-},[department_budget()])
 
-console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for department_budget`,'\n' ,department_budget());
+
 // RETURNED VALUES 
     return(
         <div 
             ref = {e_select_box_ele}
             className={
-                employee_budget > department_budget()
+                employee_budget > department_budget
                 ? "over_budget e_select_box"
                 : "e_select_box" 
             }

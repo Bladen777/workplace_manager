@@ -3,11 +3,11 @@ export const log_colors = {
     component: "darkorchid",
     sub_component: "darkslateblue",
     input_component: "indigo",
-    helper_function: "cadetblue",
+    process_data: "cadetblue; color:black",
     context: "rebeccapurple",
     hook: "mediumslateblue",
     memo: "darkblue",
-    animation: "darksalmon",
+    animation: "darksalmon; color:black",
     data: "olive",
     important: "gold; color:black;",
     important_2: "darkorange; color:black"

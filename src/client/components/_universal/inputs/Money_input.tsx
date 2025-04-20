@@ -21,7 +21,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Money_input({send_table_data, pay_type_value, item_data}:Types_props) {
-    console.log(`       %c MONEY INPUT `, `background-color:${ log_colors.input_component }`, `for`, item_data);
+    console.log(`       %c MONEY INPUT `, `background-color:${ log_colors.input_component }`, `for`,`\n     `, item_data);
 
     // ENSURE PROPER CURSOR POSITION WHILE ADJUSTING NUMBERS
     const [focus_input, set_focus_input] = useState<Boolean>(false);

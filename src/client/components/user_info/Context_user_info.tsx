@@ -97,6 +97,8 @@ export function Provide_Context_user_info({children}:{children:ReactNode}) {
         };
     }
 
+// MEMOS AND EFFECTS     
+
 // RETURN THE CONTEXT PROVIDER 
     return (
         <Use_Context_user_info.Provider value={{

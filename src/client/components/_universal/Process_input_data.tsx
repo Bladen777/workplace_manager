@@ -4,7 +4,7 @@ import axios from "axios";
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
-import { Use_Context_table_data } from "../control_panel/context/Context_get_table_data.js";
+import { Types_get_table_data, Use_Context_table_data } from "../control_panel/context/Context_get_table_data.js";
 import { Use_Context_table_info } from "../control_panel/context/Context_db_table_info.js";
 import { Use_Context_current_table_item } from "../control_panel/context/Context_current_table_item.js";
 import { Use_Context_departments_data } from "../context/Context_departments_data.js";
@@ -86,25 +86,45 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         control_panel:{},
         projects:{}
     });
-    console.log(`%c Process_input_data `, `background-color:${ log_colors.helper_function }`, `for`,table_data_ref.current);
+    console.log(`%c PROCESS_INPUT_DATA `, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({section_name, table_name, form_data}:Types_data_process){
-        let form_data_array: Types_form_data[] = []; 
 
         if(table_name === null || table_name === undefined){
             table_name = active_table;
         }
-        console.log(`%c Process_input_data FORM_DATA `, `background-color:${ log_colors.helper_function }`,`for ${section_name} form_data for ${table_name}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
+
+        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
+        console.log(`%c PROCESS_INPUT_DATA FORM_DATA `, `background-color:${ log_colors.process_data }`,`for ${section_name} form_data for ${table_name}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
+        
+        let new_form_data = {...table_data_ref.current[section_name]};
+
+
+
+        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`, new_form_data);
+
+        
+
 
         if(!Array.isArray(form_data)){
-            const update_form_data = {...table_data_ref.current[section_name][table_name][0], [form_data.db_column]:form_data.input};
-            form_data_array.push(update_form_data);
-            table_data_ref.current[section_name][table_name] = form_data_array;
+            new_form_data = {
+                ...new_form_data,
+                    [table_name]:[{
+                        ...new_form_data[table_name][0],
+                        [form_data.db_column]:form_data.input
+                    }
+                ]
+            }
+        
         } else {
-            table_data_ref.current[section_name][table_name] = form_data;
+            new_form_data = {
+                ...new_form_data,
+                    [table_name]:form_data
+            }
         }
-        console.log(`%c Process_input_data CURRENT_DATA`, `background-color:${ log_colors.helper_function }`, `for`,table_data_ref.current);
+        table_data_ref.current[section_name] = new_form_data;
+        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
 
     }
 
@@ -152,7 +172,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             [keep_data]:table_data_ref.current[keep_data]    
         };
 
-        console.log(`%c Process_input_data DATA CLEARED`, `background-color:${ log_colors.helper_function }`, `for`,table_data_ref.current);
+        console.log(`%c PROCESS_INPUT_DATA DATA CLEARED`, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
         return true
     }
 
@@ -294,9 +314,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         }
         return status_message;
     }
-
-
-
+// MEMOS AND EFFECTS 
 
 // RETURNED VALUES
     return(
