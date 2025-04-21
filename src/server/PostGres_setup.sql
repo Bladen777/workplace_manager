@@ -43,15 +43,19 @@ production_budget decimal(15,2),
 project_address varchar(255),
 shipping_address varchar(255),
 date_added date,
-ship_date date
+ship_date date,
+start_date date,
+finish_date date
 );
 
 CREATE TABLE project_department_budgets(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-project_id int REFERENCES projects(id)
--- DEPARTMENT COLUMNS WILL BE ADDED ON THE FRONT END
--- THEIR VALUES WILL BE 0 OR 1 FOR FALSE AND TRUE
-)
+project_id int REFERENCES projects(id),
+department_id int REFERENCES departments(id),
+start_date date,
+finish_date date,
+budget int
+);
 
 CREATE TABLE employee_budgets(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,

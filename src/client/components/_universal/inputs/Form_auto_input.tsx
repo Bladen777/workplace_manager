@@ -1,4 +1,4 @@
-import {memo, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {memo, ReactElement, useContext, useEffect, useMemo, useState } from "react";
 
 // COMPONENT IMPORTS
 import Money_input from "./Money_input.js";
@@ -17,8 +17,13 @@ import { Types_column_info } from "../../control_panel/context/Context_db_table_
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
 
 export interface Types_new_entry{
+    label_name?:string;
     column_info: Types_column_info;
     table_data_object?: Types_form_data;
+    date_range?:{
+        min?:string;
+        max?:string;
+    }
     send_table_data: Function;
 }
 
@@ -35,23 +40,7 @@ export interface Types_input_change{
 }
 
 // THE COMPONENT
-function Form_auto_input({column_info, table_data_object, send_table_data}:Types_new_entry) {
-
-
-/*
-    useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for column_info`,'\n' ,column_info);
-    },[column_info])
-
-    useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_object`,'\n' ,table_data_object);
-    },[table_data_object])
-
-    useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
-    },[send_table_data])
-
-*/
+function Form_auto_input({label_name, column_info, table_data_object, date_range, send_table_data}:Types_new_entry) {
 
     let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
 
@@ -69,7 +58,7 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
         const item_data: Types_entry_input ={
             name: column_info.column_name,
             input_type: column_info.input_type,
-            name_text: convert_text(),
+            name_text: label_name ? label_name : convert_text(),
             value: input_data[column_info.column_name] ? input_data[column_info.column_name] : ""
         }
 
@@ -81,7 +70,7 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
         }
 
         function create_inputs(){
-            console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${column_info.column_name}`, `\n  `,   input_data);
+            console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${item_data.name_text} is_nullable: ${column_info.is_nullable}`, `\n  `,   input_data);
 
             let input:ReactElement; 
             if(item_data.input_type === "order" ) {
@@ -100,7 +89,7 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
             } else {
                 input = (
                     <label className="auto_form_input_label">
-                        <p>{item_data.name_text}:</p>   
+                        <p>{`${column_info.is_nullable === "NO" ? "* " : ""}${item_data.name_text}`}:</p>   
                         <input
                             id={item_data.name}
                             className={`auto_form_${item_data.input_type} auto_form_input`}
@@ -109,6 +98,8 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
                             placeholder={item_data.name_text}
                             value={item_data.value ===  null ? "" : item_data.value}
                             checked = {(item_data.input_type === "checkbox" && item_data.value === "1") ? true : false}
+                            min = {date_range && date_range.min}
+                            max = {date_range && date_range.max}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                                 let value = e.target.value;
                                 if(item_data.input_type === "checkbox"){
@@ -130,14 +121,20 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
 
 // MEMOS AND EFFECTS        
         
-        useMemo(()=>{
-            if(current_table_data !== table_data_object){
-                table_data_object && set_input_data(table_data_object!)
-            }
-        },[table_data_object])
+    useMemo(()=>{
+        if(current_table_data !== table_data_object){
+            table_data_object && set_input_data(table_data_object!)
+        }
+    },[table_data_object])
+
+    useMemo(() =>{
+        Object.keys(input_data).length > 0 && create_inputs()
+    },[input_data, date_range])
+
         
 
-    useEffect(() =>{
+/*
+    useMemo(() =>{
         if(table_data_object){current_table_data = table_data_object}
         if(column_info.column_name){
             //console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
@@ -145,11 +142,23 @@ function Form_auto_input({column_info, table_data_object, send_table_data}:Types
             return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `background-color:${ log_colors.important_2 }`);}
         }
     },[])
+*/
+
+    /*
+    useEffect(() =>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for column_info`,'\n' ,column_info);
+    },[column_info])
 
     useEffect(() =>{
-        create_inputs()
-    },[input_data])
-      
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_object`,'\n' ,table_data_object);
+    },[table_data_object])
+
+    useEffect(() =>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
+    },[send_table_data])
+
+*/
+
 // RETRURNED VALUES
         return (
             input

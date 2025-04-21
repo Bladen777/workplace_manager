@@ -6,13 +6,13 @@
 
 .e_select_box{
     width: 9rem;
-    height: 13.5rem;
+    height: 15rem;
     background-color: var(--section_primary) ;
     margin: 0.5rem;
     padding: 0.5rem;
     border-radius: 0.5rem;
     display: grid;
-    grid-template-rows: 2rem 8rem 2.5rem;
+    grid-template-rows: 2rem 9.5rem 2.5rem;
     grid-template-columns: 100%;
     overflow: hidden;
 }
@@ -32,7 +32,7 @@
 
     100%{
         pointer-events: all;
-        height:13.5rem;
+        height:15rem;
     }
 
 }

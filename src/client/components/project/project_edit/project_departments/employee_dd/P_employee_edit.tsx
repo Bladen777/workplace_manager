@@ -6,6 +6,8 @@ import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 // CONTEXT IMPORTS 
 import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
 import { Use_Context_project_budgets } from "../../../context/Context_project_budgets.js";
+import { Use_Context_employee_data } from "./context/Context_employee_data.js";
+import { Use_Context_project_dates } from "../../../context/Context_project_dates.js";
 
 // HOOK IMPORTS 
 
@@ -38,8 +40,11 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
 
     const dep_id_name = `dep_id_${dep_id}`
     const process_data = useContext(Use_Process_input_data);
-    const department_budget = useContext(Use_Context_project_budgets).show_context[dep_id_name]
+    const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name]
+    const employee_data = useContext(Use_Context_employee_data).show_context;
+    const project_dates = useContext(Use_Context_project_dates).show_context;
 
+    const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
     const [employee_budget, set_employee_budget] = useState<number>(0)
     const [employee_hours, set_employee_hours] = useState<number>(0)
@@ -51,7 +56,7 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
 
     const e_select_box_ele = useRef<HTMLDivElement | null>(null);
 
-    function handle_input_change({input, db_column}:Types_input_change){
+    function handle_budget_input_change({input, db_column}:Types_input_change){
         
         let update_budget:number = employee_data_ref.current!.budget;
         let update_hours:number = employee_data_ref.current!.hours;
@@ -79,8 +84,6 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
             employee_id: data.id,
             department_id: dep_id
         }
-
-
         process_data.handle_form_change({section_name:"projects" , table_name: "employee_budgets", form_data:budget_form_data })
 
     }
@@ -94,6 +97,11 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
             e_select_box_ele.current!.removeEventListener("animationend", animation_ended);
             remove_employee()
         }
+    }
+
+    function handle_date_input_change({input, db_column}:Types_input_change){
+
+
     }
 
 
@@ -139,7 +147,7 @@ useEffect(() =>{
 */
 
 
-
+console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
 // RETURNED VALUES 
     return(
         <div 
@@ -160,6 +168,20 @@ useEffect(() =>{
                 <p> Hourly Rate: ${rate}</p>
 
 
+                <Form_auto_input
+                    column_info = {{
+                        column_name: "start_date",
+                        is_nullable: "",
+                        input_type: "date"
+                    }}
+                    table_data_object={{[`start_date`]:""}}
+                    date_range={{min: project_dates.departments[dep_id_name].start_date, max: project_dates.departments[dep_id_name].finish_date}}
+                    send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_input_change({input:input, db_column:db_column})}}
+                />
+              
+
+
+
                 {/* INPUT FOR BUDGET */}
 
                 <Form_auto_input 
@@ -170,7 +192,7 @@ useEffect(() =>{
                     }}
                     table_data_object={{[`budget`]: employee_budget}} 
                     send_table_data = {({input, db_column}:Types_input_change)=>{
-                        handle_input_change({input:input, db_column:db_column})
+                        handle_budget_input_change({input:input, db_column:db_column})
                     }}
                 />
 
@@ -183,7 +205,7 @@ useEffect(() =>{
                     }}
                     table_data_object={{[`hours`]: employee_hours}}
                     send_table_data = {({input, db_column}:Types_input_change)=>{
-                        handle_input_change({input:input, db_column:db_column})
+                        handle_budget_input_change({input:input, db_column:db_column})
                     }}
                 />
             </div>

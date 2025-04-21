@@ -46,6 +46,9 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
 
     function handle_form_change({table_name, form_data}:Types_data_change){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
+        if(!table_name){
+            table_name = active_table;
+        }
         process_data.handle_form_change({section_name: "control_panel", table_name: table_name, form_data: form_data});
     }
 

@@ -183,7 +183,7 @@ export default function Edit_project() {
                                         send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
                                     />
                                 )
-                            } else {
+                            } else if(!column.column_name.includes("start_date") && !column.column_name.includes("finish_date") ){
                                 return(
                                     <Form_auto_input
                                         key={`input_for_${column.column_name}`}

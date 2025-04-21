@@ -22,7 +22,9 @@ interface Types_context {
 interface Types_context_content {
     total: number;
     used: number;
-    [key:string]:number;
+    departments:{
+        [key:string]:number
+    }
    };
 
 
@@ -36,7 +38,8 @@ interface Types_context_function {
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = {
     total:0,
-    used:0
+    used:0,
+    departments:{}
 };
 
 // CONTEXT TO USE 
@@ -59,15 +62,17 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
     function setup_department_budgets(){
         const department_budgets:Types_context_content = {
             total:send_context.total,
-            used: send_context.used
+            used: send_context.used,
+            departments:{}
         }
 
         departments.forEach((department)=>{
-            department_budgets[`dep_id_${department.department.id}`] = 0;
+            department_budgets.departments[`dep_id_${department.department.id}`] = 0;
         })
 
         budgets.current = department_budgets;
-        set_send_context(department_budgets)
+        set_send_context(department_budgets);
+     
         console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for department_budgets`,'\n' ,department_budgets);
     }
 
@@ -89,11 +94,15 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
                 total:budget
             }
         } else{
-            used_budget = Number((send_context.used + (budget - update_budget[dep_id_name!])).toFixed(2));
+            used_budget = Number((send_context.used + (budget - update_budget.departments[dep_id_name!])).toFixed(2));
             update_budget = {
                 ...update_budget,
                 used:used_budget,
-                [dep_id_name!]:budget
+                departments:{
+                    ...update_budget.departments,
+                    [dep_id_name!]:budget
+                }
+                
             }
         }
         console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.important }`,`for update_budget`,'\n' ,update_budget);
@@ -104,7 +113,10 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 // MEMOS AND EFFECTS
 
 useMemo(() =>{
-  setup_department_budgets()
+    if(departments[0].department.id !== 0){
+        console.log(`%c DATA `, `background-color:${ log_colors.important_2 }`,`for departments`,'\n' ,departments);
+        setup_department_budgets()
+    }
 },[departments])
 
 // RETURN THE CONTEXT PROVIDER 

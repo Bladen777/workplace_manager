@@ -29,11 +29,11 @@ export default function Pd_budget({department_data}:Types_props) {
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
 
     const [department_percent, set_department_percent] = useState<number>(0);
-    const dep_id = `dep_id_${department_data.department.id}`
-    const department_budget = project_budgets[dep_id];
+    const dep_id_name = `dep_id_${department_data.department.id}`
+    const department_budget = project_budgets.departments[dep_id_name];
 /*
     console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_budgets`,'\n' ,project_budgets);
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_id`,'\n' ,dep_id);
+    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_id_name`,'\n' ,dep_id_name);
     console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
 */
 
@@ -57,47 +57,48 @@ export default function Pd_budget({department_data}:Types_props) {
 
         let new_department_budget:number = input_number;
 
-        if(db_column === `${dep_id}_percent`){
+        if(db_column === `${dep_id_name}_percent`){
             input_number = Number(input.slice(-2))
             new_department_budget = project_budgets.total*(input_number/100);
             set_department_percent(input_number);
         }
 
-        update_department_budget.now({dep_id_name:dep_id, budget:(new_department_budget)})
-        process_data.handle_form_change({section_name: "projects", table_name: "project_department_budgets", form_data: {input:new_department_budget , db_column:dep_id}});
+        update_department_budget.now({dep_id_name:dep_id_name, budget:(new_department_budget)})
+        process_data.handle_form_change({section_name: "projects", table_name: "project_department_budgets" ,form_data: {input:new_department_budget , db_column:dep_id_name}});
     }
 
 // MEMOS AND EFFECTS    
     useMemo(()=>{
-        find_percent()
+        department_budget !== 0 && find_percent()
     },[project_budgets])
 
 // RETURNED VALUES 
     return(
         <div className="project_department_budget_box">
         <Form_auto_input 
+            label_name="Budget"
             column_info={{
-                column_name: `${dep_id}_budget`,
-                is_nullable: "yes",
+                column_name: `${dep_id_name}_budget`,
+                is_nullable: "YES",
                 input_type: "budget"
             }} 
-            table_data_object={{[`${dep_id}_budget`]: department_budget.toFixed(2)}}
+            table_data_object={{[`${dep_id_name}_budget`]: department_budget.toFixed(2)}}
             send_table_data = {({input, db_column}:Types_input_change)=>{
                 handle_pd_budget_change({input:input, db_column:db_column})
             }}
         />
         <label className="auto_form_input_label">
-            <p>% of budget: </p>
+            <p>% of Budget: </p>
             <input
-                id={`${dep_id}_percent`}
+                id={`${dep_id_name}_percent`}
                 className={"production_budget_percent_input"}
-                name={`${dep_id}_percent`}
+                name={`${dep_id_name}_percent`}
                 type={"text"}
                 autoComplete="off"
                 value={department_percent}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                     let value = e.target.value;
-                    handle_pd_budget_change({input:value, db_column:`${dep_id}_percent`})
+                    handle_pd_budget_change({input:value, db_column:`${dep_id_name}_percent`})
                 }}
             />
         </label>

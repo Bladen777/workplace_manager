@@ -14,6 +14,7 @@ import useFindClickPosition from "../../hooks/useFindClickPosition.js";
 import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
 
 interface Types_props{
+    placeholder?: string;
     table_name: Types_table_name;
     string_table_data?: string[] 
     form_table_data?: Types_form_data[];
@@ -31,7 +32,7 @@ export interface Types_search_item{
 }
 
 // THE COMPONENT 
-export default function Input_drop_down({table_name, string_table_data, form_table_data, send_table_data}:Types_props) {
+export default function Input_drop_down({placeholder, table_name, string_table_data, form_table_data, send_table_data}:Types_props) {
     console.log(`       %c INPUT DROP DOWN `, `background-color:${ log_colors.input_component }`, `for ${table_name.specific ? table_name.specific : table_name.main}`);
 
     let table_data: string[] | Types_form_data[] = [];
@@ -163,7 +164,7 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
     },[selected_item, table_data])
 
     useMemo(()=>{
-        set_selected_item("");
+        selected_item !== "" && set_selected_item("");
     },[form_table_data])
 
     useEffect(() =>{
@@ -178,7 +179,7 @@ export default function Input_drop_down({table_name, string_table_data, form_tab
             <input
                 className="form_dd_input"
                 value={selected_item}
-                placeholder={`Select ${table_name.main}`}
+                placeholder={placeholder ? placeholder :`Select ${table_name.main}`}
                 type="text"
                 onClick={()=>{handle_input_clicked()}}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{

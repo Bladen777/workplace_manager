@@ -28,10 +28,12 @@ interface Types_context{
     delete_entry:Function;
 }
 
+interface Types_section_table_data {
+    [key:string]:Types_table_form_data;
+}
+
 interface Types_table_form_data {
-    [key:string]:{
-        [key:string]:Types_form_data[];
-    }
+    [key:string]:Types_form_data[];
 }
 
 interface Types_post_form {
@@ -51,6 +53,7 @@ export interface Types_data_change {
 
 interface Types_data_process extends Types_data_change{
     section_name: string;
+    entry_id?:number;
 }
 
 
@@ -82,32 +85,47 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
     const update_table_data = useContext(Use_Context_table_data).update_func;
     const update_departments_data = useContext(Use_Context_departments_data).update_func;
 
-    const table_data_ref = useRef<Types_table_form_data>({
+    const table_data_ref = useRef<Types_section_table_data>({
         control_panel:{},
         projects:{}
     });
     console.log(`%c PROCESS_INPUT_DATA `, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
-    function handle_form_change({section_name, table_name, form_data}:Types_data_process){
-
+    function handle_form_change({section_name, table_name, entry_id, form_data}:Types_data_process){
         if(table_name === null || table_name === undefined){
             table_name = active_table;
         }
 
-        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
-        console.log(`%c PROCESS_INPUT_DATA FORM_DATA `, `background-color:${ log_colors.process_data }`,`for ${section_name} form_data for ${table_name}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
+        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`,{...table_data_ref.current});
+        console.log(`%c PROCESS_INPUT_DATA FORM_DATA `, `background-color:${ log_colors.process_data }`,`for ${section_name} form_data for ${table_name}`, entry_id && `entry_id: ${entry_id}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
         
-        let new_form_data = {...table_data_ref.current[section_name]};
+        let new_form_data:Types_table_form_data = {...table_data_ref.current[section_name]};
 
+        console.log(`%c PROCESS_INPUT_DATA `, `background-color:${ log_colors.process_data }`, `for new_form_data`, new_form_data);
 
+        let entry_index:number = 0;
+        if(entry_id){            
+            let entry_id_name:string;
+            Object.keys(new_form_data[table_name][0]).forEach((col_name)=>{if(col_name.includes("id")) entry_id_name = col_name })
 
-        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`, new_form_data);
-
+            new_form_data[table_name].forEach((item, index:number)=>{
+                if(item[entry_id_name] === entry_id){
+                    entry_index = index
+                }
+            })
+        } 
         
-
-
         if(!Array.isArray(form_data)){
+
+            const new_data = {
+                ...new_form_data[table_name][entry_index],
+                [form_data.db_column]:form_data.input
+            }
+            new_form_data[table_name].splice(entry_index,1,new_data)
+
+
+            /*
             new_form_data = {
                 ...new_form_data,
                     [table_name]:[{
@@ -116,6 +134,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     }
                 ]
             }
+            */
         
         } else {
             new_form_data = {
@@ -265,7 +284,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         if(active_table === "departments" && submit_method == "add"){
             try{
-                const response = await axios.post("edit_deps_cols",{
+                const response = await axios.post("edit_dep_cols",{
                     dep_id: current_item_id.current!,
                     submit_method: submit_method 
                 }) 
@@ -319,7 +338,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 // RETURNED VALUES
     return(
         <Use_Process_input_data.Provider value={{
-            handle_form_change: ({section_name, table_name, form_data}:Types_data_process) => handle_form_change({section_name, table_name, form_data}),
+            handle_form_change: ({section_name, table_name, entry_id, form_data}:Types_data_process) => handle_form_change({section_name, table_name, entry_id, form_data}),
             clear_form:(section_name:string)=>clear_form(section_name),
             post_form: async ({section_name, submit_method}:Types_post_form) => await post_form({section_name, submit_method}),
             delete_entry: ({table_name, item_id}:Types_delete_entry)=> delete_entry({table_name, item_id})

@@ -100,16 +100,13 @@ export function Provide_Context_table_info({children}:{children:ReactNode}) {
             } else if (item_name.includes("hours_per_week")){
                 initial_item_value = "40";
 
-
                 // FIX THIS, NEED FOR ARRAYS
             } else if (item_name.includes("departments")){
                 initial_item_value = "";   
                 
-                
             } else {
                 item.input_type = "text"
             }; 
-            
             
             form_data[item_name] = initial_item_value; 
             return(item);

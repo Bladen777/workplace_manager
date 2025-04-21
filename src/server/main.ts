@@ -404,9 +404,9 @@ app.get("/user_info",
   );
 
   // ADJUST DEPARTMENT NAME COLUMNS IN THE EMPLOYEE_DEPARTMENTS TABLE
-  app.post("/edit_deps_cols",
+  app.post("/edit_dep_cols",
     async (req, res) => {
-      console.log("edit_deps_cols requested", "\n");
+      console.log("edit_dep_cols requested", "\n");
 
       const dep_name = `dep_id_${req.body.dep_id}`;
       const submit_method = req.body.submit_method;
@@ -420,16 +420,6 @@ app.get("/user_info",
         } catch (error){
           console.log(`%c  Error when adding columns to employee deps: `, 'background-color:darkred', error); 
         };
-        try{
-          const pd_budgets_response = await db.query(
-            `ALTER TABLE project_department_budgets ADD COLUMN "${dep_name}" bit(1)`,
-            []
-          )
-        } catch (error){
-          console.log(`%c  Error when adding columns to project_department_budgets: `, 'background-color:darkred', error); 
-        };
-
-
       } else if (submit_method === "delete"){
         try{
           const employee_deps_response = await db.query(
@@ -438,14 +428,6 @@ app.get("/user_info",
           )
         } catch (error){
           console.log(`%c  Error when removing columns from employee deps: `, 'background-color:darkred', error); 
-        };
-        try{
-          const pd_budgets_response = await db.query(
-            `ALTER TABLE project_department_budgets DROP COLUMN "${dep_name}"`,
-            []
-          )
-        } catch (error){
-          console.log(`%c  Error when removing columns from project_department_budgets: `, 'background-color:darkred', error); 
         };
       }
       res.send("edit_deps_cols finished")
