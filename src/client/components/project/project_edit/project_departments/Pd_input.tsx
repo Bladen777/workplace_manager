@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { memo, ReactElement, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Employee_select from "./employee_dd/Employee_select.js";
@@ -37,6 +37,7 @@ function Pd_input() {
     const update_project_dates = useContext(Use_Context_project_dates).update_func;
     const process_data = useContext(Use_Process_input_data);
 
+    const [dep_inputs, set_dep_inputs] = useState<ReactElement[]>([])
     
     function convert_text({text}:{text:string}){
         let new_text = text.replaceAll("_"," ")
@@ -47,14 +48,60 @@ function Pd_input() {
 
     function handle_date_change({dep_id, input, db_column}:Types_dates_change){
         
-        update_project_dates.now({dep_id_name:`dep_id_${dep_id}`, date_type:db_column, date:input})    
+        update_project_dates.now({dep_id:dep_id, date_type:db_column, date:input})    
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_id`,'\n' ,dep_id);
-        process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", entry_id:dep_id, form_data:{input:input, db_column:db_column}})
+        //process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", entry_id:dep_id, form_data:{input:input, db_column:db_column}})
     }
 
     function handle_project_date_change({input, db_column}:Types_input_change){
         update_project_dates.now({date_type:db_column, date:input})     
         process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data:{input:input, db_column:db_column}})
+    }
+
+    function create_inputs(){
+        const inputs = departments.map((item)=>{
+            return(
+                <div 
+                    className="project_department_input_box"
+                    key={`dropdown_for_${item.department.name}`} 
+                    style={{backgroundColor:item.department.color}}
+                >
+                    <h4>{convert_text({text:item.department.name})}</h4>
+
+                    <div className="pd_dates project_dates">
+                        <Form_auto_input
+                            column_info = {{
+                                column_name: "start_date",
+                                is_nullable: "YES",
+                                input_type: "date"
+                            }}
+                            table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
+                            date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
+                            send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_change({dep_id:item.department.id, input:input, db_column:db_column})}}
+                        />
+                        <Form_auto_input
+                            column_info = {{
+                                column_name: "finish_date",
+                                is_nullable: "YES",
+                                input_type: "date"
+                            }}
+                            table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
+                            date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
+                            send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_change({dep_id:item.department.id, input:input, db_column:db_column})}}
+                        />
+                    </div> 
+
+                    <Pd_budget
+                        department_data = {item}
+                    />
+            
+                    <Employee_select
+                        department_data = {item}
+                    />
+                </div> 
+            )   
+        })
+        set_dep_inputs(inputs)
     }
 
 // MEMOS AND EFFECTS
@@ -71,8 +118,12 @@ useEffect(() =>{
   })
 
   process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:department_budget_data})
-
+  create_inputs()
 },[])
+
+useMemo(() =>{
+  create_inputs()
+},[project_dates.start_date, project_dates.finish_date])
 
 // RETURNED VALUES 
     return(
@@ -98,48 +149,7 @@ useEffect(() =>{
                     send_table_data = {({input, db_column}:Types_input_change)=>{handle_project_date_change({input:input, db_column:db_column})}}
                 />
             </div>
-            {departments.map((item)=>{
-                return(
-                    <div 
-                        className="project_department_input_box"
-                        key={`dropdown_for_${item.department.name}`} 
-                        style={{backgroundColor:item.department.color}}
-                    >
-                        <h4>{convert_text({text:item.department.name})}</h4>
-
-                        <div className="pd_dates project_dates">
-                            <Form_auto_input
-                                column_info = {{
-                                    column_name: "start_date",
-                                    is_nullable: "YES",
-                                    input_type: "date"
-                                }}
-                                table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
-                                date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                                send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_change({dep_id:item.department.id, input:input, db_column:db_column})}}
-                            />
-                            <Form_auto_input
-                                column_info = {{
-                                    column_name: "finish_date",
-                                    is_nullable: "YES",
-                                    input_type: "date"
-                                }}
-                                table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
-                                date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                                send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_change({dep_id:item.department.id, input:input, db_column:db_column})}}
-                            />
-                        </div> 
-
-                        <Pd_budget
-                            department_data = {item}
-                        />
-                
-                        <Employee_select
-                            department_data = {item}
-                        />
-                    </div> 
-                )   
-            })}
+            {dep_inputs}
         </form>
     ); 
 }

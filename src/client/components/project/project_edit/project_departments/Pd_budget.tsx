@@ -23,7 +23,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Pd_budget({department_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budget`);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budget for ${department_data.department.name}`);
 
     const update_department_budget = useContext(Use_Context_project_budgets).update_func;
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
