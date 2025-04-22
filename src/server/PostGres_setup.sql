@@ -54,7 +54,7 @@ project_id int REFERENCES projects(id),
 department_id int REFERENCES departments(id),
 start_date date,
 finish_date date,
-budget int
+budget decimal(15,2)
 );
 
 CREATE TABLE employee_budgets(
@@ -63,6 +63,6 @@ employee_id int REFERENCES employees(id),
 project_id int REFERENCES projects(id),
 department_id int REFERENCES departments(id),
 start_date date,
-budget int,
-budget_hours int
+budget decimal(15,2),
+budget_hours decimal(15,2)
 );

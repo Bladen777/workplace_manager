@@ -197,7 +197,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
     // SEND THE INFOMATION TO THE DATABASE TO BE ADDED/EDITED
     async function post_form({section_name, submit_method}:Types_post_form){
-        console.log(`%c THE DATA BEING SENT `, `background-color:${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
+        console.log(`%c THE DATA BEING SENT for ${section_name}`, `background-color:${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
 
         const section_tables = Object.keys(table_data_ref.current[section_name]);
         let missing_inputs = "";

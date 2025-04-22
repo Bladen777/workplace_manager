@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
@@ -44,10 +44,14 @@ export default function Pd_budget({department_data}:Types_props) {
     function find_percent(){        
         let budget_percent:number = 0
         if(project_budgets.total !== 0){
-            budget_percent = Number(((department_budget/project_budgets.total)*100).toFixed(0));
+            budget_percent = Number(((department_budget/project_budgets.total)*100).toFixed(2));
         }
         set_department_percent(budget_percent);
     }
+
+    const callback_handle_pd_budget_change = useCallback(({input, db_column}:Types_input_change) =>{
+        handle_pd_budget_change({input, db_column})
+    },[])
 
     function handle_pd_budget_change({input, db_column}:Types_input_change){
         let input_number = Number(input);
@@ -57,18 +61,23 @@ export default function Pd_budget({department_data}:Types_props) {
 
         let new_department_budget:number = input_number;
 
-        if(db_column === `${dep_id_name}_percent`){
+        if(db_column === "percent"){
             input_number = Number(input.slice(-2))
             new_department_budget = project_budgets.total*(input_number/100);
             set_department_percent(input_number);
         }
-
+        
         update_department_budget.now({dep_id_name:dep_id_name, budget:(new_department_budget)})
-        process_data.handle_form_change({section_name: "projects", table_name: "project_department_budgets" ,form_data: {input:new_department_budget , db_column:dep_id_name}});
+        process_data.handle_form_change({section_name: "projects", table_name: "project_department_budgets" ,form_data: {input:new_department_budget , db_column:"budget"}});
+        
+        if(db_column !== "percent"){
+            find_percent()
+        }
     }
 
 // MEMOS AND EFFECTS    
     useMemo(()=>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_budgets.total`,'\n' ,project_budgets.total);
         department_budget !== 0 && find_percent()
     },[project_budgets])
 
@@ -78,14 +87,12 @@ export default function Pd_budget({department_data}:Types_props) {
         <Form_auto_input 
             label_name="Budget"
             column_info={{
-                column_name: `${dep_id_name}_budget`,
+                column_name: `budget`,
                 is_nullable: "YES",
                 input_type: "budget"
             }} 
-            table_data_object={{[`${dep_id_name}_budget`]: department_budget.toFixed(2)}}
-            send_table_data = {({input, db_column}:Types_input_change)=>{
-                handle_pd_budget_change({input:input, db_column:db_column})
-            }}
+            table_data_object={{budget: department_budget.toFixed(2)}}
+            send_table_data = {callback_handle_pd_budget_change}
         />
         <label className="auto_form_input_label">
             <p>% of Budget: </p>
@@ -98,7 +105,7 @@ export default function Pd_budget({department_data}:Types_props) {
                 value={department_percent}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                     let value = e.target.value;
-                    handle_pd_budget_change({input:value, db_column:`${dep_id_name}_percent`})
+                    handle_pd_budget_change({input:value, db_column:"percent"})
                 }}
             />
         </label>

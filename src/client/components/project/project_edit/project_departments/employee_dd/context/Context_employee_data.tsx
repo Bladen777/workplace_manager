@@ -1,10 +1,12 @@
 import axios from "axios";
 
-import { createContext, useContext, useState, ReactNode, useMemo } from "react"
+import { createContext, useContext, useState, ReactNode, useMemo, useRef } from "react"
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
 import { Use_Context_project_data } from "../../../../context/Context_project_data.js";
+import { Use_Process_input_data } from "../../../../../_universal/Process_input_data.js";
+
 
 // HOOK IMPORTS 
 
@@ -65,7 +67,8 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
     const current_project = useContext(Use_Context_project_data).show_context.current_project;
-
+    const process_data = useContext(Use_Process_input_data);
+    const employee_data_ref = useRef<Types_context_content>([])
 
     // FETCH EXISTING DATA FROM THE DATABASE
     async function fetch_employee_budget_data(){
@@ -76,8 +79,9 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
                 filter_key: "project_id",
                 filter_item: current_project.current_table_item.id,
             })
-
+            
             set_send_context(response.data)
+            employee_data_ref.current = response.data
 
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
@@ -89,35 +93,32 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
     // UPDATE THE CONTEXT 
     async function update_context({ employee_id, department_id, start_date, budget, budget_hours, method  }:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_employee_budgets`);
-        let update_data = {...send_context};
+        let update_data:Types_context_content = [...employee_data_ref.current];
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for ...employee_data_ref.current`,'\n' ,...employee_data_ref.current);
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,...update_data);
 
-        function entry_exists(){
-            let entry_exists: boolean | number = false;  
-            update_data.forEach((entry:Types_employee_budget_data, index:number)=>{
-                if(entry.department_id === department_id && entry.department_id === department_id){
-                    entry_exists = index;    
-                }
-            })
-            return entry_exists;
-        }
+        let entry_index:number | boolean = false;
+        update_data.forEach((s_item, s_index)=>{
+            if(s_item.department_id === department_id && s_item.employee_id === employee_id){
+                entry_index = s_index;
+            }
+        })
 
-
-        if(current_project.submit_method === "add"){
-
-        }
-
-
+        
 
         if(method !== "delete"){
-            const existing_entry_index = entry_exists();
-
-            if (typeof(existing_entry_index) === "number"){
-                update_data[existing_entry_index] = {
-                    employee_id: employee_id,
-                    department_id: department_id,
-                    start_date: start_date,
-                    budget: budget,
-                    budget_hours: budget_hours
+            if (typeof(entry_index) === "number"){
+                if(start_date){
+                    update_data[entry_index] = {
+                        ...update_data[entry_index],
+                        start_date: start_date
+                    }
+                } else {
+                    update_data[entry_index] = {
+                        ...update_data[entry_index],
+                        budget: budget,
+                        budget_hours: budget_hours
+                    }
                 }
             } else {
                 update_data.push({
@@ -130,12 +131,16 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             }
 
         } else {
-            const existing_entry_index = entry_exists();
-            if (typeof(existing_entry_index) === "number"){
-                update_data.splice(existing_entry_index,1)
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for delete_entry ${entry_index}`);
+            if (typeof(entry_index) === "number"){
+                update_data.splice(entry_index,1)
             }
         }
 
+        
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+        process_data.handle_form_change({section_name:"projects" , table_name: "employee_budgets", form_data:update_data })
+        employee_data_ref.current = update_data;
         return(update_data);
     }
 

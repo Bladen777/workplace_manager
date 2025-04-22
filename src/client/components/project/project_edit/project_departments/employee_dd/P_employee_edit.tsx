@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
@@ -16,7 +16,6 @@ import { Use_Context_project_dates } from "../../../context/Context_project_date
 
 
 // TYPE DEFINITIONS
-import { Types_data_change } from "../../../../_universal/Process_input_data.js";
 import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
 import { Types_form_data } from "../../../../control_panel/context/Context_db_table_info.js";
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
@@ -46,8 +45,8 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
 
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
-    const [employee_budget, set_employee_budget] = useState<number>(0)
-    const [employee_hours, set_employee_hours] = useState<number>(0)
+    const [employee_budget, set_employee_budget] = useState<number>(0);
+    const [employee_hours, set_employee_hours] = useState<number>(0);
 
     const employee_data_ref = useRef<Types_employee_data>({
         budget:0,
@@ -55,6 +54,10 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
     })
 
     const e_select_box_ele = useRef<HTMLDivElement | null>(null);
+
+    const callback_handle_budget_change = useCallback(({input, db_column}:Types_input_change) =>{
+      handle_budget_input_change({input, db_column})
+    },[])
 
     function handle_budget_input_change({input, db_column}:Types_input_change){
         
@@ -84,27 +87,36 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
             employee_id: data.id,
             department_id: dep_id
         }
-        process_data.handle_form_change({section_name:"projects" , table_name: "employee_budgets", form_data:budget_form_data })
+
+        update_employee_data.now(budget_form_data);
+    }
+
+    const callback_handle_date_change = useCallback(({input, db_column}:Types_input_change) =>{
+        handle_date_input_change({input, db_column})
+      },[])
+
+    function handle_date_input_change({input, db_column}:Types_input_change){
+        const date_form_data:Types_form_data = {
+            employee_id: data.id,
+            department_id: dep_id,
+            start_date: input
+        }
+
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for date_form_data`,'\n' ,date_form_data);
+        update_employee_data.now(date_form_data); 
 
     }
 
     function handle_remove_employee(){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove employee`);
+        update_employee_data.now({method:"delete", department_id: dep_id, employee_id:data.id }); 
         e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease reverse forwards`;
         e_select_box_ele.current!.addEventListener("animationend", animation_ended);
-
         function animation_ended(){
             e_select_box_ele.current!.removeEventListener("animationend", animation_ended);
             remove_employee()
         }
     }
-
-    function handle_date_input_change({input, db_column}:Types_input_change){
-
-
-    }
-
-
 
 // MEMOS AND EFFECTS
 
@@ -118,18 +130,21 @@ useEffect(() =>{
     }
 },[])
 
+/*
 useEffect(() =>{
     process_data.handle_form_change({
         section_name: "projects", 
         table_name:"employee_budgets", 
-        form_data: [{
+        form_data: {
             budget_hours: 0,
             budget: 0,
+            start_date: "",
             employee_id: data.id,
             department_id: dep_id
-        }]
+        }
     });
 },[])
+*/
 
 /*
 
@@ -147,7 +162,6 @@ useEffect(() =>{
 */
 
 
-console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
 // RETURNED VALUES 
     return(
         <div 
@@ -171,42 +185,35 @@ console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_dat
                 <Form_auto_input
                     column_info = {{
                         column_name: "start_date",
-                        is_nullable: "",
+                        is_nullable: "YES",
                         input_type: "date"
                     }}
-                    table_data_object={{[`start_date`]:""}}
+         
                     date_range={{min: project_dates.departments[dep_id_name].start_date, max: project_dates.departments[dep_id_name].finish_date}}
-                    send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_input_change({input:input, db_column:db_column})}}
+                    send_table_data = {callback_handle_date_change}
                 />
               
-
-
-
                 {/* INPUT FOR BUDGET */}
 
                 <Form_auto_input 
                     column_info={{
                         column_name: `budget`,
-                        is_nullable: "yes",
+                        is_nullable: "YES",
                         input_type: "budget"
                     }}
-                    table_data_object={{[`budget`]: employee_budget}} 
-                    send_table_data = {({input, db_column}:Types_input_change)=>{
-                        handle_budget_input_change({input:input, db_column:db_column})
-                    }}
+                    table_data_object={{[`budget`]: employee_budget.toFixed(2)}} 
+                    send_table_data = {callback_handle_budget_change}
                 />
 
                 {/* INPUT FOR HOURS */}
                 <Form_auto_input 
                     column_info={{
                         column_name: `hours`,
-                        is_nullable: "yes",
+                        is_nullable: "YES", 
                         input_type: "text"
                     }}
                     table_data_object={{[`hours`]: employee_hours}}
-                    send_table_data = {({input, db_column}:Types_input_change)=>{
-                        handle_budget_input_change({input:input, db_column:db_column})
-                    }}
+                    send_table_data = {callback_handle_budget_change}
                 />
             </div>
             

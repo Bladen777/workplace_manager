@@ -42,10 +42,11 @@ export interface Types_input_change{
 // THE COMPONENT
 function Form_auto_input({label_name, column_info, table_data_object, date_range, send_table_data}:Types_new_entry) {
 
-    let current_table_data:Types_form_data = useContext(Use_Context_current_table_item).show_context.current_table_item;
+ 
 
-    const [input_data, set_input_data] = useState<Types_form_data>(current_table_data);
+    const [input_data, set_input_data] = useState<Types_form_data>({});
     const [input, set_input] = useState<ReactElement>();
+
 
 
         function convert_text(){
@@ -119,32 +120,50 @@ function Form_auto_input({label_name, column_info, table_data_object, date_range
             set_input(input)
         }
 
-// MEMOS AND EFFECTS        
+// MEMOS AND EFFECTS   
         
     useMemo(()=>{
-        if(current_table_data !== table_data_object){
-            table_data_object && set_input_data(table_data_object!)
+        if(table_data_object){
+            const key = Object.keys(table_data_object)[0];
+            if( input_data[key] !== table_data_object[key]){
+                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `table_data_object: `, table_data_object[key]);
+                set_input_data(table_data_object)
+            }
+        } else {
+            if(!table_data_object){
+                set_input_data({
+                    [column_info.column_name]:""
+                })
+        }
+    
         }
     },[table_data_object])
 
     useMemo(() =>{
+        if(date_range){
+            //console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for input_data.date_range` ,input_data, ` vs `, `date_range: `, date_range);
+            if(input_data.date_range === date_range){}
+        }
         Object.keys(input_data).length > 0 && create_inputs()
     },[input_data, date_range])
 
         
 
+
 /*
     useMemo(() =>{
         if(table_data_object){current_table_data = table_data_object}
         if(column_info.column_name){
-            //console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
+            console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
             create_inputs()
             return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `background-color:${ log_colors.important_2 }`);}
         }
     },[])
 */
 
-    /*
+
+
+/*
     useEffect(() =>{
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for column_info`,'\n' ,column_info);
     },[column_info])
@@ -156,8 +175,9 @@ function Form_auto_input({label_name, column_info, table_data_object, date_range
     useEffect(() =>{
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
     },[send_table_data])
-
 */
+
+
 
 // RETRURNED VALUES
         return (

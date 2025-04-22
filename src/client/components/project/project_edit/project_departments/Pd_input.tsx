@@ -1,4 +1,4 @@
-import { memo, ReactElement, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { memo, ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Employee_select from "./employee_dd/Employee_select.js";
@@ -46,12 +46,19 @@ function Pd_input() {
         return new_text;
     }
 
+    const callback_handle_date_change = useCallback(({dep_id, input, db_column}:Types_dates_change) =>{
+        handle_date_change({dep_id, input, db_column})
+    },[])
+
     function handle_date_change({dep_id, input, db_column}:Types_dates_change){
-        
         update_project_dates.now({dep_id:dep_id, date_type:db_column, date:input})    
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_id`,'\n' ,dep_id);
         //process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", entry_id:dep_id, form_data:{input:input, db_column:db_column}})
     }
+
+    const callback_handle_project_date_change = useCallback(({ input, db_column}:Types_input_change) =>{
+        handle_project_date_change({ input, db_column})
+    },[])
 
     function handle_project_date_change({input, db_column}:Types_input_change){
         update_project_dates.now({date_type:db_column, date:input})     
@@ -77,7 +84,7 @@ function Pd_input() {
                             }}
                             table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
                             date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                            send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_change({dep_id:item.department.id, input:input, db_column:db_column})}}
+                            send_table_data = {callback_handle_date_change}
                         />
                         <Form_auto_input
                             column_info = {{
@@ -87,7 +94,7 @@ function Pd_input() {
                             }}
                             table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
                             date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                            send_table_data = {({input, db_column}:Types_input_change)=>{handle_date_change({dep_id:item.department.id, input:input, db_column:db_column})}}
+                            send_table_data = {callback_handle_date_change}
                         />
                     </div> 
 
@@ -136,8 +143,9 @@ useMemo(() =>{
                         is_nullable: "YES",
                         input_type: "date"
                     }}
+                    label_name="Project Start Date"
                     table_data_object={current_project.current_table_item}
-                    send_table_data = {({input, db_column}:Types_input_change)=>{handle_project_date_change({input:input, db_column:db_column})}}
+                    send_table_data = {callback_handle_project_date_change}
                 />
                 <Form_auto_input
                     column_info = {{
@@ -145,8 +153,9 @@ useMemo(() =>{
                         is_nullable: "YES",
                         input_type: "date"
                     }}
+                    label_name="Project Finish Date"
                     table_data_object={current_project.current_table_item}
-                    send_table_data = {({input, db_column}:Types_input_change)=>{handle_project_date_change({input:input, db_column:db_column})}}
+                    send_table_data = {callback_handle_project_date_change}
                 />
             </div>
             {dep_inputs}

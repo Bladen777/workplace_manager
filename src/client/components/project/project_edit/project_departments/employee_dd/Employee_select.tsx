@@ -7,7 +7,6 @@ import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.j
 
 // CONTEXT IMPORTS 
 import { Use_Context_project_data } from "../../../context/Context_project_data.js";
-import { Provide_Context_employee_data } from "./context/Context_employee_data.js";
 
 // HOOK IMPORTS 
 
@@ -174,17 +173,15 @@ export default function Employee_select({department_data}:Types_props) {
 
 
 // RETURNED VALUES
-if(employee_list.length !== 0){
+if(employee_list.length !== 0 || selected_employees.length !== 0){
     return(
         <label className="form_dd auto_form_input pd_employee_dd">
             <p>Selected Employees</p>
             <div className="selected_employees">
-                <Provide_Context_employee_data>
-                    {selected_employees}
-                </Provide_Context_employee_data>
-                
+                {selected_employees}
             </div>
-      
+        {employee_list.length !== 0
+            ?
             <Input_drop_down 
                 placeholder="Add Employee"
                 table_name={{main:"Employee", specific:dep_id}} 
@@ -193,6 +190,10 @@ if(employee_list.length !== 0){
                     add_employee(input)
                 }}                    
             />
+            :
+            <p>All Employees Selected</p>
+        }
+            
             
         </label>
     ); 

@@ -135,7 +135,6 @@ export default function Select_departments({submit_method, send_table_data}:Type
                                     if(e.target.checked){
                                         value="1"
                                     } 
-                                
                                 handle_input_change({input:value, db_column:key_name})
                             }}              
                         >
@@ -143,10 +142,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
                         </input>
                     </label>
                 )
-            }
-            )
-
-            }
+            })}
 
         </form>
     ); 

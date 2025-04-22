@@ -132,7 +132,7 @@ export function Provide_Context_project_dates({children}:{children:ReactNode}) {
                 update_dep_dates({f_dep_id: s_dep_id, dep_date_type: "start_date", dep_date:update_dates.start_date})
             }
 
-            if(finish_date_time < dep_finish_time || (update_dates.start_date !== "" && current_dep.start_date === "")){
+            if(finish_date_time < dep_finish_time || (update_dates.finish_date !== "" && current_dep.finish_date === "")){
                 update_dep_dates({f_dep_id: s_dep_id, dep_date_type: "finish_date", dep_date:update_dates.finish_date})
             }
 

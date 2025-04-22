@@ -94,7 +94,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
                 total:budget
             }
         } else{
-            used_budget = Number((send_context.used + (budget - update_budget.departments[dep_id_name!])).toFixed(2));
+            used_budget = Number((budgets.current!.used + (budget - update_budget.departments[dep_id_name!])).toFixed(2));
             update_budget = {
                 ...update_budget,
                 used:used_budget,
