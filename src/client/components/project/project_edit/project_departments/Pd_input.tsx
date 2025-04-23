@@ -31,7 +31,7 @@ function Pd_input() {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_input`);
 
     const departments = useContext(Use_Context_departments_data).show_context;
-    const current_project = useContext(Use_Context_project_data).show_context.current_project;
+    const existing_project_data = useContext(Use_Context_project_data).show_context;
     const project_dates = useContext(Use_Context_project_dates).show_context;
 
     const update_project_dates = useContext(Use_Context_project_dates).update_func;
@@ -53,7 +53,6 @@ function Pd_input() {
     function handle_date_change({dep_id, input, db_column}:Types_dates_change){
         update_project_dates.now({dep_id:dep_id, date_type:db_column, date:input})    
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_id`,'\n' ,dep_id);
-        //process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", entry_id:dep_id, form_data:{input:input, db_column:db_column}})
     }
 
     const callback_handle_project_date_change = useCallback(({ input, db_column}:Types_input_change) =>{
@@ -62,7 +61,6 @@ function Pd_input() {
 
     function handle_project_date_change({input, db_column}:Types_input_change){
         update_project_dates.now({date_type:db_column, date:input})     
-        process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data:{input:input, db_column:db_column}})
     }
 
     function create_inputs(){
@@ -81,8 +79,10 @@ function Pd_input() {
                                 column_name: "start_date",
                                 is_nullable: "YES",
                                 input_type: "date"
+                                
                             }}
-                            table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
+                            initial_data_object={{start_date:undefined}}
+                            adjust_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
                             date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                             send_table_data = {callback_handle_date_change}
                         />
@@ -92,7 +92,8 @@ function Pd_input() {
                                 is_nullable: "YES",
                                 input_type: "date"
                             }}
-                            table_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
+                            initial_data_object={{finish_date:undefined}}
+                            adjust_data_object={project_dates.departments[`dep_id_${item.department.id}`]}
                             date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                             send_table_data = {callback_handle_date_change}
                         />
@@ -114,14 +115,15 @@ function Pd_input() {
 // MEMOS AND EFFECTS
 
 useEffect(() =>{
-
-  const department_budget_data = departments.map((item:Types_department_data)=>{
-    return{
-        department_id: item.department.id,
-        start_date: "",
-        finish_date: "",
-        budget: 0
-    }
+    const project_id = existing_project_data.current_project.project_data.id;
+    const department_budget_data = departments.map((item:Types_department_data)=>{
+        return{
+            department_id: item.department.id,
+            project_id:  project_id ? project_id : -1,
+            start_date: undefined,
+            finish_date: undefined,
+            budget: 0
+        }
   })
 
   process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:department_budget_data})
@@ -144,7 +146,7 @@ useMemo(() =>{
                         input_type: "date"
                     }}
                     label_name="Project Start Date"
-                    table_data_object={current_project.current_table_item}
+                    initial_data_object={existing_project_data.table_info.projects.initial_form_data}
                     send_table_data = {callback_handle_project_date_change}
                 />
                 <Form_auto_input
@@ -154,7 +156,7 @@ useMemo(() =>{
                         input_type: "date"
                     }}
                     label_name="Project Finish Date"
-                    table_data_object={current_project.current_table_item}
+                    initial_data_object={existing_project_data.table_info.projects.initial_form_data}
                     send_table_data = {callback_handle_project_date_change}
                 />
             </div>

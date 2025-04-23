@@ -6,6 +6,7 @@ import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 // CONTEXT IMPORTS 
 import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 import { Use_Context_project_budgets } from "../../context/Context_project_budgets.js";
+import { Use_Context_project_data } from "../../context/Context_project_data.js";
 
 // HOOK IMPORTS 
 
@@ -25,6 +26,7 @@ interface Types_props{
 export default function Pd_budget({department_data}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budget for ${department_data.department.name}`);
 
+    const existing_project_data = useContext(Use_Context_project_data).show_context;
     const update_department_budget = useContext(Use_Context_project_budgets).update_func;
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
 
@@ -77,7 +79,6 @@ export default function Pd_budget({department_data}:Types_props) {
 
 // MEMOS AND EFFECTS    
     useMemo(()=>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_budgets.total`,'\n' ,project_budgets.total);
         department_budget !== 0 && find_percent()
     },[project_budgets])
 
@@ -91,7 +92,8 @@ export default function Pd_budget({department_data}:Types_props) {
                 is_nullable: "YES",
                 input_type: "budget"
             }} 
-            table_data_object={{budget: department_budget.toFixed(2)}}
+            initial_data_object={{budget:0.00}}
+            adjust_data_object={{budget: department_budget.toFixed(2)}}
             send_table_data = {callback_handle_pd_budget_change}
         />
         <label className="auto_form_input_label">

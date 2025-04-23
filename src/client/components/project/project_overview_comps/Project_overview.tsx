@@ -27,10 +27,10 @@ export default function Project_overview() {
   console.log(`%c COMPONENT `, `background-color:${log_colors.component}`, `Project_overview`);
 
   const all_projects = useContext(Use_Context_project_data).show_context.all_projects;
-  const current_project = useContext(Use_Context_project_data).show_context.current_project;
+  const current_project = useContext(Use_Context_project_data).show_context.current_project.project_data;
   const update_current_project = useContext(Use_Context_project_data).update_func; 
 
-  const [display_project, set_display_project] = useState<Types_form_data>(current_project.current_table_item) 
+  const [display_project, set_display_project] = useState<Types_form_data>(current_project) 
 
 
 
@@ -60,7 +60,7 @@ export default function Project_overview() {
 
 useMemo(()=>{
   if(current_project.submit_method !== "add"){
-    set_display_project(current_project.current_table_item);
+    set_display_project(current_project);
   }
 },[current_project])
 

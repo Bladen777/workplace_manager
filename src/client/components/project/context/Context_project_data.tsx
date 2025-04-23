@@ -4,6 +4,7 @@ import axios from "axios";
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
+import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
@@ -19,6 +20,28 @@ interface Types_project_initial_data{
     db_column_info: Types_column_info[];
     initial_form_data: Types_form_data;
 }
+interface Types_table_info{
+    projects:Types_project_initial_data;
+    project_department_budgets:Types_project_initial_data;
+    employee_budgets:Types_project_initial_data;
+    [key:string]:Types_project_initial_data;
+}
+
+interface Types_project_budgets {
+    project_department_budgets: Types_form_data[];
+    employee_budgets:Types_form_data[];
+}
+
+interface Types_current_project extends Types_project_budgets{
+    project_data:Types_form_data;
+}
+
+interface Types_context_content {   
+    all_projects: Types_form_data[];
+    current_project: Types_current_project;
+    table_info:Types_table_info;
+    submit_method:string;
+};
 
 interface Types_context {
     update_func:{ 
@@ -29,33 +52,34 @@ interface Types_context {
     show_context:Types_context_content; 
 };
 
-interface Types_context_content {   
-    all_projects: Types_form_data[];
-    current_project: Types_current_project;
-    table_info:Types_project_initial_data;
-};
-
-interface Types_current_project {
-    current_table_item:Types_form_data;
-    submit_method:string;
-}
-
 interface Types_context_function {   
-    current_project_id: number;
-    submit_method:string
+    current_project_id?: number;
+    submit_method:string;
 };
 
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = {
     all_projects: [{}],
     current_project: {
-        current_table_item:{},
-        submit_method:""
+        project_data:{},
+        project_department_budgets:[{}],
+        employee_budgets:[{}],
     },
     table_info:{
-        db_column_info:[{column_name: "", is_nullable: "", input_type: "" }], 
-        initial_form_data:{[""]:""} 
-    }
+        projects:{
+            db_column_info:[{column_name: "", is_nullable: "", input_type: "" }], 
+            initial_form_data:{[""]:""} 
+        },
+        project_department_budgets:{
+            db_column_info:[{column_name: "", is_nullable: "", input_type: "" }], 
+            initial_form_data:{[""]:""} 
+        },
+        employee_budgets:{
+            db_column_info:[{column_name: "", is_nullable: "", input_type: "" }], 
+            initial_form_data:{[""]:""} 
+        },    
+    },
+    submit_method:""
 };
 
 // CONTEXT TO USE 
@@ -72,15 +96,19 @@ export const Use_Context_project_data = createContext<Types_context>({
 export function Provide_Context_project_data({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
-    // GET THE COLUMN NAMES
-    async function fetch_project_table_info(){
-        console.log(`%c CONTEXT PROJECT INITIAL DATA `, `background-color:${ log_colors.context }`);
+    const process_data = useContext(Use_Process_input_data);
+
+    // GET THE INITIAL TABLE DATA
+    async function fetch_initial_data({table_name}:{table_name:string}){
+        const form_data: Types_form_data = {};
+        const column_info:Types_column_info[] = []
         try{
             const response = await axios.post("/get_columns",{
-                table_name: "projects"
+                table_name: table_name
             });
-            const form_data: Types_form_data ={};
-            const column_info: Types_column_info[] = response.data.map((item:Types_column_info, index:number) => {
+
+
+            response.data.forEach((item:Types_column_info, index:number) => {
                 const item_name:string = item.column_name
     
                 let initial_item_value: string | undefined = "";
@@ -94,59 +122,28 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
                     item.input_type = "text"
                 }; 
                 
-                
                 form_data[item_name] = initial_item_value; 
-                return(item);
+                column_info.push(item)
             });
 
-            const all_projects:Types_form_data[] = await fetch_projects();
-
-            if(all_projects.length > 0){
-                set_send_context({
-                    all_projects: all_projects,
-                    current_project: {
-                        current_table_item: all_projects[all_projects.length - 1],
-                        submit_method:"edit"
-                    },
-                    table_info:{
-                        db_column_info: column_info,
-                        initial_form_data: form_data
-                    }
-                });
-            } else {
-                set_send_context({
-                    all_projects: send_context.all_projects,
-                    current_project: {
-                        current_table_item: form_data,
-                        submit_method:"add"
-                    },
-                    table_info:{
-                        db_column_info: column_info,
-                        initial_form_data: form_data
-                    }
-                });
-
-            }
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+            console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
-        console.log(`%c CONTEXT PROJECT INITIAL DATA FINISHED`, `background-color:${ log_colors.context }`);
-    } 
-
-
-
+        return {
+            db_column_info: column_info,
+            initial_form_data: form_data
+        }
+    }
+    
     // GET THE PROJECTES IN THE DATABASE
-    async function fetch_projects({ sort_field, filter_key, filter_item, order_key, order_direction }:Types_get_table_data = {}){
+    async function fetch_projects({ filter_key, filter_item }:Types_get_table_data = {}){
         try {
             const response = await axios.post("/get_table_info",{
                 table_name: "projects",
                 filter_key: filter_key,
                 filter_item: filter_item,
-                sort_field: sort_field,
-                order_key: order_key,
-                order_direction: order_direction
-            })
-            const data = response.data;
+            });
+            const data = response.data[0];
             console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for Projects table data  `, '\n' , data);
             return(data);
         } catch (error) {
@@ -154,45 +151,95 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
         }
     }
 
+    //  GET THE OTHER DEPARTMENT & EMPLOYEE BUDGET DATA
+    async function fetch_budgets({ filter_item }:Types_get_table_data = {}){
+        const fetched_data:Types_project_budgets = {
+            project_department_budgets: [],
+            employee_budgets:[]
+        }
+
+        try{
+            const response = await axios.post("/get_table_info",{
+                table_name: "project_department_budgets",
+                filter_key: "project_id",
+                filter_item: filter_item,
+            });
+
+            fetched_data.project_department_budgets = response.data;
+        
+        } catch (error){
+          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+        };
+
+        try{
+            const response = await axios.post("/get_table_info",{
+                table_name: "project_department_budgets",
+                filter_key: "project_id",
+                filter_item: filter_item,
+            });
+            fetched_data.employee_budgets = response.data;
+        
+        } catch (error){
+          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+        };
+    
+        return fetched_data;
+    }
+
+
     // UPDATE THE CONTEXT 
     async function update_context({current_project_id, submit_method }:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_data`);
+        let update_data:Types_context_content = {...send_context}
 
-        current_project_id = 1;
-
-        let update_data:Types_context_content;
-
-        if(submit_method === "add"){
+        if(current_project_id && send_context.current_project.project_data.id !== current_project_id){
+            const project_data = await fetch_projects({filter_key:"id", filter_item:current_project_id});
+            const budget_data = await fetch_budgets({filter_item:current_project_id});
+            
             update_data = {
-                all_projects: send_context.all_projects,
-                current_project: {
-                    current_table_item: send_context.table_info.initial_form_data,
-                    submit_method: submit_method
-                },
-                table_info: send_context.table_info
-            };
+                ...update_data,
+                current_project:{
+                    project_data: project_data,
+                    project_department_budgets:budget_data.project_department_budgets,
+                    employee_budgets:budget_data.employee_budgets,
+                }
+            }
 
-
-        } else {
-            update_data = {
-                all_projects: await fetch_projects(),
-                current_project: {
-                    current_table_item: await fetch_projects({filter_key:"id", filter_item: current_project_id}),
-                    submit_method: submit_method
-                },
-                table_info: send_context.table_info
-            };
         }
+
+        update_data ={
+            ...update_data,
+            submit_method:submit_method
+        }
+
+        
+
         console.log(`%c CONTEXT_UPDATE_DATA `, `background-color:${ log_colors.context }`,`for update_data`,'\n' ,update_data);
         return update_data;
     }
 
 
 // MEMOS AND EFFECTS
-
     useMemo(() =>{
-        fetch_project_table_info();
-      },[])
+        async function all_projects(){
+            const all_projects:Types_form_data[] = await fetch_projects();
+            const table_info:Types_table_info = {
+                projects: await fetch_initial_data({table_name:"projects"}),
+                project_department_budgets: await fetch_initial_data({table_name:"project_department_budgets"}),
+                employee_budgets: await fetch_initial_data({table_name:"employee_budgets"})
+            }
+
+            set_send_context((prev_vals) =>{
+                return{
+                    ...prev_vals,
+                    all_projects:all_projects,
+                    table_info: table_info
+                }
+            })
+        }
+        all_projects()
+    },[])
+
 
 // RETURN THE CONTEXT PROVIDER 
     return (

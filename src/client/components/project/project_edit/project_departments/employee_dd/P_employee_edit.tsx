@@ -5,6 +5,7 @@ import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
 import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
+import { Use_Context_project_data } from "../../../context/Context_project_data.js";
 import { Use_Context_project_budgets } from "../../../context/Context_project_budgets.js";
 import { Use_Context_employee_data } from "./context/Context_employee_data.js";
 import { Use_Context_project_dates } from "../../../context/Context_project_dates.js";
@@ -38,7 +39,7 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
     console.log(`       %c INPUT_COMPONENT `, `background-color:${ log_colors.input_component }`, `P_employee_edit`);
 
     const dep_id_name = `dep_id_${dep_id}`
-    const process_data = useContext(Use_Process_input_data);
+    const existing_project_data = useContext(Use_Context_project_data).show_context;
     const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name]
     const employee_data = useContext(Use_Context_employee_data).show_context;
     const project_dates = useContext(Use_Context_project_dates).show_context;
@@ -80,12 +81,13 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
         set_employee_budget(update_budget);
         set_employee_hours(update_hours);
 
-
+        
+    
         const budget_form_data:Types_form_data = {
             budget_hours: update_hours,
             budget: update_budget,
             employee_id: data.id,
-            department_id: dep_id
+            department_id: dep_id,    
         }
 
         update_employee_data.now(budget_form_data);
@@ -131,22 +133,6 @@ useEffect(() =>{
 },[])
 
 /*
-useEffect(() =>{
-    process_data.handle_form_change({
-        section_name: "projects", 
-        table_name:"employee_budgets", 
-        form_data: {
-            budget_hours: 0,
-            budget: 0,
-            start_date: "",
-            employee_id: data.id,
-            department_id: dep_id
-        }
-    });
-},[])
-*/
-
-/*
 
 useEffect(() =>{
   console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for data`,'\n' ,data);
@@ -188,7 +174,7 @@ useEffect(() =>{
                         is_nullable: "YES",
                         input_type: "date"
                     }}
-         
+                    initial_data_object={existing_project_data.table_info.employee_budgets.initial_form_data} 
                     date_range={{min: project_dates.departments[dep_id_name].start_date, max: project_dates.departments[dep_id_name].finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
@@ -201,7 +187,8 @@ useEffect(() =>{
                         is_nullable: "YES",
                         input_type: "budget"
                     }}
-                    table_data_object={{[`budget`]: employee_budget.toFixed(2)}} 
+                    initial_data_object={existing_project_data.table_info.employee_budgets.initial_form_data}
+                    adjust_data_object={{[`budget`]: employee_budget.toFixed(2)}} 
                     send_table_data = {callback_handle_budget_change}
                 />
 
@@ -212,7 +199,8 @@ useEffect(() =>{
                         is_nullable: "YES", 
                         input_type: "text"
                     }}
-                    table_data_object={{[`hours`]: employee_hours}}
+                    initial_data_object={existing_project_data.table_info.employee_budgets.initial_form_data}
+                    adjust_data_object={{[`hours`]: employee_hours}}
                     send_table_data = {callback_handle_budget_change}
                 />
             </div>

@@ -19,7 +19,8 @@ import { Types_form_data } from "../../control_panel/context/Context_db_table_in
 export interface Types_new_entry{
     label_name?:string;
     column_info: Types_column_info;
-    table_data_object?: Types_form_data;
+    initial_data_object:Types_form_data;
+    adjust_data_object?: Types_form_data;
     date_range?:{
         min?:string;
         max?:string;
@@ -40,11 +41,11 @@ export interface Types_input_change{
 }
 
 // THE COMPONENT
-function Form_auto_input({label_name, column_info, table_data_object, date_range, send_table_data}:Types_new_entry) {
+function Form_auto_input({label_name, column_info, initial_data_object, adjust_data_object, date_range, send_table_data}:Types_new_entry) {
 
  
 
-    const [input_data, set_input_data] = useState<Types_form_data>({});
+    const [input_data, set_input_data] = useState<Types_form_data>(initial_data_object);
     const [input, set_input] = useState<ReactElement>();
 
 
@@ -123,21 +124,18 @@ function Form_auto_input({label_name, column_info, table_data_object, date_range
 // MEMOS AND EFFECTS   
         
     useMemo(()=>{
-        if(table_data_object){
-            const key = Object.keys(table_data_object)[0];
-            if( input_data[key] !== table_data_object[key]){
-                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `table_data_object: `, table_data_object[key]);
-                set_input_data(table_data_object)
+        if(adjust_data_object){
+            const key = column_info.column_name;
+            if( input_data[key] !== adjust_data_object[key]){
+                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_object: `, adjust_data_object[key]);
+                set_input_data(adjust_data_object)
             }
-        } else {
-            if(!table_data_object){
-                set_input_data({
-                    [column_info.column_name]:""
-                })
+        } else if(!adjust_data_object){
+            set_input_data(
+                initial_data_object
+            )
         }
-    
-        }
-    },[table_data_object])
+    },[adjust_data_object])
 
     useMemo(() =>{
         if(date_range){
@@ -152,7 +150,7 @@ function Form_auto_input({label_name, column_info, table_data_object, date_range
 
 /*
     useMemo(() =>{
-        if(table_data_object){current_table_data = table_data_object}
+        if(adjust_data_object){current_table_data = adjust_data_object}
         if(column_info.column_name){
             console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
             create_inputs()
@@ -169,8 +167,8 @@ function Form_auto_input({label_name, column_info, table_data_object, date_range
     },[column_info])
 
     useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_object`,'\n' ,table_data_object);
-    },[table_data_object])
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for adjust_data_object`,'\n' ,adjust_data_object);
+    },[adjust_data_object])
 
     useEffect(() =>{
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);

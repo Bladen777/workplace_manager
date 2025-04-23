@@ -61,32 +61,32 @@ export default function Employee_input_form({send_table_data}:Types_props) {
             <form className="auto_form">
                 <Form_auto_input 
                     column_info={column_data.name}
-                    table_data_object={current_table_item}
+                    initial_data_object={current_table_item}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.email}
-                    table_data_object={current_table_item}
+                    initial_data_object={current_table_item}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.admin}
-                    table_data_object={current_table_item}
+                    initial_data_object={current_table_item}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.role}
-                    table_data_object={current_table_item}
+                    initial_data_object={current_table_item}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.title}
-                    table_data_object={current_table_item}
+                    initial_data_object={current_table_item}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.pay_rate}
-                    table_data_object={current_table_item}
+                    initial_data_object={current_table_item}
                     send_table_data={handle_input_change}
                 />
 
@@ -141,7 +141,7 @@ export default function Employee_input_form({send_table_data}:Types_props) {
                 {input_data.part_time === "1" &&
                         <Form_auto_input 
                         column_info={column_data.hours_per_week}
-                        table_data_object={current_table_item}
+                        initial_data_object={current_table_item}
                         send_table_data={handle_input_change}
                         />
                     }
@@ -149,14 +149,14 @@ export default function Employee_input_form({send_table_data}:Types_props) {
                 <div id="employment_date_box">
                     <Form_auto_input 
                         column_info={column_data.employment_start_date}
-                        table_data_object={current_table_item}
+                        initial_data_object={current_table_item}
                         send_table_data={handle_input_change}
                     />
                         
                     {input_data.employment_type === "contract" &&
                         <Form_auto_input 
                             column_info={column_data.employment_end_date}
-                            table_data_object={current_table_item}
+                            initial_data_object={current_table_item}
                             send_table_data={handle_input_change}
                         />
                     }

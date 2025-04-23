@@ -4,7 +4,7 @@ import axios from "axios";
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
-import { Types_get_table_data, Use_Context_table_data } from "../control_panel/context/Context_get_table_data.js";
+import { Use_Context_table_data } from "../control_panel/context/Context_get_table_data.js";
 import { Use_Context_table_info } from "../control_panel/context/Context_db_table_info.js";
 import { Use_Context_current_table_item } from "../control_panel/context/Context_current_table_item.js";
 import { Use_Context_departments_data } from "../context/Context_departments_data.js";
@@ -16,6 +16,7 @@ import { Use_Context_project_data } from "../project/context/Context_project_dat
   /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
+
 import { Types_form_data } from "../control_panel/context/Context_db_table_info.js";
 import { Types_input_change } from "./inputs/Form_auto_input.js";
 import { Types_column_info } from "../control_panel/context/Context_db_table_info.js";
@@ -42,6 +43,7 @@ interface Types_post_form {
 }
 
 interface Types_delete_entry{
+    section_name:string;
     table_name:string;
     item_id:number;
 }
@@ -51,7 +53,9 @@ export interface Types_data_change {
     form_data: Types_input_change | Types_form_data[];
 }
 
-interface Types_data_process extends Types_data_change{
+interface Types_data_process{
+    table_name: string;
+    form_data: Types_input_change | Types_form_data[];
     section_name: string;
     entry_id?:number;
 }
@@ -68,10 +72,7 @@ export const Use_Process_input_data = createContext<Types_context>({
 
 // CONTEXT PROVIDER & UPDATE 
 export function Provide_Process_input_data({children}:{children:ReactNode}) {
-
-    const active_table = useContext(Use_Context_table_info).show_context.table_name;
-
-    const project_db_column_info = useContext(Use_Context_project_data).show_context.table_info.db_column_info;
+    const projects_table_info = useContext(Use_Context_project_data).show_context.table_info;
     const current_db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
 
     const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
@@ -79,7 +80,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
     const departments = useContext(Use_Context_departments_data).show_context;
 
     const current_item_id = useRef<number>();
-    current_item_id.current = current_table_item.id;
 
     // CONTEXT UPDATERS
     const update_table_data = useContext(Use_Context_table_data).update_func;
@@ -93,9 +93,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({section_name, table_name, entry_id, form_data}:Types_data_process){
-        if(table_name === null || table_name === undefined){
-            table_name = active_table;
-        }
 
         console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`,{...table_data_ref.current});
         console.log(`%c PROCESS_INPUT_DATA FORM_DATA `, `background-color:${ log_colors.process_data }`,`for ${section_name} form_data for ${table_name}`, entry_id && `entry_id: ${entry_id}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
@@ -150,7 +147,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
     // CHECK TO ENSURE REQUIRED FIELDS ARE NOT LEFT EMPTY BEFORE SUBMITTING
     function check_empty_input({section_name, table_name}:{section_name:string, table_name:string}){
         const missing_inputs:string[] = [];
-        const db_column_info = project_db_column_info ? project_db_column_info : current_db_column_info;
+        const db_column_info = section_name === "projects" ? projects_table_info[table_name].db_column_info : current_db_column_info;
+        //const db_column_info =  current_db_column_info;
         table_data_ref.current[section_name][table_name].map((current_entry:Types_form_data)=>{
             db_column_info.map((item: Types_column_info) => {
                 const null_check = item.is_nullable;
@@ -197,7 +195,13 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
     // SEND THE INFOMATION TO THE DATABASE TO BE ADDED/EDITED
     async function post_form({section_name, submit_method}:Types_post_form){
-        console.log(`%c THE DATA BEING SENT for ${section_name}`, `background-color:${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current);
+        console.log(`%c THE DATA BEING SENT for ${section_name}`, `background-color:${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current[section_name]);
+
+        if(section_name === "control_panel"){
+            current_item_id.current = current_table_item.id;
+        } else if (section_name === "projects"){
+            current_item_id.current = current_project.project_data.id; 
+        }
 
         const section_tables = Object.keys(table_data_ref.current[section_name]);
         let missing_inputs = "";
@@ -214,7 +218,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             return (`Please enter values for ${missing_inputs}`)
         }
         
-        if(active_table === "employees"){
+        if(section_tables[0] === "employees"){
             const adjust_table_data_ref = {
                 employees: table_data_ref.current[section_name].employees,
                 employee_departments: table_data_ref.current[section_name].employee_departments
@@ -225,14 +229,28 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 const update_form_data = {...table_data_ref.current[section_name]["employees"][0], name:employee_data.email};
                 table_data_ref.current[section_name]["employees"] = [update_form_data];
             }
+        } else if(section_name === "projects" ){
+            const adjust_table_data_ref = {
+                projects: table_data_ref.current["projects"].projects,
+                project_department_budgets: table_data_ref.current["projects"].project_department_budgets,
+                employee_budgets: table_data_ref.current["projects"].employee_budgets
+            }
+            table_data_ref.current["projects"] = adjust_table_data_ref;
         }
 
         let status_message:string = "";
-        for await(let table_name of Object.keys(table_data_ref.current[section_name])){
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for `,table_name);
 
-            let filter_key = "id";
-            let filter_item = current_item_id.current;
+        let table_name:string;
+        for await(table_name of Object.keys(table_data_ref.current[section_name])){
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for `,table_name);
+           
+            let filter_key = "";
+            let filter_item: string | number | undefined = "";
+            if(submit_method === "edit"){
+                filter_key = "id";
+                filter_item = current_item_id.current;
+            }
+            
             const db_column_names = Object.keys(table_data_ref.current[section_name][table_name][0])
 
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_names`,'\n' ,db_column_names);
@@ -248,41 +266,52 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 }
             } else if (table_name === "departments"){
                 await update_departments_data.now({});
-            } else if (table_name === "projects"){
-                filter_item = current_project.current_table_item.id 
+            } else if (table_name === "project_department_budgets" || table_name === "employee_budgets"){
+                [...table_data_ref.current[section_name][table_name]].forEach((entry)=>{
+                    let update_entry = {...entry, project_id:current_item_id.current}
+                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for update_entry`,'\n' ,update_entry);
+                    access_db({submit_data:[update_entry]})
+                })
+            } else {
+                await access_db({submit_data:table_data_ref.current[section_name][table_name]})
             }
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current[section_name]`,'\n' ,table_data_ref.current[section_name]);
 
 
-            try {
-                const response = await axios.post("/edit_form_data",{
-                    table_name: table_name,
-                    filter_key: filter_key,
-                    filter_item: filter_item,
-                    submit_method: submit_method,
-                    db_column_info: db_column_names, 
-                    submit_data: table_data_ref.current[section_name][table_name]
-                })
-       
-                if(table_name === active_table){
-                    const table_data_update = await update_table_data.wait({active_table:table_name});
-                    update_table_data.update_context(table_data_update);
-                }
-       
-                console.log("The success_message: ",response.data);
-                status_message = (`${response.data.message}`);
-                if(submit_method === "add"){
-                    current_item_id.current = response.data.item_id;
-                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_item_id.current`,'\n' ,current_item_id.current);
-                }
-            } catch (error) {
-                console.log('%cError posting info to database: ', 'background-color:darkred',error);
-                status_message =("Failed to submit data"); 
-            }
+            async function access_db({submit_data}:{submit_data:Types_form_data[]}){
+                try {
+                    const response = await axios.post("/edit_form_data",{
+                        table_name: table_name,
+                        filter_key: filter_key,
+                        filter_item: filter_item,
+                        submit_method: submit_method,
+                        db_column_info: db_column_names, 
+                        submit_data: submit_data
+                    })
+           
+                    if(section_name === "control_panel"){
+                        const table_data_update = await update_table_data.wait({active_table:table_name});
+                        update_table_data.update_context(table_data_update);
+                    }
+                    console.log("The success_message: ",response.data);
+                    status_message = (`${response.data.message}`);
+                    if(submit_method === "add" || section_name === "control_panel"){
+                        current_item_id.current = response.data.item_id;
+                        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_item_id.current`,'\n' ,current_item_id.current);
+                    } else if (table_name === "projects"){
+                        current_item_id.current = response.data.item_id;
+                        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_item_id.current`,'\n' ,current_item_id.current);
+                    }
+                } catch (error) {
+                    console.log('%cError posting info to database: ', 'background-color:darkred',error);
+                    status_message =("Failed to submit data");
+                }    
+            }    
         }
 
 
-        if(active_table === "departments" && submit_method == "add"){
+ 
+        if(section_tables[0] === "departments" && submit_method == "add"){
             try{
                 const response = await axios.post("edit_dep_cols",{
                     dep_id: current_item_id.current!,
@@ -294,11 +323,13 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             };  
         }
 
+        
+
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for status_message`,'\n' , status_message);
         return status_message;
     }
 
-    async function delete_entry({table_name, item_id}:Types_delete_entry){
+    async function delete_entry({section_name, table_name, item_id}:Types_delete_entry){
 
         let status_message:string = "";
         try {
@@ -309,7 +340,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 submit_method: "delete"
             })
    
-            if(table_name === active_table){
+            if(section_name === "control_panel"){
                 const table_data_update = await update_table_data.wait({active_table:table_name});
                 update_table_data.update_context(table_data_update);
             }
@@ -321,7 +352,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             status_message =("Failed to delete data"); 
         }
 
-        if(active_table === "departments"){
+        if(table_name === "departments"){
             try{
                 const response = await axios.post("edit_deps_cols",{
                     dep_id: item_id,
@@ -341,13 +372,12 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             handle_form_change: ({section_name, table_name, entry_id, form_data}:Types_data_process) => handle_form_change({section_name, table_name, entry_id, form_data}),
             clear_form:(section_name:string)=>clear_form(section_name),
             post_form: async ({section_name, submit_method}:Types_post_form) => await post_form({section_name, submit_method}),
-            delete_entry: ({table_name, item_id}:Types_delete_entry)=> delete_entry({table_name, item_id})
+            delete_entry: ({section_name, table_name, item_id}:Types_delete_entry)=> delete_entry({section_name, table_name, item_id})
         }}
 
         > 
         {children} 
         </Use_Process_input_data.Provider> 
     ) 
-
 }
 

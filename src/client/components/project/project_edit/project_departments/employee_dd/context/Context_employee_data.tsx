@@ -29,7 +29,7 @@ interface Types_employee_budget_data{
     employee_id: number;
     project_id?:number;
     department_id:number;
-    start_date:string;
+    start_date:string | undefined;
     budget:number;
     budget_hours:number;
 }
@@ -46,7 +46,7 @@ const initial_context_content:Types_context_content = [{
     employee_id: 0,
     project_id: 0,
     department_id: 0,
-    start_date: "",
+    start_date: undefined,
     budget: 0,
     budget_hours: 0
 }];
@@ -66,7 +66,8 @@ export const Use_Context_employee_data = createContext<Types_context>({
 export function Provide_Context_employee_data({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
-    const current_project = useContext(Use_Context_project_data).show_context.current_project;
+    const existing_project_data = useContext(Use_Context_project_data).show_context;
+    const current_project = existing_project_data.current_project.project_data;
     const process_data = useContext(Use_Process_input_data);
     const employee_data_ref = useRef<Types_context_content>([])
 
@@ -77,7 +78,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             const response = await axios.post("/get_table_info", {
                 table_name: "employee_budgets",
                 filter_key: "project_id",
-                filter_item: current_project.current_table_item.id,
+                filter_item: current_project.id,
             })
             
             set_send_context(response.data)
@@ -121,9 +122,11 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
                     }
                 }
             } else {
+                const project_id = existing_project_data.current_project.project_data.id;
                 update_data.push({
                     employee_id: employee_id,
                     department_id: department_id,
+                    project_id:  project_id ? project_id : -1,
                     start_date: start_date,
                     budget: budget,
                     budget_hours: budget_hours

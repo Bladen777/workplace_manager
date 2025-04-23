@@ -101,7 +101,7 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
                                 <Form_auto_input
                                     key={`input_for_${column.column_name}`}
                                     column_info = {column}
-                                    table_data_object={current_table_item}
+                                    initial_data_object={current_table_item}
                                     send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
                                 />
                             )

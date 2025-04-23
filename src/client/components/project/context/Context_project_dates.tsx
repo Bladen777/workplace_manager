@@ -22,12 +22,12 @@ interface Types_context {
 };
 
 interface Types_context_content {   
-    start_date: string;
-    finish_date:string;
+    start_date: string | undefined;
+    finish_date:string | undefined;
     departments:{
         [key:string]:{
-            start_date:string;
-            finish_date:string;
+            start_date:string | undefined;
+            finish_date:string | undefined;
         }
     }
 };
@@ -35,13 +35,13 @@ interface Types_context_content {
 interface Types_context_function {   
     dep_id?:number;
     date_type: string;
-    date: string;
+    date: string | undefined;
 };
 
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = {
-    start_date:"",
-    finish_date:"",
+    start_date: undefined,
+    finish_date: undefined,
     departments:{}
 
 };
@@ -73,8 +73,8 @@ export function Provide_Context_project_dates({children}:{children:ReactNode}) {
     
             departments.forEach((department)=>{
                 department_dates.departments[`dep_id_${department.department.id}`] = {
-                    start_date:"",
-                    finish_date:""
+                    start_date: undefined,
+                    finish_date: undefined
                 };
             })
     
@@ -91,7 +91,7 @@ export function Provide_Context_project_dates({children}:{children:ReactNode}) {
         }
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_dates`, update_dates);
 
-        function update_dep_dates({f_dep_id, dep_date_type, dep_date}:{f_dep_id:number, dep_date_type:string, dep_date:string}){
+        function update_dep_dates({f_dep_id, dep_date_type, dep_date}:{f_dep_id:number, dep_date_type:string, dep_date:string | undefined}){
             const dep_name = `dep_id_${f_dep_id}`
             update_dates = {
                 ...update_dates,
@@ -113,6 +113,8 @@ export function Provide_Context_project_dates({children}:{children:ReactNode}) {
                 ...update_dates,
                 [date_type]:date
             }
+            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data:{input:date, db_column:date_type}})
+
         }
 
 
@@ -122,17 +124,18 @@ export function Provide_Context_project_dates({children}:{children:ReactNode}) {
             const current_dep = update_dates.departments[s_dep_name];
             const s_dep_id = Number(s_dep_name.slice(7));
 
-            const start_date_time = (new Date(update_dates.start_date)).getTime();
-            const finish_date_time = (new Date(update_dates.finish_date)).getTime();
+            const start_date_time = (new Date(update_dates.start_date!)).getTime();
+            const finish_date_time = (new Date(update_dates.finish_date!)).getTime();
 
-            const dep_start_time = (new Date(current_dep.start_date)).getTime();
-            const dep_finish_time = (new Date(current_dep.finish_date)).getTime();
+            const dep_start_time = (new Date(current_dep.start_date!)).getTime();
+            const dep_finish_time = (new Date(current_dep.finish_date!)).getTime();
 
-            if(start_date_time > dep_start_time || (update_dates.start_date !== "" && current_dep.start_date === "")){
+            if(start_date_time > dep_start_time || (update_dates.start_date !== undefined && current_dep.start_date === undefined)){
                 update_dep_dates({f_dep_id: s_dep_id, dep_date_type: "start_date", dep_date:update_dates.start_date})
             }
 
-            if(finish_date_time < dep_finish_time || (update_dates.finish_date !== "" && current_dep.finish_date === "")){
+            if(finish_date_time < dep_finish_time || (update_dates.finish_date !== undefined && current_dep.finish_date === undefined)){
+                console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for finish_date_time`, finish_date_time, ` vs `, `dep_finish_time`, dep_finish_time, `update_dates`, update_dates);
                 update_dep_dates({f_dep_id: s_dep_id, dep_date_type: "finish_date", dep_date:update_dates.finish_date})
             }
 

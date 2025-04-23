@@ -14,12 +14,7 @@ employment_start_date date,
 employment_end_date date,
 );
 
-CREATE TABLE employee_departments(
-id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-employee_id int REFERENCES employees(id)
--- DEPARTMENT COLUMNS WILL BE ADDED ON THE FRONT END
--- THEIR VALUES WILL BE 0 OR 1 FOR FALSE AND TRUE
-);
+pr
 
 CREATE TABLE departments(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,

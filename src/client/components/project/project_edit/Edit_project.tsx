@@ -39,21 +39,18 @@ export interface Types_adjust_budget{
 export default function Edit_project() {
     console.log(`%c COMPONENT `, `background-color:${ log_colors.component }`, `Edit_project`);
 
-    const initial_form_data = useContext(Use_Context_project_data).show_context.table_info.initial_form_data;
-    const db_column_info = useContext(Use_Context_project_data).show_context.table_info.db_column_info;
-    const current_project = useContext(Use_Context_project_data).show_context.current_project;
+    const existing_project_data = useContext(Use_Context_project_data).show_context
+    const initial_form_data = existing_project_data.table_info.projects.initial_form_data;
+    const db_column_info = existing_project_data.table_info.projects.db_column_info;
+    const current_project = existing_project_data.current_project;
+    const project_submit_method = existing_project_data.submit_method;
+
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
+    
 
     const update_current_project = useContext(Use_Context_project_data).update_func;
     const update_project_budgets = useContext(Use_Context_project_budgets).update_func;
     const process_data = useContext(Use_Process_input_data);
-    const animate = animate_edit_project();
-    
-    const edit_btn_box_ref = useRef<HTMLDivElement | null>(null);
-    const edit_input_box_ref = useRef<HTMLDivElement | null>(null);
-    const edit_btn_ref = useRef<HTMLButtonElement | null>(null);
-    const add_btn_ref = useRef<HTMLButtonElement | null>(null);
-    const btn_type = useRef<string>("");
 
     const [status_message, set_status_message] = useState<string>("");
     const [edit_btn_clicked, set_edit_btn_clicked] = useState<boolean>(false);
@@ -62,6 +59,16 @@ export default function Edit_project() {
         remaining: 0,
         percent: 0
     })
+
+    // consts for animating
+    const animate = animate_edit_project();
+    const edit_btn_box_ref = useRef<HTMLDivElement | null>(null);
+    const edit_input_box_ref = useRef<HTMLDivElement | null>(null);
+    const edit_btn_ref = useRef<HTMLButtonElement | null>(null);
+    const add_btn_ref = useRef<HTMLButtonElement | null>(null);
+    const btn_type = useRef<string>("");
+
+    
 
     async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){
         if(edit_btn_clicked){
@@ -79,12 +86,21 @@ export default function Edit_project() {
                 add_btn_ele: add_btn_ref.current!, 
                 edit_btn_ele: edit_btn_ref.current!
             })
-            process_data.handle_form_change({section_name:"projects", table_name:"projects", form_data:[current_project.current_table_item]})
         }
         
-        if(submit_method && submit_method !== current_project.submit_method){
+        if(submit_method && submit_method !== existing_project_data.submit_method){
             const current_project_update = await update_current_project.wait({submit_method:submit_method})
             await update_current_project.update_context(current_project_update)
+
+            if(submit_method === "edit"){
+                process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: existing_project_data.current_project.project_data})
+                process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data: existing_project_data.current_project.project_department_budgets})
+                process_data.handle_form_change({section_name:"projects", table_name: "employee_budgets", form_data: existing_project_data.current_project.employee_budgets})
+            } else {
+                const date = new Date().toISOString().slice(0,10);
+                let new_project_data = {...existing_project_data.table_info.projects.initial_form_data, date_added:date}
+                process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [new_project_data]})
+            }
         }
     }
 
@@ -124,22 +140,19 @@ export default function Edit_project() {
     }
 
     async function post_form(){
-        const response:string = await process_data.post_form({section_name:"projects", submit_method:current_project.submit_method})
+        const response:string = await process_data.post_form({section_name:"projects", submit_method:existing_project_data.submit_method})
         set_status_message(response)
     }
 
 // MEMOS AND EFFECTS    
-    useEffect(() =>{
-        if(current_project.submit_method !== ""){
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_project`,'\n' ,current_project);
-            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data:[current_project.current_table_item]})
-    
-        }
-    },[current_project])
 
     useMemo(()=>{
         adjust_budget()
     },[project_budgets])
+    
+    useEffect(()=>{
+        update_current_project.now({current_project_id:10})
+    },[])
 
 // RETURNED VALUES 
     return(
@@ -172,7 +185,7 @@ export default function Edit_project() {
             >
             {edit_btn_clicked && 
                 <div className="edit_project_input_box">
-                    <h2> {current_project.submit_method === "add" ? "New" : "Edit"} Project</h2>
+                    <h2> {existing_project_data.submit_method === "add" ? "New" : "Edit"} Project</h2>
                     <form 
                         className="auto_form"
                     >
@@ -184,12 +197,17 @@ export default function Edit_project() {
                                         send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
                                     />
                                 )
-                            } else if(!column.column_name.includes("start_date") && !column.column_name.includes("finish_date") ){
+                            } else if(
+                                !column.column_name.includes("start_date") 
+                                && !column.column_name.includes("finish_date") 
+                                && !column.column_name.includes("date_added") 
+                            ){
                                 return(
                                     <Form_auto_input
                                         key={`input_for_${column.column_name}`}
                                         column_info = {column}
-                                        table_data_object={initial_form_data}
+                                        initial_data_object={initial_form_data}
+                                        adjust_data_object={project_submit_method === "edit" ? current_project.project_data : initial_form_data}
                                         send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
                                     />
                                 )
