@@ -23,36 +23,53 @@ import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_
 
 
 interface Types_props{
-    data:Types_search_item;
+    employee_id: number; 
     dep_id:number;
+    data:Types_form_data;
     rate:number;
     remove_employee: Function;
 }
 
 interface Types_employee_data{
     budget:number;
-    hours:number;
+    budget_hours:number;
 }
 
 // THE COMPONENT 
-export default function P_employee_edit({dep_id, data, rate, remove_employee}:Types_props) {
+export default function P_employee_edit({dep_id, employee_id, data, rate, remove_employee}:Types_props) {
     console.log(`       %c INPUT_COMPONENT `, `background-color:${ log_colors.input_component }`, `P_employee_edit`);
 
     const dep_id_name = `dep_id_${dep_id}`
     const existing_project_data = useContext(Use_Context_project_data).show_context;
+
+    const existing_employee_data = existing_project_data.current_project.employee_budgets.find((entry:Types_form_data)=>{
+        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for entry`,'\n' ,entry);
+        if(entry.employee_id === employee_id){
+            return entry
+        }
+    })
+    const project_initial_form_data = (
+        existing_project_data.submit_method === "edit"
+        ? existing_employee_data
+        : existing_project_data.table_info.employee_budgets.initial_form_data
+    )
+
+    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_initial_form_data`,'\n' ,project_initial_form_data);
+
     const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name]
     const employee_data = useContext(Use_Context_employee_data).show_context;
     const project_dates = useContext(Use_Context_project_dates).show_context;
 
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
-    const [employee_budget, set_employee_budget] = useState<number>(0);
-    const [employee_hours, set_employee_hours] = useState<number>(0);
+    const [employee_budget, set_employee_budget] = useState<number>(Number(project_initial_form_data!.budget));
+    const [employee_hours, set_employee_hours] = useState<number>(Number(project_initial_form_data!.budget_hours));
 
     const employee_data_ref = useRef<Types_employee_data>({
         budget:0,
-        hours:0
+        budget_hours:0
     })
+
 
     const e_select_box_ele = useRef<HTMLDivElement | null>(null);
 
@@ -63,7 +80,7 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
     function handle_budget_input_change({input, db_column}:Types_input_change){
         
         let update_budget:number = employee_data_ref.current!.budget;
-        let update_hours:number = employee_data_ref.current!.hours;
+        let update_hours:number = employee_data_ref.current!.budget_hours;
 
         if(db_column === "hours"){
             update_hours = Number(input);
@@ -75,7 +92,7 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
 
         employee_data_ref.current = {
             budget: update_budget,
-            hours: update_hours
+            budget_hours: update_hours
         }
 
         set_employee_budget(update_budget);
@@ -86,7 +103,7 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
         const budget_form_data:Types_form_data = {
             budget_hours: update_hours,
             budget: update_budget,
-            employee_id: data.id,
+            employee_id: employee_id,
             department_id: dep_id,    
         }
 
@@ -99,7 +116,7 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
 
     function handle_date_input_change({input, db_column}:Types_input_change){
         const date_form_data:Types_form_data = {
-            employee_id: data.id,
+            employee_id: employee_id,
             department_id: dep_id,
             start_date: input
         }
@@ -111,7 +128,7 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
 
     function handle_remove_employee(){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove employee`);
-        update_employee_data.now({method:"delete", department_id: dep_id, employee_id:data.id }); 
+        update_employee_data.now({method:"delete", department_id: dep_id, employee_id:employee_id }); 
         e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease reverse forwards`;
         e_select_box_ele.current!.addEventListener("animationend", animation_ended);
         function animation_ended(){
@@ -125,12 +142,15 @@ export default function P_employee_edit({dep_id, data, rate, remove_employee}:Ty
 useEffect(() =>{
     e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
     e_select_box_ele.current!.addEventListener("animationend", animation_done);
+    
 
     function animation_done(){
         e_select_box_ele.current!.removeEventListener("animationend", animation_done);
         e_select_box_ele.current!.style.animation ="";
     }
 },[])
+
+
 
 /*
 
@@ -174,7 +194,7 @@ useEffect(() =>{
                         is_nullable: "YES",
                         input_type: "date"
                     }}
-                    initial_data_object={existing_project_data.table_info.employee_budgets.initial_form_data} 
+                    initial_data_object={project_initial_form_data!}
                     date_range={{min: project_dates.departments[dep_id_name].start_date, max: project_dates.departments[dep_id_name].finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
@@ -187,7 +207,7 @@ useEffect(() =>{
                         is_nullable: "YES",
                         input_type: "budget"
                     }}
-                    initial_data_object={existing_project_data.table_info.employee_budgets.initial_form_data}
+                    initial_data_object={project_initial_form_data!}
                     adjust_data_object={{[`budget`]: employee_budget.toFixed(2)}} 
                     send_table_data = {callback_handle_budget_change}
                 />
@@ -195,12 +215,12 @@ useEffect(() =>{
                 {/* INPUT FOR HOURS */}
                 <Form_auto_input 
                     column_info={{
-                        column_name: `hours`,
+                        column_name: `budget_hours`,
                         is_nullable: "YES", 
                         input_type: "text"
                     }}
-                    initial_data_object={existing_project_data.table_info.employee_budgets.initial_form_data}
-                    adjust_data_object={{[`hours`]: employee_hours}}
+                    initial_data_object={project_initial_form_data!}
+                    adjust_data_object={{[`budget_hours`]: employee_hours}}
                     send_table_data = {callback_handle_budget_change}
                 />
             </div>

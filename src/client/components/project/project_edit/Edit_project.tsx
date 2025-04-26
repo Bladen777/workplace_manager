@@ -93,7 +93,7 @@ export default function Edit_project() {
             await update_current_project.update_context(current_project_update)
 
             if(submit_method === "edit"){
-                process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: existing_project_data.current_project.project_data})
+                process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [existing_project_data.current_project.project_data]})
                 process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data: existing_project_data.current_project.project_department_budgets})
                 process_data.handle_form_change({section_name:"projects", table_name: "employee_budgets", form_data: existing_project_data.current_project.employee_budgets})
             } else {
@@ -180,6 +180,7 @@ export default function Edit_project() {
             </div>
 
             <article
+                id="edit_project_input_box"
                 ref = {edit_input_box_ref} 
                 className="edit_project_box general_section box_closed"
             >

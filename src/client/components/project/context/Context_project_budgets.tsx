@@ -67,7 +67,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
         }
 
         departments.forEach((department)=>{
-            department_budgets.departments[`dep_id_${department.department.id}`] = 0;
+            department_budgets.departments[`dep_id_${department.id}`] = 0;
         })
 
         budgets.current = department_budgets;
@@ -113,7 +113,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 // MEMOS AND EFFECTS
 
 useMemo(() =>{
-    if(departments[0].department.id !== 0){
+    if(departments[0].id !== 0){
         console.log(`%c DATA `, `background-color:${ log_colors.important_2 }`,`for departments`,'\n' ,departments);
         setup_department_budgets()
     }

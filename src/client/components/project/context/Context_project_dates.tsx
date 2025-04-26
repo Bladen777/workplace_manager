@@ -72,7 +72,7 @@ export function Provide_Context_project_dates({children}:{children:ReactNode}) {
             }
     
             departments.forEach((department)=>{
-                department_dates.departments[`dep_id_${department.department.id}`] = {
+                department_dates.departments[`dep_id_${department.id}`] = {
                     start_date: undefined,
                     finish_date: undefined
                 };
@@ -150,7 +150,7 @@ export function Provide_Context_project_dates({children}:{children:ReactNode}) {
 // MEMOS AND EFFECTS
 
 useMemo(() =>{
-    if(departments[0].department.id !== 0){
+    if(departments[0].id !== 0){
         setup_department_dates()
     }
 },[departments])

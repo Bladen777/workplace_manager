@@ -4,7 +4,6 @@ import axios from "axios";
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
-import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
@@ -79,7 +78,7 @@ const initial_context_content:Types_context_content = {
             initial_form_data:{[""]:""} 
         },    
     },
-    submit_method:""
+    submit_method:"edit"
 };
 
 // CONTEXT TO USE 
@@ -96,8 +95,6 @@ export const Use_Context_project_data = createContext<Types_context>({
 export function Provide_Context_project_data({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
-    const process_data = useContext(Use_Process_input_data);
-
     // GET THE INITIAL TABLE DATA
     async function fetch_initial_data({table_name}:{table_name:string}){
         const form_data: Types_form_data = {};
@@ -106,8 +103,6 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
             const response = await axios.post("/get_columns",{
                 table_name: table_name
             });
-
-
             response.data.forEach((item:Types_column_info, index:number) => {
                 const item_name:string = item.column_name
     
@@ -115,6 +110,9 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
                 if(item_name.includes("date")){
                     item.input_type = "date"
                     initial_item_value = undefined;
+                } else if (item_name.includes("hours") ){   
+                    item.input_type = "text";
+                    initial_item_value = "0"              
                 } else if (item_name.includes("budget")){
                     item.input_type = "text";
                     initial_item_value = "0.00"         
@@ -143,9 +141,13 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
                 filter_key: filter_key,
                 filter_item: filter_item,
             });
-            const data = response.data[0];
+            const data = response.data;
             console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for Projects table data  `, '\n' , data);
-            return(data);
+            if(filter_key){
+                return(data[0])
+            }else {
+                return(data);
+            }
         } catch (error) {
             console.log(`%cError getting Table info: `, 'background-color:darkred', error); 
         }
@@ -173,7 +175,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
 
         try{
             const response = await axios.post("/get_table_info",{
-                table_name: "project_department_budgets",
+                table_name: "employee_budgets",
                 filter_key: "project_id",
                 filter_item: filter_item,
             });
@@ -206,13 +208,10 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
             }
 
         }
-
         update_data ={
             ...update_data,
             submit_method:submit_method
         }
-
-        
 
         console.log(`%c CONTEXT_UPDATE_DATA `, `background-color:${ log_colors.context }`,`for update_data`,'\n' ,update_data);
         return update_data;
@@ -221,23 +220,33 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
 
 // MEMOS AND EFFECTS
     useMemo(() =>{
-        async function all_projects(){
+        (async () => {
             const all_projects:Types_form_data[] = await fetch_projects();
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
+            const latest_project_id = all_projects[all_projects.length -1].id;
+            const project_data = await fetch_projects({filter_key:"id", filter_item:latest_project_id});
+            const budget_data = await fetch_budgets({filter_item:latest_project_id});
             const table_info:Types_table_info = {
                 projects: await fetch_initial_data({table_name:"projects"}),
                 project_department_budgets: await fetch_initial_data({table_name:"project_department_budgets"}),
                 employee_budgets: await fetch_initial_data({table_name:"employee_budgets"})
             }
 
-            set_send_context((prev_vals) =>{
-                return{
-                    ...prev_vals,
-                    all_projects:all_projects,
-                    table_info: table_info
-                }
-            })
-        }
-        all_projects()
+            const update_data = {
+                ...send_context,
+                all_projects:all_projects,
+                current_project:{
+                    project_data: project_data,
+                    project_department_budgets:budget_data.project_department_budgets,
+                    employee_budgets:budget_data.employee_budgets,
+                },
+                table_info: table_info
+            }
+
+            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+            set_send_context(update_data)
+        })()
+       
     },[])
 
 

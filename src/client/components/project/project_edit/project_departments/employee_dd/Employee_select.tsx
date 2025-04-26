@@ -27,31 +27,17 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Employee_select({department_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_select for: `, department_data.department.name);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_select for: `, department_data.name);
 
-    const current_project = useContext(Use_Context_project_data).show_context.current_project;
+    const existing_project_data = useContext(Use_Context_project_data).show_context;
+    const current_project = existing_project_data.current_project;
 
     const [initial_employee_list, set_initial_employee_list] = useState<Types_form_data[]>([])
     const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
     const [selected_employees, set_selected_employees] = useState<ReactElement[]>([]);
     const selected_employees_ref = useRef<ReactElement[]>([]);
     
-    const dep_id = `dep_id_${department_data.department.id}`
-
-    // CHECK IF THERE ARE EXISTING EMPLOYEES ASIGNED TO THIS PROJECT
-    async function fetch_selected_employees(){
-        try{
-            const response = await axios.post("/get_table_info",{
-                table_name: "employee_budgets",
-                filter_key: "project_id",
-                filter_item: `"${current_project.current_table_item.id}"`
-            })
-
-        } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
-        };
-
-    }
+    const dep_id = `dep_id_${department_data.id}`
 
     // GET CURRENT LIST OF MATCHING EMPLOYEES
     async function fetch_initial_employee_list(){
@@ -88,12 +74,20 @@ export default function Employee_select({department_data}:Types_props) {
         };    
     }
 
-    function add_employee(item:Types_search_item){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
+    // CHECK IF THERE ARE EXISTING EMPLOYEES ASIGNED TO THIS PROJECT
+    async function fetch_selected_employees(){
+        existing_project_data.current_project.employee_budgets.forEach((item:Types_form_data)=>{
+            if(item.department_id === department_data.id){
+                add_employee({entry_id:Number(item.employee_id!)});
+            }
 
-        const selected_employee = initial_employee_list.find((s_item)=>{
-            if(s_item.id === item.id){
-                return s_item;
+        })
+    }
+
+    function add_employee({entry_id}:{entry_id:number}){
+        const selected_employee = initial_employee_list.find((s_entry)=>{
+            if(s_entry.id === entry_id){
+                return s_entry;
             }
         })
         const employee_pay_type:string = String(selected_employee!.pay_type); 
@@ -105,15 +99,18 @@ export default function Employee_select({department_data}:Types_props) {
             employee_rate = Number(selected_employee!.pay_rate);
         }
         
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item.id`,'\n' ,item.id);
+/*
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for entry_id`,'\n' ,entry_id);
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for employee_rate`,'\n' ,employee_rate);
+*/
 
         const employee_input = <P_employee_edit
-            key={`${item.id}`}
-            dep_id = {department_data.department.id}
-            data = {item}
+            key={`${entry_id}`}
+            dep_id = {department_data.id}
+            employee_id={entry_id}
+            data = {selected_employee!}
             rate = {employee_rate}
-            remove_employee = {()=>remove_employee(item.id!)}
+            remove_employee = {()=>remove_employee(entry_id!)}
         />
 
         const update_selected_employees = [...selected_employees, employee_input];
@@ -167,9 +164,23 @@ export default function Employee_select({department_data}:Types_props) {
 
 
 // MEMOS AND EFFECTS    
-    useEffect(() =>{
-      fetch_initial_employee_list()
+    useEffect(() => { 
+        fetch_initial_employee_list()
     },[])
+
+
+    useMemo(() => {
+        if(existing_project_data.submit_method === "edit" && initial_employee_list.length !== 0){
+            const animating_ele = document.getElementById("edit_project_input_box");
+            animating_ele?.addEventListener("animationend", animation_finished);
+            
+            function animation_finished(){
+                    fetch_selected_employees() 
+                    animating_ele?.removeEventListener("animationend", animation_finished);
+            }
+        }
+    },[initial_employee_list])
+
 
 
 // RETURNED VALUES
@@ -187,14 +198,12 @@ if(employee_list.length !== 0 || selected_employees.length !== 0){
                 table_name={{main:"Employee", specific:dep_id}} 
                 form_table_data={employee_list} 
                 send_table_data={({input}:{input:Types_search_item})=>{
-                    add_employee(input)
+                    add_employee({entry_id:input.id!})
                 }}                    
             />
             :
             <p>All Employees Selected</p>
         }
-            
-            
         </label>
     ); 
 } else {

@@ -42,7 +42,6 @@ export default function animate_edit_project() {
             add_btn_ele: add_btn_ele,
             edit_btn_ele: edit_btn_ele
         }
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for animation_elements.current`,'\n' ,animation_elements.current);
         run_animation({animate_forwards:true})
     }
     
@@ -144,7 +143,5 @@ export default function animate_edit_project() {
         run_animation: ({animate_forwards}:Types_animate_forwards) => {
             run_animation({animate_forwards:animate_forwards})
         }
-            
-
     });
 }

@@ -43,12 +43,8 @@ export interface Types_input_change{
 // THE COMPONENT
 function Form_auto_input({label_name, column_info, initial_data_object, adjust_data_object, date_range, send_table_data}:Types_new_entry) {
 
- 
-
     const [input_data, set_input_data] = useState<Types_form_data>(initial_data_object);
     const [input, set_input] = useState<ReactElement>();
-
-
 
         function convert_text(){
             let text = column_info.column_name.replaceAll("_"," ")

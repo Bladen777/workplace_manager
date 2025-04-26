@@ -105,8 +105,6 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             }
         })
 
-        
-
         if(method !== "delete"){
             if (typeof(entry_index) === "number"){
                 if(start_date){

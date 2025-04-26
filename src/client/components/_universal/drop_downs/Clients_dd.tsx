@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
@@ -17,6 +17,9 @@ import { Types_search_item } from "./Input_drop_down.js";
 // THE COMPONENT 
 export default function Clients_dd({send_table_data}:{send_table_data:Function}) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `clients_dd`);
+
+    const existing_project_data = useContext(Use_Context_project_data).show_context;
+    const project_submit_method = existing_project_data.submit_method;
 
     const [client_list, set_client_list] = useState<string[]>([])
 

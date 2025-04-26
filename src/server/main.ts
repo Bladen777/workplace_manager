@@ -124,13 +124,19 @@ app.get("/user_info",
       const table_name: string = req.body.table_name;
       const filter_key: string = req.body.filter_key;
       const filter_item: string = req.body.filter_item;
+      const filter_key_2: string = req.body.filter_key_2;
+      const filter_item_2: string = req.body.filter_item_2;
       let order_key: string = req.body.order_key;
       const order_direction:string = req.body.order_direction; 
       console.log("\n","get_table_info requested for: ", table_name)
 
       let search_condition = "";
-      if(filter_key){
-        search_condition = `WHERE ${filter_key}='${filter_item}'`
+      if(filter_key && filter_key !== ""){
+        if(filter_key_2 && filter_key_2 !== ""){
+          search_condition = `WHERE ${filter_key}='${filter_item}' AND ${filter_key_2}='${filter_item_2}'`
+        } else {
+          search_condition = `WHERE ${filter_key}='${filter_item}'`
+        };
       };
 
           // FIND COLUMN NAME BASED ON ORDER KEY PROVIDED
@@ -234,6 +240,8 @@ app.get("/user_info",
       const table_name: string = req.body.table_name;
       const filter_key: string = req.body.filter_key;
       const filter_item: string = req.body.filter_item;
+      const filter_key_2: string = req.body.filter_key_2;
+      const filter_item_2: string = req.body.filter_item_2;
       const sent_submit_method: string = req.body.submit_method;
       const submit_data: Types_entry_item | Types_entry_item[] = req.body.submit_data;
       const column_names: string[]  = req.body.db_column_info;
@@ -257,9 +265,14 @@ app.get("/user_info",
         let edit_values = "";
 
         // SET THE SEARCH CONDITION
-        if(filter_key !== ""){
-          search_condition = `WHERE ${filter_key}=${entry_filter_item}`
+        if(filter_key && filter_key !== ""){
+          if(filter_key_2 && filter_key_2 !== ""){
+            search_condition = `WHERE ${filter_key}='${filter_item}' AND ${filter_key_2}='${filter_item_2}'`
+          } else {
+            search_condition = `WHERE ${filter_key}='${filter_item}'`
+          };
         };
+        
 
         // DEFINE KEY, VALUE PAIRS AS STRINGS
         column_names.map((column:string) => {
@@ -305,6 +318,7 @@ app.get("/user_info",
         }
       };
 
+      // FUNCTION FOR ADDING AND EDITING DATA
       async function access_db({table_data, submit_method, array_edit}:{table_data:Types_table_data, submit_method:string, array_edit:boolean}){
 
         if(submit_method === "add"){
@@ -353,9 +367,11 @@ app.get("/user_info",
         }
       }
 
+      // DETERMINE WHAT KIND OF DATA MANIPULATION TO DO
       if(sent_submit_method === "delete"){
      
         const search_condition = `WHERE ${filter_key}=${filter_item}`
+        const search_condition_2 = ""
         console.log(`DELETE FROM ${table_name} ${search_condition};`)
         try {
           const response = await db.query(
@@ -380,7 +396,7 @@ app.get("/user_info",
           };
           const table_data:Types_table_data = string_data({
             entry_item: item, 
-            entry_filter_item:item.id ? item.id : filter_item, 
+            entry_filter_item: item.id ? item.id : filter_item,
             submit_method:adjust_submit_method
           });
           if(adjust_submit_method === "add"){

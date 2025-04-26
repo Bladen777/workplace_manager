@@ -114,7 +114,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         } 
         
         if(!Array.isArray(form_data)){
-
             const new_data = {
                 ...new_form_data[table_name][entry_index],
                 [form_data.db_column]:form_data.input

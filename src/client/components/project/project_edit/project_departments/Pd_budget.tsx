@@ -24,14 +24,16 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Pd_budget({department_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budget for ${department_data.department.name}`);
+    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context;
-    const update_department_budget = useContext(Use_Context_project_budgets).update_func;
+    const project_submit_method = existing_project_data.submit_method;
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
 
+    const update_department_budget = useContext(Use_Context_project_budgets).update_func;
+    
     const [department_percent, set_department_percent] = useState<number>(0);
-    const dep_id_name = `dep_id_${department_data.department.id}`
+    const dep_id_name = `dep_id_${department_data.id}`
     const department_budget = project_budgets.departments[dep_id_name];
 /*
     console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_budgets`,'\n' ,project_budgets);
@@ -81,6 +83,7 @@ export default function Pd_budget({department_data}:Types_props) {
     useMemo(()=>{
         department_budget !== 0 && find_percent()
     },[project_budgets])
+    
 
 // RETURNED VALUES 
     return(
