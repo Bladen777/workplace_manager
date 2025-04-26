@@ -20,6 +20,7 @@ import "../../../../styles/project/pd_input.css"
 // TYPE DEFINITIONS
 import { Types_department_data } from "../../../context/Context_departments_data.js";
 import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
+import { Types_form_data } from "../../../control_panel/context/Context_db_table_info.js";
 
 interface Types_dates_change extends Types_input_change{
     dep_id:number;
@@ -32,14 +33,13 @@ function Pd_input() {
 
     const departments = useContext(Use_Context_departments_data).show_context;
     const existing_project_data = useContext(Use_Context_project_data).show_context;
-    const initial_form_data = existing_project_data.table_info.projects.initial_form_data;
+    const project_initial_form_data = existing_project_data.table_info.project_department_budgets.initial_form_data;
     const current_project = existing_project_data.current_project;
     const project_submit_method = existing_project_data.submit_method;
     const project_dates = useContext(Use_Context_project_dates).show_context;
 
     const update_project_dates = useContext(Use_Context_project_dates).update_func;
     const process_data = useContext(Use_Process_input_data);
-
     const [dep_inputs, set_dep_inputs] = useState<ReactElement[]>([])
     
     function convert_text({text}:{text:string}){
@@ -68,6 +68,21 @@ function Pd_input() {
 
     function create_inputs(){
         const inputs = departments.map((item)=>{
+
+        const current_dep_index:number = existing_project_data.current_project.project_department_budgets.findIndex((s_item:Types_form_data)=>{
+            if(s_item.department_id === item.id){
+                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for s_item.department_id:` ,s_item.department_id, ` vs `, `item.id: `, item.id);
+                return s_item
+            }
+        });
+
+        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_dep_index`,'\n' ,current_dep_index);
+        const department_initial_form_data:Types_form_data = (
+            existing_project_data.submit_method === "edit" && current_dep_index >= 0
+            ? existing_project_data.current_project.project_department_budgets[current_dep_index]
+            : existing_project_data.table_info.project_department_budgets.initial_form_data
+        )
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_initial_form_data`,'\n' ,department_initial_form_data);
             return(
                 <div 
                     className="project_department_input_box"
@@ -84,7 +99,7 @@ function Pd_input() {
                                 input_type: "date"
                                 
                             }}
-                            initial_data_object={{start_date:undefined}}
+                            initial_data_object={department_initial_form_data}
                             adjust_data_object={project_dates.departments[`dep_id_${item.id}`]}
                             date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                             send_table_data = {callback_handle_date_change}
@@ -95,7 +110,7 @@ function Pd_input() {
                                 is_nullable: "YES",
                                 input_type: "date"
                             }}
-                            initial_data_object={{finish_date:undefined}}
+                            initial_data_object={department_initial_form_data}
                             adjust_data_object={project_dates.departments[`dep_id_${item.id}`]}
                             date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                             send_table_data = {callback_handle_date_change}
@@ -119,22 +134,23 @@ function Pd_input() {
 
 useEffect(() =>{
     const project_id = existing_project_data.current_project.project_data.id;
-    const department_budget_data = departments.map((item:Types_department_data)=>{
-        return{
-            department_id: item.id,
-            project_id:  project_id ? project_id : -1,
-            start_date: undefined,
-            finish_date: undefined,
-            budget: 0
-        }
-  })
-
-  process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:department_budget_data})
+    if(existing_project_data.submit_method === "add"){
+        const department_budget_data = departments.map((item:Types_department_data)=>{
+            return{
+                department_id: item.id,
+                project_id:  project_id ? project_id : -1,
+                start_date: undefined,
+                finish_date: undefined,
+                budget: 0
+            }
+        })
+        process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:department_budget_data})
+    }
   create_inputs()
 },[])
 
 useMemo(() =>{
-  create_inputs()
+  //create_inputs()
 },[project_dates.start_date, project_dates.finish_date])
 
 // RETURNED VALUES 
@@ -149,8 +165,8 @@ useMemo(() =>{
                         input_type: "date"
                     }}
                     label_name="Project Start Date"
-                    initial_data_object={initial_form_data}
-                    adjust_data_object={project_submit_method === "edit" ? current_project.project_data : initial_form_data}
+                    initial_data_object={project_initial_form_data}
+                    adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
                     send_table_data = {callback_handle_project_date_change}
                 />
                 <Form_auto_input
@@ -160,8 +176,8 @@ useMemo(() =>{
                         input_type: "date"
                     }}
                     label_name="Project Finish Date"
-                    initial_data_object={initial_form_data}
-                    adjust_data_object={project_submit_method === "edit" ? current_project.project_data : initial_form_data}
+                    initial_data_object={project_initial_form_data}
+                    adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
                     send_table_data = {callback_handle_project_date_change}
                 />
             </div>

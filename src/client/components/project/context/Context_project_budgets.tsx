@@ -19,20 +19,21 @@ interface Types_context {
     show_context:Types_context_content; 
 };
 
+export interface Types_department_budgets {
+    [key:string]:number;
+}
+
 interface Types_context_content {
     total: number;
     used: number;
-    departments:{
-        [key:string]:number
-    }
+    departments:Types_department_budgets;
    };
-
-
 
 interface Types_context_function {
     total?:boolean
     dep_id_name?: string;
     budget:number;
+    all_budgets:Types_context_content;
 };
 
 // INITIAL CONTEXT CONTENT 
@@ -77,7 +78,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
     }
 
     // UPDATE THE CONTEXT 
-    async function update_context({total, dep_id_name, budget}:Types_context_function){
+    async function update_context({total, dep_id_name, budget, all_budgets}:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_budgets`, `total: `,total);
 
         console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for send_context`,'\n' ,send_context);
@@ -87,8 +88,9 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
         console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for update_budget`,'\n' ,update_budget);
         let used_budget:number;
 
-
-        if(total){
+        if(all_budgets){
+            update_budget = all_budgets;
+        } else if(total){
             update_budget = {
                 ...update_budget,
                 total:budget

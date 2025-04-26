@@ -41,7 +41,6 @@ export default function Pd_budget({department_data}:Types_props) {
     console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
 */
 
-
     const process_data = useContext(Use_Process_input_data);
 
 

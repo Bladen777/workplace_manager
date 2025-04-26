@@ -48,13 +48,13 @@ export default function P_employee_edit({dep_id, employee_id, data, rate, remove
             return entry
         }
     })
-    const project_initial_form_data = (
+    const initial_employee_form_data:Types_form_data = (
         existing_project_data.submit_method === "edit"
-        ? existing_employee_data
+        ? existing_employee_data!
         : existing_project_data.table_info.employee_budgets.initial_form_data
     )
 
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_initial_form_data`,'\n' ,project_initial_form_data);
+    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for initial_employee_form_data`,'\n' ,initial_employee_form_data);
 
     const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name]
     const employee_data = useContext(Use_Context_employee_data).show_context;
@@ -62,8 +62,8 @@ export default function P_employee_edit({dep_id, employee_id, data, rate, remove
 
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
-    const [employee_budget, set_employee_budget] = useState<number>(Number(project_initial_form_data!.budget));
-    const [employee_hours, set_employee_hours] = useState<number>(Number(project_initial_form_data!.budget_hours));
+    const [employee_budget, set_employee_budget] = useState<number>(Number(initial_employee_form_data!.budget));
+    const [employee_hours, set_employee_hours] = useState<number>(Number(initial_employee_form_data!.budget_hours));
 
     const employee_data_ref = useRef<Types_employee_data>({
         budget:0,
@@ -194,7 +194,7 @@ useEffect(() =>{
                         is_nullable: "YES",
                         input_type: "date"
                     }}
-                    initial_data_object={project_initial_form_data!}
+                    initial_data_object={initial_employee_form_data!}
                     date_range={{min: project_dates.departments[dep_id_name].start_date, max: project_dates.departments[dep_id_name].finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
@@ -207,7 +207,7 @@ useEffect(() =>{
                         is_nullable: "YES",
                         input_type: "budget"
                     }}
-                    initial_data_object={project_initial_form_data!}
+                    initial_data_object={initial_employee_form_data!}
                     adjust_data_object={{[`budget`]: employee_budget.toFixed(2)}} 
                     send_table_data = {callback_handle_budget_change}
                 />
@@ -219,7 +219,7 @@ useEffect(() =>{
                         is_nullable: "YES", 
                         input_type: "text"
                     }}
-                    initial_data_object={project_initial_form_data!}
+                    initial_data_object={initial_employee_form_data!}
                     adjust_data_object={{[`budget_hours`]: employee_hours}}
                     send_table_data = {callback_handle_budget_change}
                 />

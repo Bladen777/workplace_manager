@@ -10,6 +10,7 @@ import animate_edit_project from "./animations/animate_edit_project.js";
 import { Use_Context_project_data } from "../context/Context_project_data.js";
 import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 import { Use_Context_project_budgets } from "../context/Context_project_budgets.js";
+import { Use_Context_project_dates } from "../context/Context_project_dates.js";
 import { Provide_Context_employee_data } from "./project_departments/employee_dd/context/Context_employee_data.js";
 
 // HOOK IMPORTS 
@@ -23,11 +24,13 @@ import "../../../styles/_universal/form_dd.css"
 import { Types_column_info } from "../../control_panel/context/Context_db_table_info.js";
 import { Types_data_change } from "../../_universal/Process_input_data.js";
 import { Types_input_change } from "../../_universal/inputs/Form_auto_input.js";
+import { Types_department_dates } from "../context/Context_project_dates.js";
+import { Types_department_budgets } from "../context/Context_project_budgets.js";
+
 
 interface Types_budget {
     remaining: number;
     percent: number;
-
 }
 
 export interface Types_adjust_budget{
@@ -50,6 +53,7 @@ export default function Edit_project() {
 
     const update_current_project = useContext(Use_Context_project_data).update_func;
     const update_project_budgets = useContext(Use_Context_project_budgets).update_func;
+    const update_project_dates = useContext(Use_Context_project_dates).update_func;
     const process_data = useContext(Use_Process_input_data);
 
     const [status_message, set_status_message] = useState<string>("");
@@ -91,17 +95,43 @@ export default function Edit_project() {
         if(submit_method && submit_method !== existing_project_data.submit_method){
             const current_project_update = await update_current_project.wait({submit_method:submit_method})
             await update_current_project.update_context(current_project_update)
-
-            if(submit_method === "edit"){
-                process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [existing_project_data.current_project.project_data]})
-                process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data: existing_project_data.current_project.project_department_budgets})
-                process_data.handle_form_change({section_name:"projects", table_name: "employee_budgets", form_data: existing_project_data.current_project.employee_budgets})
-            } else {
-                const date = new Date().toISOString().slice(0,10);
-                let new_project_data = {...existing_project_data.table_info.projects.initial_form_data, date_added:date}
-                process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [new_project_data]})
-            }
         }
+
+        if(submit_method === "edit"){
+            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [current_project.project_data]})
+            process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data: current_project.project_department_budgets})
+            process_data.handle_form_change({section_name:"projects", table_name: "employee_budgets", form_data: current_project.employee_budgets})
+            
+            const department_dates:Types_department_dates = {};
+            const department_budgets:Types_department_budgets = {};
+            let budget_used:number = 0;
+            current_project.project_department_budgets.forEach((entry)=>{
+                department_dates[`dep_id_${entry.department_id}`] = {
+                    start_date:String(entry.start_date),
+                    finish_date: String(entry.finish_date)
+                }
+                department_budgets[`dep_id_${entry.department_id}`] = Number(entry.budget);
+                budget_used += Number(entry.budget);
+            })
+            update_project_dates.now({all_dates:{
+                start_date: current_project.project_data.start_date,
+                finish_date: current_project.project_data.finish_date,
+                departments:department_dates
+            }})
+
+            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for budget_used`,'\n' ,budget_used);
+            update_project_budgets.now({all_budgets:{
+                total:Number(current_project.project_data.production_budget),
+                used:budget_used,
+                departments: department_budgets
+            }})
+        
+        } else {
+            const date = new Date().toISOString().slice(0,10);
+            let new_project_data = {...existing_project_data.table_info.projects.initial_form_data, date_added:date}
+            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [new_project_data]})
+        }
+        
     }
 
     function handle_form_change({form_data}:Types_data_change){
@@ -219,8 +249,8 @@ export default function Edit_project() {
                         id="project_budget_tracker"      
                         className={production_budget.remaining < 0 ? "over_budget" : "under_budget"}
                     >
-                        <p>Total Budget: ${project_budgets.total}</p>
-                        <p>Remaining Budget: ${production_budget.remaining}</p>
+                        <p>Total Budget: ${project_budgets.total.toFixed(2)}</p>
+                        <p>Remaining Budget: ${production_budget.remaining.toFixed(2)}</p>
                         <p>Budget Used: {production_budget.percent}%</p>
                     </div>
                         <Provide_Context_employee_data>

@@ -120,6 +120,7 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
 // MEMOS AND EFFECTS   
         
     useMemo(()=>{
+        //console.log(`%c ADJUST DATA OBJECT CHANGED `, `background-color:${ log_colors.important }`);
         if(adjust_data_object){
             const key = column_info.column_name;
             if( input_data[key] !== adjust_data_object[key]){
@@ -134,12 +135,21 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
     },[adjust_data_object])
 
     useMemo(() =>{
+        
         if(date_range){
+            //console.log(`%c DATE RANGE CHANGED `, `background-color:${ log_colors.important }`);
             //console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for input_data.date_range` ,input_data, ` vs `, `date_range: `, date_range);
             if(input_data.date_range === date_range){}
+        } else {
+            //console.log(`%c INPUT DATA CHANGED `, `background-color:${ log_colors.important }`);
         }
         Object.keys(input_data).length > 0 && create_inputs()
     },[input_data, date_range])
+
+
+    useMemo(() =>{
+      
+    },[])
 
         
 
