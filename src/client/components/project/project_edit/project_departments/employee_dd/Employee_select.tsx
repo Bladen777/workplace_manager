@@ -19,14 +19,16 @@ import { Types_form_data } from "../../../../control_panel/context/Context_db_ta
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
 import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
 import { Types_department_data } from "../../../../context/Context_departments_data.js";
+import { Types_project_dates } from "../../Edit_project.js";
 
 interface Types_props{
     department_data: Types_department_data;
+    dep_dates: Types_project_dates;
 }
 
 
 // THE COMPONENT 
-export default function Employee_select({department_data}:Types_props) {
+export default function Employee_select({department_data, dep_dates}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_select for: `, department_data.name);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context;
@@ -109,6 +111,7 @@ export default function Employee_select({department_data}:Types_props) {
             dep_id = {department_data.id}
             employee_id={entry_id}
             data = {selected_employee!}
+            dep_dates = {dep_dates}
             rate = {employee_rate}
             remove_employee = {()=>remove_employee(entry_id!)}
         />

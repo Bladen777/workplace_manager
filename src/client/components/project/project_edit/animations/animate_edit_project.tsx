@@ -64,6 +64,8 @@ export default function animate_edit_project() {
         const open_btn_ele = animation_elements.current!.btn_type! === "add" ? animation_elements.current!.add_btn_ele! : animation_elements.current!.edit_btn_ele!;
         const close_btn_ele = animation_elements.current!.btn_type! !== "add" ? animation_elements.current!.add_btn_ele! : animation_elements.current!.edit_btn_ele!;
     
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for close_btn_ele`,'\n' ,close_btn_ele);
+
         const start:Types_animation_ele = animate_forwards ? ele_1 : ele_2;
         const end:Types_animation_ele = !animate_forwards ? ele_1 : ele_2;
         const animation_direction = animate_forwards ? "normal" : "reverse";
@@ -78,22 +80,22 @@ export default function animate_edit_project() {
     
         function button_animation(){
             open_btn_ele.style.animation = `toggle_selected_btn 0.5s ease ${animation_direction} forwards`;
-            close_btn_ele.style.animation = `toggle_hidden_btn 0.5s ease ${animation_direction} forwards`;
-    
+            close_btn_ele && (close_btn_ele.style.animation = `toggle_hidden_btn 0.5s ease ${animation_direction} forwards`);
+     
             if(animate_forwards){
                 open_btn_ele.addEventListener("animationend", btn_animation);
             } else {
                 open_btn_ele.addEventListener("animationend", btn_animation);
                 open_btn_ele.classList.toggle("btn_open");
-                close_btn_ele.classList.toggle("btn_close");
+                close_btn_ele && (close_btn_ele.classList.toggle("btn_close"));
             }
     
             function btn_animation(){
                 if(animate_forwards){
                     open_btn_ele.classList.toggle("btn_open");
-                    close_btn_ele.classList.toggle("btn_close");
+                    close_btn_ele && (close_btn_ele.classList.toggle("btn_close"));
                     open_btn_ele.style.animation = "";
-                    close_btn_ele.style.animation = "";
+                    close_btn_ele && (close_btn_ele.style.animation = "");
                     open_btn_ele.removeEventListener("animationend", btn_animation);
     
                     //start_animation()
@@ -101,13 +103,11 @@ export default function animate_edit_project() {
                 } else {
                     open_btn_ele.removeEventListener("animationend", btn_animation);
                     open_btn_ele.style.animation = "";
-                    close_btn_ele.style.animation = "";
+                    close_btn_ele && (close_btn_ele.style.animation = "");
                 }
             }
-            
         }
-    
-    
+
         function start_animation(){
             start.ele.style.animation = `${start.animation} ease-in ${animation_direction} forwards`
             start.ele.addEventListener("animationend", adjust_animation_1);

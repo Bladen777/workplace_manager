@@ -80,12 +80,10 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
     // UPDATE THE CONTEXT 
     async function update_context({total, dep_id_name, budget, all_budgets}:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_budgets`, `total: `,total);
-
-        console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for send_context`,'\n' ,send_context);
         let update_budget: Types_context_content = {
             ...budgets.current!
         }
-        console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for update_budget`,'\n' ,update_budget);
+
         let used_budget:number;
 
         if(all_budgets){
@@ -107,7 +105,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
                 
             }
         }
-        console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.important }`,`for update_budget`,'\n' ,update_budget);
+        console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.context }`,`for update_budget`,'\n' ,update_budget);
         budgets.current = update_budget;
         return update_budget;
     }

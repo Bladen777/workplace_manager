@@ -148,7 +148,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
 // MEMOS AND EFFECTS    
 
 useMemo(() =>{
-    if(current_project.submit_method === "edit"){
+    if(current_project && current_project.submit_method === "edit"){
         fetch_employee_budget_data()
     } else {
         set_send_context(initial_context_content)

@@ -26,8 +26,9 @@ interface Types_change_project{
 export default function Project_overview() {
   console.log(`%c COMPONENT `, `background-color:${log_colors.component}`, `Project_overview`);
 
-  const all_projects = useContext(Use_Context_project_data).show_context.all_projects;
-  const current_project = useContext(Use_Context_project_data).show_context.current_project.project_data;
+  const existing_project_data = useContext(Use_Context_project_data).show_context
+  const all_projects = existing_project_data.all_projects;
+  const current_project = existing_project_data.current_project.project_data;
   const update_current_project = useContext(Use_Context_project_data).update_func; 
 
   const [display_project, set_display_project] = useState<Types_form_data>(current_project) 
@@ -57,27 +58,30 @@ export default function Project_overview() {
   */
 
 // MEMOS AND EFFECTS
+  useMemo(()=>{
+    if(existing_project_data.submit_method !== "add"){
+      set_display_project(current_project);
+    }
+  },[current_project])
 
-useMemo(()=>{
-  if(current_project.submit_method !== "add"){
-    set_display_project(current_project);
-  }
-},[current_project])
-
-// RETURNED VALUES      
-  return (
-    <div id="project_overview" className="general_section">
-      <h1 id="project_overview_title">Project Overview</h1>
-      <h3>{display_project.project_name}</h3>
-      <div id="project_department_legend" className="project_overview_content_box">
-        Legend
+// RETURNED VALUES
+  if(current_project && Object.keys(current_project).length > 0){
+    console.log(`%c CURRENT PROJECT EXISTS `, `background-color:${ log_colors.important }`,`for Object.keys(current_project).length`,'\n' ,Object.keys(current_project).length);
+    return (
+      <div id="project_overview" className="general_section">
+        <h1 id="project_overview_title">Project Overview</h1>
+        <h3>{display_project.project_name}</h3>
+        <div id="project_department_legend" className="project_overview_content_box">
+          Legend
+        </div>
+        <Pie_chart />
+        <Budget_tracker />
+        <Date_tracker />
+        <Project_details />
       </div>
-      <Pie_chart />
-      <Budget_tracker />
-      <Date_tracker />
-      <Project_details />
-    </div>
-  )
+    )
+  }      
+ 
 }
 
 

@@ -14,7 +14,7 @@ import { Provide_Context_project_data } from "../components/project/context/Cont
 import { Provide_Context_departments_data } from "../components/context/Context_departments_data.js";
 import { Provide_Process_input_data } from "../components/_universal/Process_input_data.js";
 import { Provide_Context_project_budgets } from "../components/project/context/Context_project_budgets.js";
-import { Provide_Context_project_dates } from "../components/project/context/Context_project_dates.js";
+
 
 // HOOK IMPORTS
 
@@ -47,10 +47,8 @@ export default function Home() {
                 <Provide_Context_project_data>
                   <Provide_Process_input_data>
                     <Provide_Context_project_budgets>
-                      <Provide_Context_project_dates>
                         <Project_overview />
                         {user_info.is_admin && <Edit_project />}
-                      </Provide_Context_project_dates>
                     </Provide_Context_project_budgets>
                       {user_info.is_admin && <Control_panel />}
                   </Provide_Process_input_data>

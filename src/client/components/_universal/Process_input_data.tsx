@@ -104,11 +104,12 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         let entry_index:number = 0;
         if(entry_id){            
             let entry_id_name:string;
-            Object.keys(new_form_data[table_name][0]).forEach((col_name)=>{if(col_name.includes("id")) entry_id_name = col_name })
+            Object.keys(new_form_data[table_name][0]).forEach((col_name)=>{if(col_name.includes("id") && !col_name.includes("project")) entry_id_name = col_name })
 
             new_form_data[table_name].forEach((item, index:number)=>{
+                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for item[entry_id_name]` ,entry_id_name, ` vs `, `entry_id: `, entry_id);
                 if(item[entry_id_name] === entry_id){
-                    entry_index = index
+                    entry_index = index;
                 }
             })
         } 

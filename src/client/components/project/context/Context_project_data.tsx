@@ -223,30 +223,41 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
         (async () => {
             const all_projects:Types_form_data[] = await fetch_projects();
             console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
-            const latest_project_id = all_projects[all_projects.length -1].id;
-            const project_data = await fetch_projects({filter_key:"id", filter_item:latest_project_id});
-            const budget_data = await fetch_budgets({filter_item:latest_project_id});
+            let update_data = {...send_context};
+            let blah = 0;
+            if(blah > 0){
+                const latest_project_id = all_projects[all_projects.length -1].id;
+                const project_data = await fetch_projects({filter_key:"id", filter_item:latest_project_id});
+                const budget_data = await fetch_budgets({filter_item:latest_project_id});
+
+                update_data = {
+                    ...update_data,
+                    current_project:{
+                        project_data: project_data,
+                        project_department_budgets:budget_data.project_department_budgets,
+                        employee_budgets:budget_data.employee_budgets,
+                    },
+                }
+
+            }
+
             const table_info:Types_table_info = {
                 projects: await fetch_initial_data({table_name:"projects"}),
                 project_department_budgets: await fetch_initial_data({table_name:"project_department_budgets"}),
                 employee_budgets: await fetch_initial_data({table_name:"employee_budgets"})
             }
 
-            const update_data = {
-                ...send_context,
-                all_projects:all_projects,
-                current_project:{
-                    project_data: project_data,
-                    project_department_budgets:budget_data.project_department_budgets,
-                    employee_budgets:budget_data.employee_budgets,
-                },
+            update_data = {
+                ...update_data,
+                all_projects: all_projects,
                 table_info: table_info
             }
 
+            console.log(`%c important `, `background-color:${ log_colors.important }`,`for table_info`,'\n' ,table_info);
             console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,update_data);
             set_send_context(update_data)
+
         })()
-       
     },[])
 
 

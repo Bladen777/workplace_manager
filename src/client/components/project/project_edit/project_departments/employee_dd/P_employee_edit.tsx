@@ -8,7 +8,6 @@ import { Use_Process_input_data } from "../../../../_universal/Process_input_dat
 import { Use_Context_project_data } from "../../../context/Context_project_data.js";
 import { Use_Context_project_budgets } from "../../../context/Context_project_budgets.js";
 import { Use_Context_employee_data } from "./context/Context_employee_data.js";
-import { Use_Context_project_dates } from "../../../context/Context_project_dates.js";
 
 // HOOK IMPORTS 
 
@@ -20,12 +19,14 @@ import { Use_Context_project_dates } from "../../../context/Context_project_date
 import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
 import { Types_form_data } from "../../../../control_panel/context/Context_db_table_info.js";
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
+import { Types_project_dates } from "../../Edit_project.js";
 
 
 interface Types_props{
     employee_id: number; 
     dep_id:number;
     data:Types_form_data;
+    dep_dates: Types_project_dates;
     rate:number;
     remove_employee: Function;
 }
@@ -36,7 +37,7 @@ interface Types_employee_data{
 }
 
 // THE COMPONENT 
-export default function P_employee_edit({dep_id, employee_id, data, rate, remove_employee}:Types_props) {
+export default function P_employee_edit({dep_id, employee_id, data, dep_dates, rate, remove_employee}:Types_props) {
     console.log(`       %c INPUT_COMPONENT `, `background-color:${ log_colors.input_component }`, `P_employee_edit`);
 
     const dep_id_name = `dep_id_${dep_id}`
@@ -58,7 +59,6 @@ export default function P_employee_edit({dep_id, employee_id, data, rate, remove
 
     const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name]
     const employee_data = useContext(Use_Context_employee_data).show_context;
-    const project_dates = useContext(Use_Context_project_dates).show_context;
 
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
@@ -195,7 +195,7 @@ useEffect(() =>{
                         input_type: "date"
                     }}
                     initial_data_object={initial_employee_form_data!}
-                    date_range={{min: project_dates.departments[dep_id_name].start_date, max: project_dates.departments[dep_id_name].finish_date}}
+                    date_range={{min: dep_dates.start_date, max: dep_dates.finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
               
