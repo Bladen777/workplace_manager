@@ -253,7 +253,6 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
                 table_info: table_info
             }
 
-            console.log(`%c important `, `background-color:${ log_colors.important }`,`for table_info`,'\n' ,table_info);
             console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,update_data);
             set_send_context(update_data)
 

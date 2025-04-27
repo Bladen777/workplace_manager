@@ -196,12 +196,11 @@ export default function Edit_project() {
     
     function handle_project_date_change({input, db_column}:Types_input_change){
         let date_type = "start_date";
-        if(db_column.includes("finsh")){
+        if(db_column.includes("finish")){
             date_type = "finish_date";
         }
         const update_dates = {...project_dates, [date_type]:input}
-        set_project_dates(update_dates);
-        //update_project_dates.now({date_type:db_column, date:input})     
+        set_project_dates(update_dates);    
     }
 
     async function post_form(){
@@ -229,7 +228,9 @@ export default function Edit_project() {
     
     useMemo(()=>{
         //update_current_project.now({current_project_id:10})
-        adjust_initial_data({submit_method:"add"});
+        if(current_project.project_data && Object.keys(current_project.project_data).length < 1){
+            adjust_initial_data({submit_method:"add"});
+        }
     },[])
 
 /*

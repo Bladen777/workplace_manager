@@ -47,7 +47,6 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
 
     const [input_data, set_input_data] = useState<Types_form_data>(initial_data_object);
     const [input, set_input] = useState<ReactElement>();
-    const date_ranges = useRef<Types_date_ranges>({min:undefined, max:undefined});
 
         function convert_text(){
             let text = column_info.column_name.replaceAll("_"," ")
@@ -129,32 +128,24 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
 // MEMOS AND EFFECTS   
         
     useMemo(()=>{
+        console.log(`%c DATE RANGE CHANGED `, `color: yellow `, date_range,  );
         if(adjust_data_object && Object.keys(adjust_data_object).length > 0){
             const key = column_info.column_name;
             if( input_data[key] !== adjust_data_object[key]){
-                console.log(`%c ADJUST DATA OBJECT CHANGED `, `background-color:${ log_colors.important }`, adjust_data_object);
+                //console.log(`%c ADJUST DATA OBJECT CHANGED `, `background-color:${ log_colors.important }`, adjust_data_object);
                 //console.log(`%c DATA `, `background-color:${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_object: `, adjust_data_object[key]);
-            
-                date_ranges.current.max = date_range?.max!;
-                date_ranges.current.min = date_range?.min!;
-                
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for date_ranges.current` ,date_ranges.current, ` vs `, `date_range: `, date_range);
 
                 set_input_data(adjust_data_object)
-            } else if(date_range && Object.keys(date_range).length > 0){
-                if((date_range.max || date_range.min) && (date_ranges.current !== date_range)){
-                    console.log(`%c DATE RANGE CHANGED `, `background-color:${ log_colors.important }`, date_range);
-                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for date_ranges.current` ,date_ranges.current, ` vs `, `date_range: `, date_range);
-
-                    //create_inputs()
-                }
+            } else if((date_range?.max || date_range?.min ) && Object.keys(date_range).length > 0){
+                console.log(`%c DATE RANGE CHANGED `, `color: orange `, date_range);
+                create_inputs()
             }
         } 
     },[adjust_data_object, date_range])
 
     useMemo(() =>{
         if(input_data && Object.keys(input_data).length > 0){
-            console.log(`%c INPUT DATA CHANGED `, `background-color:${ log_colors.important }`, input_data);
+            //console.log(`%c INPUT DATA CHANGED `, `background-color:${ log_colors.important }`, input_data);
             create_inputs()
         }
     },[input_data ])

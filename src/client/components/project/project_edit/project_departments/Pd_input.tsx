@@ -71,13 +71,13 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     function handle_date_change({input, db_column}:Types_input_change){
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_id`,'\n' ,dep_data.id);
         let date_type = "start_date";
-        if(db_column.includes("finsh")){
+        if(db_column.includes("finish")){
             date_type = "finish_date";
         }
         const update_dates = {...dep_dates, [date_type]:input}
         set_dep_dates(update_dates);
 
-        //process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data:{input:input, db_column:db_column}})
+        process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:{input:input, db_column:db_column}, entry_id:dep_data.id})
     }
 
     function adjust_date(){
@@ -102,8 +102,10 @@ function Pd_input({dep_data, project_dates}:Types_props) {
             date_change = project_dates.finish_date;
             date_type = "finish_date";
         };
+
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
         set_dep_dates(update_dates)
-        process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data:{input:date_change, db_column:date_type}})
+        process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:{input:date_change, db_column:date_type}, entry_id:dep_data.id})
 
     }
 

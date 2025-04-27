@@ -36,8 +36,8 @@ export default function Employee_select({department_data, dep_dates}:Types_props
 
     const [initial_employee_list, set_initial_employee_list] = useState<Types_form_data[]>([])
     const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
-    const [selected_employees, set_selected_employees] = useState<ReactElement[]>([]);
-    const selected_employees_ref = useRef<ReactElement[]>([]);
+
+    const [selected_employee_data, set_selected_employee_data] = useState<Types_form_data[]>([])
     
     const dep_id = `dep_id_${department_data.id}`
 
@@ -92,64 +92,41 @@ export default function Employee_select({department_data, dep_dates}:Types_props
                 return s_entry;
             }
         })
-        const employee_pay_type:string = String(selected_employee!.pay_type); 
 
-        let employee_rate:number;
-        if(employee_pay_type === "annually"){
-            employee_rate = Number((Number(selected_employee!.pay_rate)/2080).toFixed(2));
-        } else {
-            employee_rate = Number(selected_employee!.pay_rate);
-        }
-        
-/*
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for entry_id`,'\n' ,entry_id);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for employee_rate`,'\n' ,employee_rate);
-*/
-
-        const employee_input = <P_employee_edit
-            key={`${entry_id}`}
-            dep_id = {department_data.id}
-            employee_id={entry_id}
-            data = {selected_employee!}
-            dep_dates = {dep_dates}
-            rate = {employee_rate}
-            remove_employee = {()=>remove_employee(entry_id!)}
-        />
-
-        const update_selected_employees = [...selected_employees, employee_input];
-
-        set_selected_employees(update_selected_employees);
-        selected_employees_ref.current = update_selected_employees;
-        update_employee_list()
+        const update_selected_employees = [...selected_employee_data, selected_employee!];
+        update_employee_list({f_employee_list:update_selected_employees});
+        set_selected_employee_data(update_selected_employees);
     }
 
     function remove_employee(id:number){
         
         console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for id`,'\n' ,id);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for selected_employees`,'\n' ,selected_employees_ref.current);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for selected_employees`,'\n' ,selected_employees_ref.current[0].key);
 
-        let remaining_selected_employees:ReactElement[] = [];
+        let remaining_selected_employees:Types_form_data[] = [];
 
-        [...selected_employees_ref.current].forEach((item)=>{
-            if(Number(item.key) !== id){
+        selected_employee_data.forEach((item)=>{
+            if(item.id !== id){
                 remaining_selected_employees.push(item)
             }
         })
 
-        set_selected_employees(remaining_selected_employees);
-        selected_employees_ref.current = remaining_selected_employees;
-        update_employee_list()
-
+        
+        update_employee_list({f_employee_list:remaining_selected_employees});
+        set_selected_employee_data(remaining_selected_employees);
     }
 
-    function update_employee_list(){
+    function update_employee_list({f_employee_list}:{f_employee_list:Types_form_data[]}){
+
+        const scan_employee_list = f_employee_list ? f_employee_list :selected_employee_data;
 
         let remaining_employees:Types_form_data[] = [] 
         initial_employee_list.forEach((employee_data)=>{
             let employee_selected:boolean = false;
-            [...selected_employees_ref.current].forEach((selected_employee_data)=>{
-                if(employee_data.id === Number(selected_employee_data.key)){
+            console.log(`%c EMPLOYEE SELECT ADJUST `, `background-color:${ log_colors.important }`,`for employee_data.id`,'\n' ,employee_data.id);
+            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for scan_employee_list`,'\n' ,scan_employee_list);
+            scan_employee_list.forEach((s_employee_data)=>{
+                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for scan_employee_list.id`,'\n' ,s_employee_data.id);
+                if(employee_data.id === s_employee_data.id){
                     employee_selected = true;
                 }
             })
@@ -157,7 +134,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
                 remaining_employees.push(employee_data);
             }
         })
-        if(selected_employees_ref.current.length === 0){
+        if(scan_employee_list.length === 0){
             remaining_employees = initial_employee_list;
         }
 
@@ -184,15 +161,32 @@ export default function Employee_select({department_data, dep_dates}:Types_props
         }
     },[initial_employee_list])
 
+/*
+    useMemo(() =>{
+        console.log(`%c IMPORTANT `, `background-color:${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
+    },[dep_dates])
+*/
+
 
 
 // RETURNED VALUES
-if(employee_list.length !== 0 || selected_employees.length !== 0){
+if(employee_list.length !== 0 || selected_employee_data.length !== 0){
     return(
         <label className="form_dd auto_form_input pd_employee_dd">
             <p>Selected Employees</p>
             <div className="selected_employees">
-                {selected_employees}
+                {selected_employee_data.map((entry:Types_form_data)=>{
+                    return (
+                        <P_employee_edit
+                            key={`${entry.id}`}
+                            dep_id = {department_data.id}
+                            employee_id={entry.id!}
+                            data = {entry}
+                            dep_dates = {dep_dates}
+                            remove_employee = {()=>remove_employee(entry.id!)}
+                        />
+                    )
+                })}
             </div>
         {employee_list.length !== 0
             ?

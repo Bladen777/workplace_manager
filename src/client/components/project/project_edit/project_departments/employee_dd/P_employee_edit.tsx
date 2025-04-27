@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
@@ -27,7 +27,6 @@ interface Types_props{
     dep_id:number;
     data:Types_form_data;
     dep_dates: Types_project_dates;
-    rate:number;
     remove_employee: Function;
 }
 
@@ -37,8 +36,8 @@ interface Types_employee_data{
 }
 
 // THE COMPONENT 
-export default function P_employee_edit({dep_id, employee_id, data, dep_dates, rate, remove_employee}:Types_props) {
-    console.log(`       %c INPUT_COMPONENT `, `background-color:${ log_colors.input_component }`, `P_employee_edit`);
+export default function P_employee_edit({dep_id, employee_id, data, dep_dates, remove_employee}:Types_props) {
+    console.log(`       %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `P_employee_edit`);
 
     const dep_id_name = `dep_id_${dep_id}`
     const existing_project_data = useContext(Use_Context_project_data).show_context;
@@ -71,6 +70,14 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
     })
 
 
+    let employee_rate:number;
+    if(data!.pay_type === "annually"){
+        employee_rate = Number((Number(data!.pay_rate)/2080).toFixed(2));
+    } else {
+        employee_rate = Number(data!.pay_rate);
+    }
+
+
     const e_select_box_ele = useRef<HTMLDivElement | null>(null);
 
     const callback_handle_budget_change = useCallback(({input, db_column}:Types_input_change) =>{
@@ -84,10 +91,10 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
         if(db_column === "hours"){
             update_hours = Number(input);
-            update_budget = Number((update_hours * rate).toFixed(2));
+            update_budget = Number((update_hours * employee_rate).toFixed(2));
         } else {
             update_budget = Number(input);
-            update_hours = Number((update_budget/rate).toFixed(2));
+            update_hours = Number((update_budget/employee_rate).toFixed(2));
         }
 
         employee_data_ref.current = {
@@ -110,6 +117,9 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
         update_employee_data.now(budget_form_data);
     }
 
+
+
+
     const callback_handle_date_change = useCallback(({input, db_column}:Types_input_change) =>{
         handle_date_input_change({input, db_column})
       },[])
@@ -121,7 +131,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
             start_date: input
         }
 
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for date_form_data`,'\n' ,date_form_data);
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for date_form_ data`,'\n' ,date_form_data);
         update_employee_data.now(date_form_data); 
 
     }
@@ -139,33 +149,34 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
 // MEMOS AND EFFECTS
 
-useEffect(() =>{
-    e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
-    e_select_box_ele.current!.addEventListener("animationend", animation_done);
-    
+    useEffect(() =>{
+        e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
+        e_select_box_ele.current!.addEventListener("animationend", animation_done);
+        
 
-    function animation_done(){
-        e_select_box_ele.current!.removeEventListener("animationend", animation_done);
-        e_select_box_ele.current!.style.animation ="";
-    }
-},[])
+        function animation_done(){
+            e_select_box_ele.current!.removeEventListener("animationend", animation_done);
+            e_select_box_ele.current!.style.animation ="";
+        }
+    },[])
+
+
+    useMemo(() =>{
+      console.log(`%c IMPORTANT `, `background-color:${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
+    },[dep_dates])
+
+    /*
+
+    useEffect(() =>{
+    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for data`,'\n' ,data);
+    },[data])
 
 
 
-/*
-
-useEffect(() =>{
-  console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for data`,'\n' ,data);
-},[data])
-
-useEffect(() =>{
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for rate`,'\n' ,rate);
-  },[rate])
-
-  useEffect(() =>{
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove_employee`,'\n' ,remove_employee);
-  },[remove_employee])  
-*/
+    useEffect(() =>{
+        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove_employee`,'\n' ,remove_employee);
+    },[remove_employee])  
+    */
 
 
 // RETURNED VALUES 
@@ -185,7 +196,7 @@ useEffect(() =>{
                 className="e_select_input_box"
             >
                 {/* LABEL FOR EMPLOYEE RATE */}
-                <p> Hourly Rate: ${rate}</p>
+                <p> Hourly Rate: ${employee_rate}</p>
 
 
                 <Form_auto_input
