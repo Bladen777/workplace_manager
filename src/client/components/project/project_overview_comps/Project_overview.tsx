@@ -24,7 +24,7 @@ interface Types_change_project{
 
 // THE COMPONENT
 export default function Project_overview() {
-  console.log(`%c COMPONENT `, `background-color:${log_colors.component}`, `Project_overview`);
+  console.log(`%c COMPONENT `, `${log_colors.component}`, `Project_overview`);
 
   const existing_project_data = useContext(Use_Context_project_data).show_context
   const all_projects = existing_project_data.all_projects;
@@ -66,7 +66,7 @@ export default function Project_overview() {
 
 // RETURNED VALUES
   if(current_project && Object.keys(current_project).length > 0){
-    console.log(`%c CURRENT PROJECT EXISTS `, `background-color:${ log_colors.important }`,`for Object.keys(current_project).length`,'\n' ,Object.keys(current_project).length);
+    console.log(`%c CURRENT PROJECT EXISTS `, `${ log_colors.important }`,`for Object.keys(current_project).length`,'\n' ,Object.keys(current_project).length);
     return (
       <div id="project_overview" className="general_section">
         <h1 id="project_overview_title">Project Overview</h1>

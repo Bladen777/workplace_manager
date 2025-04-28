@@ -52,11 +52,11 @@ export const Use_Context_departments_data = createContext<Types_context>({
 // CONTEXT PROVIDER & UPDATE 
 export function Provide_Context_departments_data({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
-console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for send_context`,'\n' ,send_context);
+console.log(`%c CONTEXT `, `${ log_colors.context }`,`for send_context`,'\n' ,send_context);
 
     // UPDATE THE CONTEXT 
     async function update_context({   }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_departments_data`);
+        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_departments_data`);
 
         try{
             const response = await axios.post("/get_table_info",{
@@ -70,10 +70,10 @@ console.log(`%c CONTEXT `, `background-color:${ log_colors.context }`,`for send_
                     color:item.department_color
                 }
             })
-            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for department data`,'\n' ,data);
+            console.log(`   %c CONTEXT DATA `, `${ log_colors.data }`,`for department data`,'\n' ,data);
             return(data)
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };
     }
 

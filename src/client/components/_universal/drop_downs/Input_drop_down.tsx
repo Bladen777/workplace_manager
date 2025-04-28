@@ -33,7 +33,7 @@ export interface Types_search_item{
 
 // THE COMPONENT 
 export default function Input_drop_down({placeholder, table_name, string_table_data, form_table_data, send_table_data}:Types_props) {
-    console.log(`       %c INPUT DROP DOWN `, `background-color:${ log_colors.input_component }`, `for ${table_name.specific ? table_name.specific : table_name.main}`);
+    console.log(`       %c INPUT DROP DOWN `, `${ log_colors.input_component }`, `for ${table_name.specific ? table_name.specific : table_name.main}`);
 
     let table_data: string[] | Types_form_data[] = [];
     if(string_table_data){
@@ -101,7 +101,7 @@ export default function Input_drop_down({placeholder, table_name, string_table_d
 
 
     function find_matched_items(){
-        console.log(`       %c DATA `, `background-color:${ log_colors.data }`,`for DD Table Data`,'\n  ',table_data);
+        console.log(`       %c DATA `, `${ log_colors.data }`,`for DD Table Data`,'\n  ',table_data);
         
         const searched_items: Types_search_item[] = [];
 

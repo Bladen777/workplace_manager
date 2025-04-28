@@ -85,7 +85,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             employee_data_ref.current = response.data
 
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };
 
 
@@ -93,10 +93,10 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({ employee_id, department_id, start_date, budget, budget_hours, method  }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_employee_budgets`);
+        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_employee_budgets`);
         let update_data:Types_context_content = [...employee_data_ref.current];
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for ...employee_data_ref.current`,'\n' ,...employee_data_ref.current);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,...update_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for ...employee_data_ref.current`,'\n' ,...employee_data_ref.current);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,...update_data);
 
         let entry_index:number | boolean = false;
         update_data.forEach((s_item, s_index)=>{
@@ -132,14 +132,14 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             }
 
         } else {
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for delete_entry ${entry_index}`);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for delete_entry ${entry_index}`);
             if (typeof(entry_index) === "number"){
                 update_data.splice(entry_index,1)
             }
         }
 
         
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
         process_data.handle_form_change({section_name:"projects" , table_name: "employee_budgets", form_data:update_data })
         employee_data_ref.current = update_data;
         return(update_data);

@@ -64,13 +64,13 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
 
         // HANDLE INPUTS AND MODIFY DATA ACCORDINLY BEFORE SENDING
         function handle_input_change({input, db_column}:Types_input_change){
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for input`,'\n' ,input);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for input`,'\n' ,input);
             set_input_data({...input_data, [db_column]: input})
             send_table_data({input: input, db_column:db_column})
         }
 
         function create_inputs(){
-            console.log(`       %c FORM AUTO INPUT `, `background-color:${ log_colors.input_component }`,`for ${item_data.name_text} is_nullable: ${column_info.is_nullable}`, `\n  `,   input_data);
+            console.log(`       %c FORM AUTO INPUT `, `${ log_colors.input_component }`,`for ${item_data.name_text} is_nullable: ${column_info.is_nullable}`, `\n  `,   input_data);
 
             let input:ReactElement; 
             if(item_data.input_type === "order" ) {
@@ -128,24 +128,24 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
 // MEMOS AND EFFECTS   
         
     useMemo(()=>{
-        console.log(`%c DATE RANGE CHANGED `, `color: yellow `, date_range,  );
+
         if(adjust_data_object && Object.keys(adjust_data_object).length > 0){
             const key = column_info.column_name;
             if( input_data[key] !== adjust_data_object[key]){
-                //console.log(`%c ADJUST DATA OBJECT CHANGED `, `background-color:${ log_colors.important }`, adjust_data_object);
-                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_object: `, adjust_data_object[key]);
+                console.log(`%c ADJUST DATA OBJECT CHANGED `, `color: yellow`, adjust_data_object);
+                //console.log(`%c DATA `, `${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_object: `, adjust_data_object[key]);
 
                 set_input_data(adjust_data_object)
-            } else if((date_range?.max || date_range?.min ) && Object.keys(date_range).length > 0){
-                console.log(`%c DATE RANGE CHANGED `, `color: orange `, date_range);
-                create_inputs()
-            }
-        } 
+            } 
+        } else if((date_range?.max || date_range?.min ) && Object.keys(date_range).length > 0){
+            console.log(`%c DATE RANGE CHANGED `, `color: orange `, date_range);
+            create_inputs()
+        }
     },[adjust_data_object, date_range])
 
     useMemo(() =>{
         if(input_data && Object.keys(input_data).length > 0){
-            //console.log(`%c INPUT DATA CHANGED `, `background-color:${ log_colors.important }`, input_data);
+            //console.log(`%c INPUT DATA CHANGED `, `color: green`, input_data);
             create_inputs()
         }
     },[input_data ])
@@ -154,9 +154,9 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
     useMemo(() =>{
         if(adjust_data_object){current_table_data = adjust_data_object}
         if(column_info.column_name){
-            console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `background-color:${ log_colors.important }`);
+            console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `${ log_colors.important }`);
             create_inputs()
-            return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `background-color:${ log_colors.important_2 }`);}
+            return ()=>{console.log(`%c FORM_AUTO_INPUT UNLOADED for ${column_info.column_name}`, `${ log_colors.important_2 }`);}
         }
     },[])
 */
@@ -165,15 +165,15 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
 
 /*
     useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for column_info`,'\n' ,column_info);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for column_info`,'\n' ,column_info);
     },[column_info])
 
     useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for adjust_data_object`,'\n' ,adjust_data_object);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for adjust_data_object`,'\n' ,adjust_data_object);
     },[adjust_data_object])
 
     useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
     },[send_table_data])
 */
 

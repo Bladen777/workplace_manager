@@ -317,6 +317,7 @@ app.get("/user_info",
           edit_values: edit_values
         }
       };
+      
 
       // FUNCTION FOR ADDING AND EDITING DATA
       async function access_db({table_data, submit_method, array_edit}:{table_data:Types_table_data, submit_method:string, array_edit:boolean}){

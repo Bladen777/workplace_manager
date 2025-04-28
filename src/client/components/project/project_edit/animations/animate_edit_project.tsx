@@ -31,7 +31,7 @@ interface Types_animation_ele{
 
 // THE COMPONENT 
 export default function animate_edit_project() {
-    console.log(`%c ANIMATION `, `background-color:${ log_colors.animation }`, `animate_edit_project`);
+    console.log(`%c ANIMATION `, `${ log_colors.animation }`, `animate_edit_project`);
 
     const animation_elements = useRef<Types_animation_elements>({})
     function initiate_animation({ btn_box_ele, input_box_ele, btn_type, add_btn_ele, edit_btn_ele}:Types_animation_elements) {
@@ -48,7 +48,7 @@ export default function animate_edit_project() {
 
 
     function run_animation({animate_forwards}:Types_animate_forwards){
-        console.log(`%c ANIMATION RAN `, `background-color:${ log_colors.animation }`, `animate_edit_project`);
+        console.log(`%c ANIMATION RAN `, `${ log_colors.animation }`, `animate_edit_project`);
 
         const ele_1:Types_animation_ele = {
             ele: animation_elements.current!.btn_box_ele!,
@@ -64,7 +64,7 @@ export default function animate_edit_project() {
         const open_btn_ele = animation_elements.current!.btn_type! === "add" ? animation_elements.current!.add_btn_ele! : animation_elements.current!.edit_btn_ele!;
         const close_btn_ele = animation_elements.current!.btn_type! !== "add" ? animation_elements.current!.add_btn_ele! : animation_elements.current!.edit_btn_ele!;
     
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for close_btn_ele`,'\n' ,close_btn_ele);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for close_btn_ele`,'\n' ,close_btn_ele);
 
         const start:Types_animation_ele = animate_forwards ? ele_1 : ele_2;
         const end:Types_animation_ele = !animate_forwards ? ele_1 : ele_2;

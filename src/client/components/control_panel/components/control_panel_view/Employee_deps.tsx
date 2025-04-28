@@ -19,7 +19,7 @@ interface Types_props {
 
 // THE COMPONENT 
 export default function Employee_deps({employee_id}:Types_props) {
-    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Employee_deps`);
+    console.log(`%c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Employee_deps`);
 
     const department_data = useContext(Use_Context_departments_data).show_context;
 
@@ -35,15 +35,15 @@ export default function Employee_deps({employee_id}:Types_props) {
             const employee_deps_data:Types_department_data[] = []; 
             
             department_data.forEach((item)=>{
-                if(response.data[0][`dep_id_${item.department.id}`] === "1"){
-                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for item`,'\n' ,item);
+                if(response.data[0][`dep_id_${item.id}`] === "1"){
+                    console.log(`%c DATA `, `${ log_colors.data }`,`for item`,'\n' ,item);
                     employee_deps_data.push(item);
                 }
             })
             set_employee_departments(employee_deps_data);
             
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };
 
     }
@@ -56,7 +56,7 @@ export default function Employee_deps({employee_id}:Types_props) {
 // RETURNED VALUES 
     return(
         <div className="employee_deps_view_box">
-            {employee_departments.map(({department})=>{
+            {employee_departments.map((department)=>{
                  return(
                     <div 
                         className="employee_dep_view_box" 

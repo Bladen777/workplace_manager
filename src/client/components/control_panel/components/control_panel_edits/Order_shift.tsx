@@ -43,7 +43,7 @@ interface Types_change_input_data extends Types_input_change{
 
 // THE COMPONENT
 export default function Order_shift({ele_names, send_table_data, submit_method}:Prop_Types) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for Order_shift`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for Order_shift`);
 
     // CONSTANTS FOR TRACKING DATA
     const table_info = useContext(Use_Context_table_info).show_context;
@@ -70,13 +70,13 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
     // CHECK IF ORDER ELEMENT WAS CLICKED OR UNCLICKED
     function handle_ele_click(method:string, key_name:string, index:number){
         if(method === "down"){
-            console.log(`%c CLICKED `, `background-color:${ log_colors.important }`);
+            console.log(`%c CLICKED `, `${ log_colors.important }`);
             pos_track.current = true;
             shift_ele_row.current = {start: index , adjust: index, direction:""};
             set_selected_ele_name(key_name);
 
         }else {
-            console.log(`%c UNCLICKED `, `background-color:${ log_colors.important }`);
+            console.log(`%c UNCLICKED `, `${ log_colors.important }`);
             pos_track.current = false;
             start_pos.current = {x:0 , y:0};
             set_ele_pos({x:0, y:0});
@@ -151,7 +151,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             });
             item[item_order_key!] = index + 1;
         })
-        console.log(`%ctemp_table_data: `, 'background-color:olive',temp_table_data );
+        console.log(`%ctemp_table_data: `, 'olive',temp_table_data );
         table_data_ref.current = temp_table_data;
 
         // ADJUST THE POSITIONS OF THE ELEMENTS
@@ -187,7 +187,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
  
     // SEND DATA TO PARENT, AND UPDATE CURRENT TABLE DATA FROM THE CHILD COMPONENT
     function change_table_data(form_data:Types_change_input_data){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for form_data`,'\n' ,form_data);
         let changed_entry_index = table_data_ref.current.findIndex((item)=>{
             return item.id === form_data.id;
         });
@@ -203,7 +203,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
 
     // SET THE INITIAL DATA VALUES
     function assign_initial_data(){
-        console.log(`%c ENTRY ELEMENTS SET `, `background-color:${ log_colors.important} `);
+        console.log(`%c ENTRY ELEMENTS SET `, `${ log_colors.important} `);
         let temp_table_data:Types_form_data[] = [...initial_table_data];
         if(submit_method === "add"){
             const item_order_key:string | undefined = (Object.keys(initial_form_data)).find((key_name: string) => {
@@ -240,7 +240,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 </form>
             );
         });
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for temp_table_data`,'\n' ,temp_table_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for temp_table_data`,'\n' ,temp_table_data);
         table_data_ref.current = temp_table_data;
         send_table_data({form_data:temp_table_data});
         set_table_data(temp_table_data);

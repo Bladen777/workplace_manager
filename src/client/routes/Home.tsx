@@ -26,7 +26,7 @@ import "../styles/home.css"
 
 // THE COMPONENT
 export default function Home() {
-    console.log(`%c ROUTE `, `background-color:${log_colors.route}`, `Home`);
+    console.log(`%c ROUTE `, `${log_colors.route}`, `Home`);
 
   const update_user_info = useContext(Use_Context_user_info).update_func;
   const user_info = useContext(Use_Context_user_info).show_context;

@@ -11,7 +11,7 @@
 
 // THE COMPONENT 
 export default function Budget_tracker() {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Budget_tracker`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Budget_tracker`);
 
 
 // MEMOS AND EFFECTS

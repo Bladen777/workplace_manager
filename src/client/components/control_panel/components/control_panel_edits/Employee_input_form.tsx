@@ -32,7 +32,7 @@ interface Types_column_data{
 
 // THE COMPONENT 
 export default function Employee_input_form({send_table_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Employee_input`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Employee_input`);
     const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
 
     const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
@@ -43,8 +43,8 @@ export default function Employee_input_form({send_table_data}:Types_props) {
             column_data[column.column_name] = column 
     })
 
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info`,'\n' ,db_column_info);
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for column_data`,'\n' ,column_data);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for db_column_info`,'\n' ,db_column_info);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for column_data`,'\n' ,column_data);
 
 
     function handle_input_change({input, db_column, update}:Types_update_input_change){

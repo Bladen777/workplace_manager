@@ -26,7 +26,7 @@ interface Types_cpv_button{
 
 // THE COMPONENT
 export default function Control_panel() {
-    console.log(`%c COMPONENT `, `background-color:${log_colors.component}`, `Control_panel`);
+    console.log(`%c COMPONENT `, `${log_colors.component}`, `Control_panel`);
 
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
     const [edit_section, set_edit_section] = useState<boolean>(false);

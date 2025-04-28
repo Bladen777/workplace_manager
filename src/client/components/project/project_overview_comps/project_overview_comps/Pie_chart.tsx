@@ -11,7 +11,7 @@
 
 // THE COMPONENT 
 export default function Pie_chart() {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pie_chart`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pie_chart`);
 
 
     const chart_data = [

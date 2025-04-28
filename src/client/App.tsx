@@ -14,7 +14,7 @@ import {Provide_Context_user_info} from "./components/user_info/Context_user_inf
 // TYPE DEFINITIONS
 
 function App() {
-  console.log(`%c ROUTE `, `background-color:${log_colors.route}`, `App`);
+  console.log(`%c ROUTE `, `${log_colors.route}`, `App`);
 
 // MEMOS AND EFFECTS
 

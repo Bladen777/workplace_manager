@@ -89,17 +89,17 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         control_panel:{},
         projects:{}
     });
-    console.log(`%c PROCESS_INPUT_DATA `, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
+    console.log(`%c PROCESS_INPUT_DATA `, `${ log_colors.process_data }`, `for`,table_data_ref.current);
 
     // ENSURE THE NEW TABLE DATA IS IN A ARRAY FORMAT
     function handle_form_change({section_name, table_name, entry_id, form_data}:Types_data_process){
 
-        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`,{...table_data_ref.current});
-        console.log(`%c PROCESS_INPUT_DATA FORM_DATA `, `background-color:${ log_colors.process_data }`,`for ${section_name} form_data for ${table_name}`, entry_id && `entry_id: ${entry_id}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
+        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `${ log_colors.process_data }`, `for`,{...table_data_ref.current});
+        console.log(`%c PROCESS_INPUT_DATA FORM_DATA `, `${ log_colors.process_data }`,`for ${section_name} form_data for ${table_name}`, entry_id && `entry_id: ${entry_id}`,'\n' ,form_data, Array.isArray(form_data) ? "is Array" : "is not Array");
         
         let new_form_data:Types_table_form_data = {...table_data_ref.current[section_name]};
 
-        console.log(`%c PROCESS_INPUT_DATA `, `background-color:${ log_colors.process_data }`, `for new_form_data`, new_form_data);
+        console.log(`%c PROCESS_INPUT_DATA `, `${ log_colors.process_data }`, `for new_form_data`, new_form_data);
 
         let entry_index:number = 0;
         if(entry_id){            
@@ -107,7 +107,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             Object.keys(new_form_data[table_name][0]).forEach((col_name)=>{if(col_name.includes("id") && !col_name.includes("project")) entry_id_name = col_name })
 
             new_form_data[table_name].forEach((item, index:number)=>{
-                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,'\n',`for item[entry_id_name]` ,entry_id_name, ` vs `, `entry_id: `, entry_id);
+                //console.log(`%c DATA `, `${ log_colors.data }`,'\n',`for item[entry_id_name]` ,entry_id_name, ` vs `, `entry_id: `, entry_id);
                 if(item[entry_id_name] === entry_id){
                     entry_index = index;
                 }
@@ -140,7 +140,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             }
         }
         table_data_ref.current[section_name] = new_form_data;
-        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
+        console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `${ log_colors.process_data }`, `for`,table_data_ref.current);
 
     }
 
@@ -181,21 +181,21 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             ? "control_panel"
             : "projects"
         )
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for keep_data`,'\n' ,keep_data);
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for section_name`,'\n' ,section_name);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for keep_data`,'\n' ,keep_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for section_name`,'\n' ,section_name);
 
         table_data_ref.current = {
             [section_name]:{},
             [keep_data]:table_data_ref.current[keep_data]    
         };
 
-        console.log(`%c PROCESS_INPUT_DATA DATA CLEARED`, `background-color:${ log_colors.process_data }`, `for`,table_data_ref.current);
+        console.log(`%c PROCESS_INPUT_DATA DATA CLEARED`, `${ log_colors.process_data }`, `for`,table_data_ref.current);
         return true
     }
 
     // SEND THE INFOMATION TO THE DATABASE TO BE ADDED/EDITED
     async function post_form({section_name, submit_method}:Types_post_form){
-        console.log(`%c THE DATA BEING SENT for ${section_name}`, `background-color:${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current[section_name]);
+        console.log(`%c THE DATA BEING SENT for ${section_name}`, `${ log_colors.important }`,`for table_data_ref.current`,'\n' ,table_data_ref.current[section_name]);
 
         if(section_name === "control_panel"){
             current_item_id.current = current_table_item.id;
@@ -214,7 +214,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         })
 
         if(missing_inputs !== ""){
-            console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for missing_input_strings`,'\n' ,missing_inputs);
+            console.log(`   %c DATA `, `${ log_colors.data }`,`for missing_input_strings`,'\n' ,missing_inputs);
             return (`Please enter values for ${missing_inputs}`)
         }
         
@@ -242,7 +242,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         let table_name:string;
         for await(table_name of Object.keys(table_data_ref.current[section_name])){
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for `,table_name);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for `,table_name);
            
             let filter_key = "";
             let filter_item: string | number | undefined = "";
@@ -253,8 +253,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             
             const db_column_names = Object.keys(table_data_ref.current[section_name][table_name][0])
 
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_names`,'\n' ,db_column_names);
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for filter_item`,'\n' ,filter_item);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for db_column_names`,'\n' ,db_column_names);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for filter_item`,'\n' ,filter_item);
 
 
             if(table_name === "employee_departments"){
@@ -269,13 +269,13 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             } else if (table_name === "project_department_budgets" || table_name === "employee_budgets"){
                 [...table_data_ref.current[section_name][table_name]].forEach((entry)=>{
                     let update_entry = {...entry, project_id:current_item_id.current}
-                    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for update_entry`,'\n' ,update_entry);
+                    console.log(`%c DATA `, `${ log_colors.data }`,`for update_entry`,'\n' ,update_entry);
                     access_db({submit_data:[update_entry]})
                 })
             } else {
                 await access_db({submit_data:table_data_ref.current[section_name][table_name]})
             }
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for table_data_ref.current[section_name]`,'\n' ,table_data_ref.current[section_name]);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for table_data_ref.current[section_name]`,'\n' ,table_data_ref.current[section_name]);
 
 
             async function access_db({submit_data}:{submit_data:Types_form_data[]}){
@@ -297,13 +297,13 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     status_message = (`${response.data.message}`);
                     if(submit_method === "add" || section_name === "control_panel"){
                         current_item_id.current = response.data.item_id;
-                        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_item_id.current`,'\n' ,current_item_id.current);
+                        console.log(`%c DATA `, `${ log_colors.data }`,`for current_item_id.current`,'\n' ,current_item_id.current);
                     } else if (table_name === "projects"){
                         current_item_id.current = response.data.item_id;
-                        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for current_item_id.current`,'\n' ,current_item_id.current);
+                        console.log(`%c DATA `, `${ log_colors.data }`,`for current_item_id.current`,'\n' ,current_item_id.current);
                     }
                 } catch (error) {
-                    console.log('%cError posting info to database: ', 'background-color:darkred',error);
+                    console.log('%cError posting info to database: ', 'darkred',error);
                     status_message =("Failed to submit data");
                 }    
             }    
@@ -317,15 +317,15 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     dep_id: current_item_id.current!,
                     submit_method: submit_method 
                 }) 
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for response`,'\n' ,response);
+                console.log(`%c DATA `, `${ log_colors.data }`,`for response`,'\n' ,response);
             } catch (error){
-                console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+                console.log(`%c  has the following error: `, 'darkred', error); 
             };  
         }
 
         
 
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for status_message`,'\n' , status_message);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for status_message`,'\n' , status_message);
         return status_message;
     }
 
@@ -348,7 +348,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             console.log("The success_message: ",response.data);
             status_message = (`${response.data.message}`);
         } catch (error) {
-            console.log('%cError posting info to database: ', 'background-color:darkred',error);
+            console.log('%cError posting info to database: ', 'darkred',error);
             status_message =("Failed to delete data"); 
         }
 
@@ -359,7 +359,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     submit_method: "delete" 
                 }) 
             } catch (error){
-                console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+                console.log(`%c  has the following error: `, 'darkred', error); 
             };  
         }
         return status_message;

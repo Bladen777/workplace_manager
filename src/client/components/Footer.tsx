@@ -12,7 +12,7 @@ import "../styles/footer.css"
 
 // THE COMPONENT 
 export default function Footer() {
-    console.log(`%c COMPONENT `, `background-color:${ log_colors.component }`, `Footer`);
+    console.log(`%c COMPONENT `, `${ log_colors.component }`, `Footer`);
 
 
 // MEMOS AND EFFECTS

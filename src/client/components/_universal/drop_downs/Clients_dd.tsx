@@ -16,7 +16,7 @@ import { Types_search_item } from "./Input_drop_down.js";
 
 // THE COMPONENT 
 export default function Clients_dd({send_table_data}:{send_table_data:Function}) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `clients_dd`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `clients_dd`);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context;
     const project_submit_method = existing_project_data.submit_method;
@@ -35,7 +35,7 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
             set_client_list(client_names)
         
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };
     }
 

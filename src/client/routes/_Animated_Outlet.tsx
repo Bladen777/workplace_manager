@@ -15,7 +15,7 @@ import { AnimatePresence } from "framer-motion";
 
 // THE COMPONENT 
 export default function Animated_Outlet() {
-    console.log(`%c COMPONENT `, `background-color:${ log_colors.component }`, `_Animated_Outlet`);
+    console.log(`%c COMPONENT `, `${ log_colors.component }`, `_Animated_Outlet`);
 
     const location = useLocation();
     const element = useOutlet();

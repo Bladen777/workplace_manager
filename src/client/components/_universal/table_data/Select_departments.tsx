@@ -24,7 +24,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Select_departments({submit_method, send_table_data}:Types_props) {
-    console.log(`%c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Select_departments`);
+    console.log(`%c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Select_departments`);
 
     const current_employee_id = useContext(Use_Context_current_table_item).show_context.current_table_item.id;
 
@@ -53,12 +53,12 @@ export default function Select_departments({submit_method, send_table_data}:Type
             const dep_names:Types_form_data[] = [];
             const form_data:Types_form_data = {};
 
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for initial_department_data`,'\n' ,initial_department_data);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for initial_department_data`,'\n' ,initial_department_data);
         
             initial_department_data.map((item:Types_department_data)=>{
-                const dep_name = `dep_id_${item.department.id}`
+                const dep_name = `dep_id_${item.id}`
                 dep_names.push({
-                    department_name: item.department.name,
+                    department_name: item.name,
                     [dep_name]: "0"
                 })
                 form_data[dep_name] = "0";
@@ -85,21 +85,21 @@ export default function Select_departments({submit_method, send_table_data}:Type
                 filter_key: "employee_id",
                 filter_item: current_employee_id
             });
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for response.data`,'\n' ,response.data);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for response.data`,'\n' ,response.data);
             const form_data:Types_form_data = {};
             Object.keys(response.data[0]).map((column_name)=>{
                 if(!column_name.includes("employee_id") && column_name !== "id"){
                 form_data[column_name] = response.data[0][column_name];
                 }
             });
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for Fetched form_data`,'\n' ,form_data);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for Fetched form_data`,'\n' ,form_data);
             set_input_data(form_data);
             send_table_data({
                 table_name:"employee_departments",
                 form_data:[form_data]
             });
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };
     }
 

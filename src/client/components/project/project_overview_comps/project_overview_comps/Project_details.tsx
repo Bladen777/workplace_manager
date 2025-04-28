@@ -11,7 +11,7 @@
 
 // THE COMPONENT 
 export default function Project_details() {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Project_details`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_details`);
 
 
 // MEMOS AND EFFECTS

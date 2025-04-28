@@ -64,7 +64,7 @@ export function Provide_Context_user_info({children}:{children:ReactNode}) {
           is_admin: user_is_admin === "1" ? true : false
         };
       } catch (error){
-        console.log(`%c Email doesn't exist in database: `, 'background-color:darkred', error); 
+        console.log(`%c Email doesn't exist in database: `, 'darkred', error); 
         return{
           email_exists:false,
           is_admin:false
@@ -78,10 +78,10 @@ export function Provide_Context_user_info({children}:{children:ReactNode}) {
         try {
           const response = await axios.get("/user_info");
           const data = response.data;
-          console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`,`for user_info`, data);
+          console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`,`for user_info`, data);
           const user_check:Types_user_check = await check_user(data.email);
 
-          console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for user_check`,'\n' ,user_check);
+          console.log(`%c DATA `, `${ log_colors.data }`,`for user_check`,'\n' ,user_check);
           
           if(user_check.email_exists){
             return({
@@ -92,7 +92,7 @@ export function Provide_Context_user_info({children}:{children:ReactNode}) {
             return(initial_context_content); 
           };
         } catch (error) {
-          console.log('%cError fetching user info: ', 'background-color:darkred',error);
+          console.log('%cError fetching user info: ', 'darkred',error);
           return(initial_context_content);    
         };
     }

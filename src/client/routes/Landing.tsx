@@ -14,7 +14,7 @@ import "../styles/landing.css"
 
 // THE COMPONENT 
 export default function Landing() {
-  console.log(`%c ROUTE `, `background-color:${log_colors.route}`, `Landing`);
+  console.log(`%c ROUTE `, `${log_colors.route}`, `Landing`);
 
   const location = {
     this_location: 0,

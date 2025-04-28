@@ -68,7 +68,7 @@ export function Provide_Context_table_info({children}:{children:ReactNode}) {
     // UPDATE THE CONTEXT 
     async function update_context({active_table }:Types_context_function){
   
-      console.log(`%c CONTEXT UPDATE `, `background-color:${log_colors.context}`, `db_table_info for ${active_table}`);
+      console.log(`%c CONTEXT UPDATE `, `${log_colors.context}`, `db_table_info for ${active_table}`);
       try {
           const response = await axios.post("/get_columns",{
               table_name: active_table
@@ -118,7 +118,7 @@ export function Provide_Context_table_info({children}:{children:ReactNode}) {
             initial_form_data:form_data
         }) 
       } catch (error) {
-          console.log(`%cError getting db columns: ${error} `, 'background-color:darkred');
+          console.log(`%cError getting db columns: ${error} `, 'darkred');
           return(initial_context_content)   
       }
     }

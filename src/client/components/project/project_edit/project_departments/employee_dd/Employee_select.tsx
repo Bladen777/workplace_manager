@@ -29,7 +29,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Employee_select({department_data, dep_dates}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `employees_select for: `, department_data.name);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `employees_select for: `, department_data.name);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context;
     const current_project = existing_project_data.current_project;
@@ -65,14 +65,14 @@ export default function Employee_select({department_data, dep_dates}:Types_props
                  
                     employee_data.push(response.data[0]);
                 } catch (error){
-                  console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+                  console.log(`%c  has the following error: `, 'darkred', error); 
                 };
             };
-            //console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
+            //console.log(`%c DATA `, `${ log_colors.important }`,`for employee_data for ${department_name}`,'\n' ,employee_data);
             set_initial_employee_list(employee_data);
             set_employee_list(employee_data);
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };    
     }
 
@@ -100,7 +100,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
 
     function remove_employee(id:number){
         
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for id`,'\n' ,id);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for id`,'\n' ,id);
 
         let remaining_selected_employees:Types_form_data[] = [];
 
@@ -122,10 +122,10 @@ export default function Employee_select({department_data, dep_dates}:Types_props
         let remaining_employees:Types_form_data[] = [] 
         initial_employee_list.forEach((employee_data)=>{
             let employee_selected:boolean = false;
-            console.log(`%c EMPLOYEE SELECT ADJUST `, `background-color:${ log_colors.important }`,`for employee_data.id`,'\n' ,employee_data.id);
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for scan_employee_list`,'\n' ,scan_employee_list);
+            console.log(`%c EMPLOYEE SELECT ADJUST `, `${ log_colors.important }`,`for employee_data.id`,'\n' ,employee_data.id);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for scan_employee_list`,'\n' ,scan_employee_list);
             scan_employee_list.forEach((s_employee_data)=>{
-                console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for scan_employee_list.id`,'\n' ,s_employee_data.id);
+                console.log(`%c DATA `, `${ log_colors.data }`,`for scan_employee_list.id`,'\n' ,s_employee_data.id);
                 if(employee_data.id === s_employee_data.id){
                     employee_selected = true;
                 }
@@ -138,7 +138,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
             remaining_employees = initial_employee_list;
         }
 
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remaining_employees`,'\n' ,remaining_employees);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for remaining_employees`,'\n' ,remaining_employees);
         set_employee_list(remaining_employees);
     }
 
@@ -163,7 +163,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
 
 /*
     useMemo(() =>{
-        console.log(`%c IMPORTANT `, `background-color:${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
+        console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
     },[dep_dates])
 */
 

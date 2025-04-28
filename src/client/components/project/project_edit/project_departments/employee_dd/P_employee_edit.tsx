@@ -37,13 +37,13 @@ interface Types_employee_data{
 
 // THE COMPONENT 
 export default function P_employee_edit({dep_id, employee_id, data, dep_dates, remove_employee}:Types_props) {
-    console.log(`       %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `P_employee_edit`);
+    console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `P_employee_edit`);
 
     const dep_id_name = `dep_id_${dep_id}`
     const existing_project_data = useContext(Use_Context_project_data).show_context;
 
     const existing_employee_data = existing_project_data.current_project.employee_budgets.find((entry:Types_form_data)=>{
-        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for entry`,'\n' ,entry);
+        //console.log(`%c DATA `, `${ log_colors.data }`,`for entry`,'\n' ,entry);
         if(entry.employee_id === employee_id){
             return entry
         }
@@ -54,7 +54,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
         : existing_project_data.table_info.employee_budgets.initial_form_data
     )
 
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for initial_employee_form_data`,'\n' ,initial_employee_form_data);
+    //console.log(`%c DATA `, `${ log_colors.data }`,`for initial_employee_form_data`,'\n' ,initial_employee_form_data);
 
     const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name]
     const employee_data = useContext(Use_Context_employee_data).show_context;
@@ -131,13 +131,13 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
             start_date: input
         }
 
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for date_form_ data`,'\n' ,date_form_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for date_form_ data`,'\n' ,date_form_data);
         update_employee_data.now(date_form_data); 
 
     }
 
     function handle_remove_employee(){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove employee`);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for remove employee`);
         update_employee_data.now({method:"delete", department_id: dep_id, employee_id:employee_id }); 
         e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease reverse forwards`;
         e_select_box_ele.current!.addEventListener("animationend", animation_ended);
@@ -162,19 +162,19 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
 
     useMemo(() =>{
-      console.log(`%c IMPORTANT `, `background-color:${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
+      console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
     },[dep_dates])
 
     /*
 
     useEffect(() =>{
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for data`,'\n' ,data);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for data`,'\n' ,data);
     },[data])
 
 
 
     useEffect(() =>{
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove_employee`,'\n' ,remove_employee);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for remove_employee`,'\n' ,remove_employee);
     },[remove_employee])  
     */
 

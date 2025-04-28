@@ -52,7 +52,7 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
         return initial_entries
     }
 
-    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_view for`, active_table, "\n", initial_table_data);
+    console.log(`%c SUB-COMPONENT `, `${log_colors.sub_component}`, `Control_panel_view for`, active_table, "\n", initial_table_data);
 
     const [entry_selected, set_entry_selected] = useState<boolean>(false);
     const selected_entry = useRef<Types_selected_entry | null>(null);

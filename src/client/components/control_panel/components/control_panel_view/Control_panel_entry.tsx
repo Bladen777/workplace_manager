@@ -26,7 +26,7 @@ interface Types_props{
 
 // THE COMPONENT 
 function Control_panel_entry({is_active, item_data, item_index, send_selected_ele}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Control_panel_entry for ${item_data.name}`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Control_panel_entry for ${item_data.name}`);
     const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
 // MEMOS AND EFFECTS
@@ -35,7 +35,7 @@ function Control_panel_entry({is_active, item_data, item_index, send_selected_el
     return(            
         <figure
             onClick={()=>{
-                console.log(`%c CONTROL PANEL ENTRY CLICKED `, `background-color:${ log_colors.data }`,`for item_data`,'\n' ,item_data);
+                console.log(`%c CONTROL PANEL ENTRY CLICKED `, `${ log_colors.data }`,`for item_data`,'\n' ,item_data);
                 send_selected_ele({item:item_data, index:item_index});
             }}
             className={

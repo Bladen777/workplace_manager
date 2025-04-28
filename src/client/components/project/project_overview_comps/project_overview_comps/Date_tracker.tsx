@@ -11,7 +11,7 @@
 
 // THE COMPONENT 
 export default function Date_tracker() {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Date_tracker`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Date_tracker`);
 
 
 // MEMOS AND EFFECTS

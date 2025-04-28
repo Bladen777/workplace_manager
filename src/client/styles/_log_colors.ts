@@ -1,14 +1,14 @@
 export const log_colors = {
-    route: "purple",
-    component: "darkorchid",
-    sub_component: "darkslateblue",
-    input_component: "indigo",
-    process_data: "cadetblue; color:black",
-    context: "rebeccapurple",
-    hook: "mediumslateblue",
-    memo: "darkblue",
-    animation: "darksalmon; color:black",
-    data: "olive",
-    important: "gold; color:black;",
-    important_2: "darkorange; color:black"
+    route: "background-color:purple",
+    component: "background-color:darkorchid",
+    sub_component: "background-color:darkslateblue",
+    input_component: "background-color:indigo",
+    process_data: "background-color:cadetblue; color:black",
+    context: "background-color:rebeccapurple",
+    hook: "background-color:mediumslateblue",
+    memo: "background-color:darkblue",
+    animation: "background-color:darksalmon; color:black",
+    data: "background-color:olive",
+    important: "background-color:gold; color:black;",
+    important_2: "background-color:darkorange; color:black"
 }

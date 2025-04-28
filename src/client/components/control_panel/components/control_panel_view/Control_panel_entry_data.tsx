@@ -18,7 +18,7 @@ import { Types_form_data } from "../../context/Context_db_table_info.js";
 // THE COMPONENT
 export default function Control_panel_entry_data({table_item}:{table_item:Types_form_data}) {
     const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
-    console.log(`       %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_entry_data`,'\n         ' ,table_item);
+    console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for control_panel_entry_data`,'\n         ' ,table_item);
 
         let entry_name;
         const entry_item = db_column_info.map((item:Types_column_info, table_index:number) => {

@@ -21,7 +21,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Money_input({send_table_data, pay_type_value, item_data}:Types_props) {
-    console.log(`       %c MONEY INPUT `, `background-color:${ log_colors.input_component }`, `for`,`\n     `, item_data);
+    console.log(`       %c MONEY INPUT `, `${ log_colors.input_component }`, `for`,`\n     `, item_data);
 
     // ENSURE PROPER CURSOR POSITION WHILE ADJUSTING NUMBERS
     const [focus_input, set_focus_input] = useState<Boolean>(false);
@@ -30,7 +30,7 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
 
     // FORMAT THE MONEY AMOUNT CORRECTLY
     function format_money(input:string){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for starting_input`,'\n', input);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for starting_input`,'\n', input);
         
         // REMOVE NON-NUMBER CHARACTERS
         function fix_numbers(characters:string){
@@ -56,8 +56,8 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
         const chars:{left:string | string[], right:string | string[]} = {left:"", right:""};
         chars.left = fix_numbers(input.slice(0, decimal_pos));
         chars.right = fix_numbers(input.slice(decimal_pos + 1));
-        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for decimal_pos`,'\n' ,decimal_pos);
-        //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for chars`,'\n' ,chars);
+        //console.log(`%c DATA `, `${ log_colors.data }`,`for decimal_pos`,'\n' ,decimal_pos);
+        //console.log(`%c DATA `, `${ log_colors.data }`,`for chars`,'\n' ,chars);
         
         // ADJUST RIGHT SIDE
         if(chars.right.length > 2){
@@ -68,22 +68,22 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
             }else{
                 chars.right = chars.right.slice(0,2);
             }
-            //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for adjust right side`,'\n' ,chars.right);
+            //console.log(`%c DATA `, `${ log_colors.data }`,`for adjust right side`,'\n' ,chars.right);
         } else if(chars.right.length < 2){
             const missing_digits = 2 - chars.right.length;
             chars.right = chars.right + ("0".repeat(missing_digits));
-            //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for missing right side`,'\n' ,chars.right);
+            //console.log(`%c DATA `, `${ log_colors.data }`,`for missing right side`,'\n' ,chars.right);
         } else {
             //ADJUST LEFT SIDE
             if(chars.left.length === 0){
                 chars.left = "0"
-                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for missing left side`,'\n' ,chars.left);
+                //console.log(`%c DATA `, `${ log_colors.data }`,`for missing left side`,'\n' ,chars.left);
             } else if (chars.left.startsWith("0") && chars.left.length > 1){
                 chars.left = chars.left.slice(1)
                 if(chars.left.length === 1){
                     input_cursor_pos.current = input_cursor_pos.current -1;
                 }
-                //console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for remove zero left side`,'\n' ,chars.left);
+                //console.log(`%c DATA `, `${ log_colors.data }`,`for remove zero left side`,'\n' ,chars.left);
             }        
         }
 

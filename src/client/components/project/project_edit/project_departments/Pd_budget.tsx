@@ -24,7 +24,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Pd_budget({department_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context;
     const project_submit_method = existing_project_data.submit_method;
@@ -36,9 +36,9 @@ export default function Pd_budget({department_data}:Types_props) {
     const dep_id_name = `dep_id_${department_data.id}`
     const department_budget = project_budgets.departments[dep_id_name];
 /*
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for project_budgets`,'\n' ,project_budgets);
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for dep_id_name`,'\n' ,dep_id_name);
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for project_budgets`,'\n' ,project_budgets);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for dep_id_name`,'\n' ,dep_id_name);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
 */
 
     const process_data = useContext(Use_Process_input_data);

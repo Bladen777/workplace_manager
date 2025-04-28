@@ -26,7 +26,7 @@ interface Types_client_position{
 
 
 export default function useFindClickPosition() {
-    //console.log(`%c HOOK `, `background-color:${ log_colors.hook }`,`for Find Click Position`);
+    //console.log(`%c HOOK `, `${ log_colors.hook }`,`for Find Click Position`);
     const trackers_open = useRef<number>(0);
 
     function track_click({ele_name, active, ele_pos, update_func }:Types_click_track){
@@ -45,8 +45,8 @@ export default function useFindClickPosition() {
             }
             
             if(is_active){
-                console.log(`   %c CLICK TRACK ACTIVE `, `background-color:${ log_colors.hook }`, `for ${ele_name}`, `tracker_open: ${trackers_open.current}`, `is_open: ${is_open}` );
-                console.log(`   %c DATA `, `background-color:${ log_colors.data }`,`for track_ele_pos`,  ele_pos,
+                console.log(`   %c CLICK TRACK ACTIVE `, `${ log_colors.hook }`, `for ${ele_name}`, `tracker_open: ${trackers_open.current}`, `is_open: ${is_open}` );
+                console.log(`   %c DATA `, `${ log_colors.data }`,`for track_ele_pos`,  ele_pos,
                     '\n', "right", ele_pos!.right,
                     '\n', "left", ele_pos!.left,
                     '\n', "top", ele_pos!.top,
@@ -60,7 +60,7 @@ export default function useFindClickPosition() {
                     click_pos.y < ele_pos!.top ||
                     is_open && trackers_open.current > 1
                 ){
-                    console.log(`%c CLICKED OUTSIDE `, `background-color:${ log_colors.important }`);
+                    console.log(`%c CLICKED OUTSIDE `, `${ log_colors.important }`);
                     update_func!(true);
                     is_active = false;
                     document.body.removeEventListener("click",handle_click);

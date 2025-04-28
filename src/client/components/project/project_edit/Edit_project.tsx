@@ -50,7 +50,7 @@ export interface Types_adjust_budget{
 
 // THE COMPONENT 
 export default function Edit_project() {
-    console.log(`%c COMPONENT `, `background-color:${ log_colors.component }`, `Edit_project`);
+    console.log(`%c COMPONENT `, `${ log_colors.component }`, `Edit_project`);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context
     const project_initial_form_data = existing_project_data.table_info.projects.initial_form_data;
@@ -129,7 +129,7 @@ export default function Edit_project() {
                 department_budgets[`dep_id_${entry.department_id}`] = Number(entry.budget);
                 budget_used += Number(entry.budget);
             })
-            console.log(`%c DATA `, `background-color:${ log_colors.important }`,`for budget_used`,'\n' ,budget_used);
+            console.log(`%c DATA `, `${ log_colors.important }`,`for budget_used`,'\n' ,budget_used);
             update_project_budgets.now({all_budgets:{
                 total:Number(current_project.project_data.production_budget),
                 used:budget_used,

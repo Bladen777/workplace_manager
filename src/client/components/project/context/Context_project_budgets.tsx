@@ -74,12 +74,12 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
         budgets.current = department_budgets;
         set_send_context(department_budgets);
      
-        console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for department_budgets`,'\n' ,department_budgets);
+        console.log(`   %c CONTEXT DATA `, `${ log_colors.data }`,`for department_budgets`,'\n' ,department_budgets);
     }
 
     // UPDATE THE CONTEXT 
     async function update_context({total, dep_id_name, budget, all_budgets}:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_budgets`, `total: `,total);
+        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_budgets`, `total: `,total);
         let update_budget: Types_context_content = {
             ...budgets.current!
         }
@@ -105,7 +105,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
                 
             }
         }
-        console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.context }`,`for update_budget`,'\n' ,update_budget);
+        console.log(`   %c CONTEXT DATA `, `${ log_colors.context }`,`for update_budget`,'\n' ,update_budget);
         budgets.current = update_budget;
         return update_budget;
     }
@@ -114,7 +114,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 
 useMemo(() =>{
     if(departments[0].id !== 0){
-        console.log(`%c DATA `, `background-color:${ log_colors.important_2 }`,`for departments`,'\n' ,departments);
+        console.log(`%c DATA `, `${ log_colors.important_2 }`,`for departments`,'\n' ,departments);
         setup_department_budgets()
     }
 },[departments])

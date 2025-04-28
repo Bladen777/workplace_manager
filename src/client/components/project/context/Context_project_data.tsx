@@ -125,7 +125,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
             });
 
         } catch (error){
-            console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+            console.log(`%c  has the following error: `, 'darkred', error); 
         };
         return {
             db_column_info: column_info,
@@ -142,14 +142,14 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
                 filter_item: filter_item,
             });
             const data = response.data;
-            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for Projects table data  `, '\n' , data);
+            console.log(`   %c CONTEXT DATA `, `${ log_colors.data }`,`for Projects table data  `, '\n' , data);
             if(filter_key){
                 return(data[0])
             }else {
                 return(data);
             }
         } catch (error) {
-            console.log(`%cError getting Table info: `, 'background-color:darkred', error); 
+            console.log(`%cError getting Table info: `, 'darkred', error); 
         }
     }
 
@@ -170,7 +170,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
             fetched_data.project_department_budgets = response.data;
         
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };
 
         try{
@@ -182,7 +182,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
             fetched_data.employee_budgets = response.data;
         
         } catch (error){
-          console.log(`%c  has the following error: `, 'background-color:darkred', error); 
+          console.log(`%c  has the following error: `, 'darkred', error); 
         };
     
         return fetched_data;
@@ -191,7 +191,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({current_project_id, submit_method }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `background-color:${ log_colors.context }`, `for Context_project_data`);
+        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_data`);
         let update_data:Types_context_content = {...send_context}
 
         if(current_project_id && send_context.current_project.project_data.id !== current_project_id){
@@ -213,7 +213,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
             submit_method:submit_method
         }
 
-        console.log(`%c CONTEXT_UPDATE_DATA `, `background-color:${ log_colors.context }`,`for update_data`,'\n' ,update_data);
+        console.log(`%c CONTEXT_UPDATE_DATA `, `${ log_colors.context }`,`for update_data`,'\n' ,update_data);
         return update_data;
     }
 
@@ -222,7 +222,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
     useMemo(() =>{
         (async () => {
             const all_projects:Types_form_data[] = await fetch_projects();
-            console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
             let update_data = {...send_context};
             let blah = 0;
             if(blah > 0){
@@ -253,7 +253,7 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
                 table_info: table_info
             }
 
-            console.log(`   %c CONTEXT DATA `, `background-color:${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+            console.log(`   %c CONTEXT DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
             set_send_context(update_data)
 
         })()

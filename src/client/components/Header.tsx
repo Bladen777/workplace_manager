@@ -13,7 +13,7 @@ import "../styles/header.css"
 
 // THE COMPONENT 
 export default function Header() {
-    console.log(`%c COMPONENT `, `background-color:${ log_colors.component }`, `Header`);
+    console.log(`%c COMPONENT `, `${ log_colors.component }`, `Header`);
 
 
 // MEMOS AND EFFECTS

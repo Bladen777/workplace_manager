@@ -29,7 +29,7 @@ import { Types_data_change } from "../../_universal/Process_input_data.js";
 // THE COMPONENT
 export default function Control_panel_edit({handle_cancel_edit_click}:{handle_cancel_edit_click:Function}) {
     const active_table = useContext(Use_Context_table_info).show_context.table_name;
-    console.log(`%c SUB-COMPONENT `, `background-color:${log_colors.sub_component}`, `Control_panel_edit for `,active_table);
+    console.log(`%c SUB-COMPONENT `, `${log_colors.sub_component}`, `Control_panel_edit for `,active_table);
 
     const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
     const initial_form_data = useContext(Use_Context_table_info).show_context.initial_form_data;
@@ -45,7 +45,7 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
     const process_data = useContext(Use_Process_input_data);
 
     function handle_form_change({table_name, form_data}:Types_data_change){
-        console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for form_data`,'\n' ,form_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for form_data`,'\n' ,form_data);
         if(!table_name){
             table_name = active_table;
         }
@@ -53,9 +53,9 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
     }
 
     async function post_form(){
-        console.log(`%c POST FORM `, `background-color:${ log_colors.data }`);
+        console.log(`%c POST FORM `, `${ log_colors.data }`);
         const response:string = await process_data.post_form({section_name: "control_panel", submit_method:submit_method});
-        console.log(`%c THE STATUS MESSAGE `, `background-color:${ log_colors.data }`,`for response`,'\n' ,response);
+        console.log(`%c THE STATUS MESSAGE `, `${ log_colors.data }`,`for response`,'\n' ,response);
         set_status_message(response)
     }
 
@@ -64,7 +64,7 @@ export default function Control_panel_edit({handle_cancel_edit_click}:{handle_ca
         process_data.clear_form("control_panel");
         process_data.handle_form_change({section_name: "control_panel", table_name:active_table, form_data:starting_data});
     },[])
-    console.log(`%c DATA `, `background-color:${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for db_column_info[0]`,'\n' ,db_column_info[0]);
 
 // RETURNED VALUES 
     return (

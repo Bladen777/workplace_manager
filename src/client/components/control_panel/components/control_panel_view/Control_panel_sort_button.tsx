@@ -21,7 +21,7 @@ interface Types_active_sort_btn{
 
 // THE COMPONENT
 export default function Control_panel_sort_button() {
-    console.log(`   %c SUB_COMPONENT `, `background-color:${ log_colors.sub_component }`,`for control_panel_sort_btn`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for control_panel_sort_btn`);
     
     const [clicked, set_clicked] = useState<boolean>(false);
     const options_menu_ref = useRef<HTMLDivElement | null>(null);
