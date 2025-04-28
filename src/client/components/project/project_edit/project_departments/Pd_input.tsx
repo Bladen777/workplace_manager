@@ -69,46 +69,45 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     },[])
 
     function handle_date_change({input, db_column}:Types_input_change){
-        console.log(`%c DATA `, `${ log_colors.data }`,`for ${dep_data.name} date change`,'\n', dep_dates);
-        let date_type = "start_date";
-        if(db_column.includes("finish")){
-            date_type = "finish_date";
-        }
-        const update_dates = {...dep_dates, [date_type]:input}
-        console.log(`%c DATA `, `${ log_colors.data }`,`for ${dep_data.name} date update`,'\n', update_dates);
-
-        set_dep_dates(update_dates);
-
-        process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:{input:input, db_column:db_column}, entry_id:dep_data.id})
-    }
+        set_dep_dates((prev_vals)=>{
+            console.log(`%c DATA `, `${ log_colors.data }`,`for prev_vals`,'\n' ,prev_vals);
+            let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
+            const update_dates = {...prev_vals, [date_type]:input}
+            process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:{input:input, db_column:db_column}, entry_id:dep_data.id})
+                
+            return update_dates;
+        })
+   }
 
     function adjust_date(){
-        let update_dates = {...dep_dates};
-        let date_change = undefined;
-        let date_type = "start_date"
+        set_dep_dates((prev_vals)=>{
+            let update_dates = {...prev_vals};
+            let date_change = undefined;
+            let date_type = "start_date"
+    
+            const start_date_time = (new Date(project_dates.start_date!)).getTime();
+            const finish_date_time = (new Date(project_dates.finish_date!)).getTime();
+    
+            const dep_start_time = (new Date(dep_dates.start_date!)).getTime();
+            const dep_finish_time = (new Date(dep_dates.finish_date!)).getTime();
+    
+            if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && dep_dates.start_date === undefined)){
+                update_dates = {...update_dates, start_date:project_dates.start_date}
+                date_change = project_dates.start_date;
+            };
+    
+            if(finish_date_time < dep_finish_time || (project_dates.finish_date !== undefined && dep_dates.finish_date === undefined)){
+                console.log(`%c DATA `, `${ log_colors.data }`,'\n',`for finish_date_time`, finish_date_time, ` vs `, `dep_finish_time`, dep_finish_time, `update_dates`, update_dates);
+                update_dates = {...update_dates, finish_date:project_dates.finish_date}
+                date_change = project_dates.finish_date;
+                date_type = "finish_date";
+            };
+    
+            console.log(`%c DATA `, `${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
 
-        const start_date_time = (new Date(project_dates.start_date!)).getTime();
-        const finish_date_time = (new Date(project_dates.finish_date!)).getTime();
-
-        const dep_start_time = (new Date(dep_dates.start_date!)).getTime();
-        const dep_finish_time = (new Date(dep_dates.finish_date!)).getTime();
-
-        if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && dep_dates.start_date === undefined)){
-            update_dates = {...update_dates, start_date:project_dates.start_date}
-            date_change = project_dates.start_date;
-        };
-
-        if(finish_date_time < dep_finish_time || (project_dates.finish_date !== undefined && dep_dates.finish_date === undefined)){
-            console.log(`%c DATA `, `${ log_colors.data }`,'\n',`for finish_date_time`, finish_date_time, ` vs `, `dep_finish_time`, dep_finish_time, `update_dates`, update_dates);
-            update_dates = {...update_dates, finish_date:project_dates.finish_date}
-            date_change = project_dates.finish_date;
-            date_type = "finish_date";
-        };
-
-        console.log(`%c DATA `, `${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
-        set_dep_dates(update_dates)
-        process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:{input:date_change, db_column:date_type}, entry_id:dep_data.id})
-
+            process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:{input:date_change, db_column:date_type}, entry_id:dep_data.id})
+            return update_dates;
+        })
     }
 
 

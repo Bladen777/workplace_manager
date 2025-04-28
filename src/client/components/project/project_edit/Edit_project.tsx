@@ -195,14 +195,12 @@ export default function Edit_project() {
         },[])
     
     function handle_project_date_change({input, db_column}:Types_input_change){
-        let date_type = "start_date";
-        if(db_column.includes("finish")){
-            date_type = "finish_date";
-        }
-        const update_dates = {...project_dates, [date_type]:input}
-        set_project_dates(update_dates);    
+        set_project_dates((prev_vals)=>{
+            let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
+            const update_dates = {...prev_vals, [date_type]:input}
+            return update_dates;  
+        })
     }
-
     async function post_form(){
         const response:string = await process_data.post_form({section_name:"projects", submit_method:existing_project_data.submit_method})
         set_status_message(response)
