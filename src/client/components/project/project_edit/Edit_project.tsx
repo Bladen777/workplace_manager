@@ -204,6 +204,7 @@ export default function Edit_project() {
     }
     async function post_form(){
         const response:string = await process_data.post_form({section_name:"projects", submit_method:existing_project_data.submit_method})
+        update_current_project.now
         set_status_message(response)
     }
 

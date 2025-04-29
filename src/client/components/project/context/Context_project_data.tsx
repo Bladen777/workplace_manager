@@ -223,9 +223,9 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
         (async () => {
             const all_projects:Types_form_data[] = await fetch_projects();
             console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
-            let update_data = {...send_context};
-            let blah = 0;
-            if(blah > 0){
+            let update_data = {...initial_context_content};
+
+            if(all_projects.length !== 0){
                 const latest_project_id = all_projects[all_projects.length -1].id;
                 const project_data = await fetch_projects({filter_key:"id", filter_item:latest_project_id});
                 const budget_data = await fetch_budgets({filter_item:latest_project_id});
@@ -238,7 +238,6 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
                         employee_budgets:budget_data.employee_budgets,
                     },
                 }
-
             }
 
             const table_info:Types_table_info = {
@@ -255,7 +254,6 @@ export function Provide_Context_project_data({children}:{children:ReactNode}) {
 
             console.log(`   %c CONTEXT DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
             set_send_context(update_data)
-
         })()
     },[])
 

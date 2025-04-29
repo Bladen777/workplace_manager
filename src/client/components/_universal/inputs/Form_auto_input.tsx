@@ -74,7 +74,6 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
         }
 
         function create_inputs(){
-            console.log(`       %c FORM AUTO INPUT `, `${ log_colors.input_component }`,`for ${item_data.name_text} is_nullable: ${column_info.is_nullable}`, `\n  `,   input_data);
 
             let input:ReactElement; 
             if(item_data.input_type === "order" ) {
@@ -91,6 +90,7 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
                     />
                 )
             } else {
+                console.log(`       %c FORM AUTO INPUT `, `${ log_colors.input_component }`,`for ${item_data.name_text} is_nullable: ${column_info.is_nullable}`, `\n  `,   input_data);
                 input = (
                     <label className="auto_form_input_label">
                         <p>{`${column_info.is_nullable === "NO" ? "* " : ""}${item_data.name_text}`}:</p>   

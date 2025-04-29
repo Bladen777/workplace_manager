@@ -15,6 +15,7 @@ import { Types_form_data } from "../../control_panel/context/Context_db_table_in
 
 interface Types_props{
     placeholder?: string;
+    selected_entry?:string;
     table_name: Types_table_name;
     string_table_data?: string[] 
     form_table_data?: Types_form_data[];
@@ -32,7 +33,7 @@ export interface Types_search_item{
 }
 
 // THE COMPONENT 
-export default function Input_drop_down({placeholder, table_name, string_table_data, form_table_data, send_table_data}:Types_props) {
+export default function Input_drop_down({placeholder, selected_entry, table_name, string_table_data, form_table_data, send_table_data}:Types_props) {
     console.log(`       %c INPUT DROP DOWN `, `${ log_colors.input_component }`, `for ${table_name.specific ? table_name.specific : table_name.main}`);
 
     let table_data: string[] | Types_form_data[] = [];
@@ -49,6 +50,8 @@ export default function Input_drop_down({placeholder, table_name, string_table_d
     const [open_dd, set_open_dd] = useState<boolean>(false)
     const drop_down_ref = useRef<HTMLDivElement | null>(null);
     const track_click = useFindClickPosition();
+
+    const initial_render = useRef<boolean>(true);
 
     function blank_input(){
         const blank_input = (
@@ -159,16 +162,31 @@ export default function Input_drop_down({placeholder, table_name, string_table_d
     }
 
 // MEMOS AND EFFECTS
+    useEffect(() =>{
+      initial_render.current = false;
+    },[])
+
     useMemo(()=>{
         find_matched_items()
     },[selected_item, table_data])
+    
+    useEffect(() =>{
+        //selected_entry && 
+
+    },[selected_entry])
 
     useMemo(()=>{
-        selected_item !== "" && set_selected_item("");
+        if(!initial_render.current){
+            console.log(`%c FORM_TABLE_DATA CHANGED `, `${ log_colors.data }`, !selected_item);
+            set_selected_item("");
+        }
     },[form_table_data])
 
-    useEffect(() =>{
-        handle_click_track()
+    useMemo(() =>{
+        if(!initial_render.current){
+            console.log(`%c OPEN_DD CHANGED `, `${ log_colors.data }`);
+            handle_click_track()
+        }
     },[open_dd])
 
 

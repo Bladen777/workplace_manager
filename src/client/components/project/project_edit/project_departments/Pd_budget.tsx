@@ -27,7 +27,12 @@ export default function Pd_budget({department_data}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context;
-    const project_submit_method = existing_project_data.submit_method;
+    const existing_pd_budget = existing_project_data.current_project.project_department_budgets.find((entry)=>{
+        if(entry.id === department_data.id){
+            return entry;
+        };
+    });
+    const initial_pd_budget_form_data = existing_pd_budget ? existing_pd_budget : existing_project_data.table_info.project_department_budgets.initial_form_data;
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
 
     const update_department_budget = useContext(Use_Context_project_budgets).update_func;
@@ -94,7 +99,7 @@ export default function Pd_budget({department_data}:Types_props) {
                 is_nullable: "YES",
                 input_type: "budget"
             }} 
-            initial_data_object={{budget:0.00}}
+            initial_data_object={initial_pd_budget_form_data}
             adjust_data_object={{budget: department_budget.toFixed(2)}}
             send_table_data = {callback_handle_pd_budget_change}
         />
