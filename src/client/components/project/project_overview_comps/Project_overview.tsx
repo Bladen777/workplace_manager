@@ -33,9 +33,6 @@ export default function Project_overview() {
 
   const [display_project, set_display_project] = useState<Types_form_data>(current_project) 
 
-
-
-
   function change_current_project({id}:Types_change_project){
 
   }

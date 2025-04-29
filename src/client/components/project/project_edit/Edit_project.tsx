@@ -198,6 +198,7 @@ export default function Edit_project() {
         set_project_dates((prev_vals)=>{
             let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
             const update_dates = {...prev_vals, [date_type]:input}
+            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: {input:input ,db_column:db_column}})
             return update_dates;  
         })
     }
@@ -205,18 +206,6 @@ export default function Edit_project() {
         const response:string = await process_data.post_form({section_name:"projects", submit_method:existing_project_data.submit_method})
         set_status_message(response)
     }
-
-/*
-    function create_pd_inputs(){
-        const inputs = departments.map((item)=>
-            <Pd_input
-                key={`pd_input_${item.name}`}
-                dep_data = {item}
-            />
-        )
-        set_pd_inputs(inputs)
-    }
-*/
 
 // MEMOS AND EFFECTS    
 

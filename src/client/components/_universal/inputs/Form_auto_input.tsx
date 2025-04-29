@@ -42,6 +42,7 @@ export interface Types_input_change{
     db_column:string;
 }
 
+
 // THE COMPONENT
 function Form_auto_input({label_name, column_info, initial_data_object, adjust_data_object, date_range, send_table_data}:Types_new_entry) {
 
@@ -65,7 +66,10 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
         // HANDLE INPUTS AND MODIFY DATA ACCORDINLY BEFORE SENDING
         function handle_input_change({input, db_column}:Types_input_change){
             console.log(`%c DATA `, `${ log_colors.data }`,`for input`,'\n' ,input);
-            set_input_data({...input_data, [db_column]: input})
+            set_input_data((prev_vals)=> {
+                const update_data = {...prev_vals, [db_column]:input}
+                return update_data;
+            })
             send_table_data({input: input, db_column:db_column})
         }
 

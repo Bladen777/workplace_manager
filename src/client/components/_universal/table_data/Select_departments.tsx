@@ -35,7 +35,10 @@ export default function Select_departments({submit_method, send_table_data}:Type
 
 
     function handle_input_change({input, db_column}:Types_input_change){
-        set_input_data({...input_data, [db_column]:input })
+        set_input_data((prev_vals)=>{
+            const update_data = {...prev_vals, [db_column]:input}
+            return update_data;
+        })
         
         send_table_data({
             table_name:"employee_departments",

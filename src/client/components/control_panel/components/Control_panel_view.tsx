@@ -79,14 +79,16 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
         if(!entry_selected){
             set_entry_selected(true);
         }
-        const prev_entry = {...selected_entry.current! }
+        
         // Find previous selected entry and set is_active to false
         set_entries((prev_vals)=>{
+            const prev_entry = {...selected_entry.current! }
+            const update_data = [...prev_vals]
             if(entry_selected){
-                prev_vals[prev_entry.index].is_active = false;
+                update_data[prev_entry.index].is_active = false;
             }
-            prev_vals[index].is_active = true;
-            return [...prev_vals];
+            update_data[index].is_active = true;
+            return update_data;
         });
         selected_entry.current = {data:item, index:index};
     };

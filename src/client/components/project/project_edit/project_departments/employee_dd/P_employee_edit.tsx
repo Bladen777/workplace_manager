@@ -30,7 +30,8 @@ interface Types_props{
     remove_employee: Function;
 }
 
-interface Types_employee_data{
+interface Types_employee_budgets{
+    [key:string]:number;
     budget:number;
     budget_hours:number;
 }
@@ -61,10 +62,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
-    const [employee_budget, set_employee_budget] = useState<number>(Number(initial_employee_form_data!.budget));
-    const [employee_hours, set_employee_hours] = useState<number>(Number(initial_employee_form_data!.budget_hours));
-
-    const employee_data_ref = useRef<Types_employee_data>({
+    const [employee_budgets, set_employee_budgets] = useState<Types_employee_budgets>({
         budget:0,
         budget_hours:0
     })
@@ -85,40 +83,32 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
     },[])
 
     function handle_budget_input_change({input, db_column}:Types_input_change){
-        
-        let update_budget:number = employee_data_ref.current!.budget;
-        let update_hours:number = employee_data_ref.current!.budget_hours;
+        set_employee_budgets((prev_vals)=>{
 
-        if(db_column === "hours"){
-            update_hours = Number(input);
-            update_budget = Number((update_hours * employee_rate).toFixed(2));
-        } else {
-            update_budget = Number(input);
-            update_hours = Number((update_budget/employee_rate).toFixed(2));
-        }
+            console.log(`%c DATA `, `${ log_colors.data }`,`for db_column`,'\n' ,db_column);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for input`,'\n' ,input);
+            const update_data = {...prev_vals}
 
-        employee_data_ref.current = {
-            budget: update_budget,
-            budget_hours: update_hours
-        }
+            if(db_column === "budget_hours"){
+                update_data.budget_hours = Number(input);
+                update_data.budget = Number((update_data.budget_hours * employee_rate).toFixed(2));
+            } else {
+                update_data.budget = Number(input);
+                update_data.budget_hours = Number((update_data.budget/employee_rate).toFixed(2));
+            }
 
-        set_employee_budget(update_budget);
-        set_employee_hours(update_hours);
+            const budget_form_data:Types_form_data = {
+                budget_hours: update_data.budget_hours,
+                budget: update_data.budget,
+                employee_id: employee_id,
+                department_id: dep_id,    
+            }
 
-        
-    
-        const budget_form_data:Types_form_data = {
-            budget_hours: update_hours,
-            budget: update_budget,
-            employee_id: employee_id,
-            department_id: dep_id,    
-        }
-
-        update_employee_data.now(budget_form_data);
+            update_employee_data.now(budget_form_data);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+            return update_data;
+        })
     }
-
-
-
 
     const callback_handle_date_change = useCallback(({input, db_column}:Types_input_change) =>{
         handle_date_input_change({input, db_column})
@@ -184,7 +174,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
         <div 
             ref = {e_select_box_ele}
             className={
-                employee_budget > department_budget
+                employee_budgets.budget > department_budget
                 ? "over_budget e_select_box"
                 : "e_select_box" 
             }
@@ -219,7 +209,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         input_type: "budget"
                     }}
                     initial_data_object={initial_employee_form_data!}
-                    adjust_data_object={{[`budget`]: employee_budget.toFixed(2)}} 
+                    adjust_data_object={employee_budgets} 
                     send_table_data = {callback_handle_budget_change}
                 />
 
@@ -231,7 +221,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         input_type: "text"
                     }}
                     initial_data_object={initial_employee_form_data!}
-                    adjust_data_object={{[`budget_hours`]: employee_hours}}
+                    adjust_data_object={employee_budgets}
                     send_table_data = {callback_handle_budget_change}
                 />
             </div>

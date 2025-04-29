@@ -152,7 +152,7 @@ export default function Money_input({send_table_data, pay_type_value, item_data}
                     type={item_data.input_type}
                     placeholder={item_data.name_text}
                     autoComplete="off"
-                    value={item_data.value !== "" ? item_data.value : "0.00"}
+                    value={item_data.value !== "" ? Number(item_data.value!).toFixed(2) : "0.00"}
             
                     onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                         input_cursor_pos.current = e.target.selectionStart!;

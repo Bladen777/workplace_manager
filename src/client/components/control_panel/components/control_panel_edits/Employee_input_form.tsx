@@ -49,7 +49,10 @@ export default function Employee_input_form({send_table_data}:Types_props) {
 
     function handle_input_change({input, db_column, update}:Types_update_input_change){
         if(update){
-            set_input_data({...input_data, [db_column]:input})
+            set_input_data((prev_vals)=>{
+                const update_data = {...prev_vals, [db_column]:input}
+                return update_data;
+            })
         }
         send_table_data({table_name:"employees", form_data:{input: input, db_column:db_column}})
     }

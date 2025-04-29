@@ -115,29 +115,10 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         } 
         
         if(!Array.isArray(form_data)){
-            const new_data = {
-                ...new_form_data[table_name][entry_index],
-                [form_data.db_column]:form_data.input
-            }
-            new_form_data[table_name].splice(entry_index,1,new_data)
-
-
-            /*
-            new_form_data = {
-                ...new_form_data,
-                    [table_name]:[{
-                        ...new_form_data[table_name][0],
-                        [form_data.db_column]:form_data.input
-                    }
-                ]
-            }
-            */
-        
+            new_form_data[table_name][entry_index][form_data.db_column] = form_data.input;
         } else {
-            new_form_data = {
-                ...new_form_data,
-                    [table_name]:form_data
-            }
+            new_form_data[table_name] = form_data;
+            
         }
         table_data_ref.current[section_name] = new_form_data;
         console.log(`%c PROCESS_INPUT_DATA CURRENT_DATA`, `${ log_colors.process_data }`, `for`,table_data_ref.current);
@@ -219,23 +200,23 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         }
         
         if(section_tables[0] === "employees"){
-            const adjust_table_data_ref = {
+            const update_data = {
                 employees: table_data_ref.current[section_name].employees,
                 employee_departments: table_data_ref.current[section_name].employee_departments
             }
-            table_data_ref.current[section_name] = adjust_table_data_ref;
+            table_data_ref.current[section_name] = update_data;
             const employee_data = table_data_ref.current[section_name]["employees"][0];
             if(employee_data.name === ""){
                 const update_form_data = {...table_data_ref.current[section_name]["employees"][0], name:employee_data.email};
                 table_data_ref.current[section_name]["employees"] = [update_form_data];
             }
         } else if(section_name === "projects" ){
-            const adjust_table_data_ref = {
+            const update_data = {
                 projects: table_data_ref.current["projects"].projects,
                 project_department_budgets: table_data_ref.current["projects"].project_department_budgets,
                 employee_budgets: table_data_ref.current["projects"].employee_budgets
             }
-            table_data_ref.current["projects"] = adjust_table_data_ref;
+            table_data_ref.current["projects"] = update_data;
         }
 
         let status_message:string = "";
