@@ -1,7 +1,7 @@
 CREATE TABLE employees(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 email varchar(255) UNIQUE NOT NULL ,
-name varchar(255),
+name varchar(255) NOT NULL,
 admin bit(1) NOT NULL,
 role varchar(50),
 title varchar(255),

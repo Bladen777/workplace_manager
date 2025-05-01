@@ -232,8 +232,8 @@ app.get("/user_info",
       }
 
       interface Types_string_data{
-        entry_item: Types_entry_item;
-        entry_filter_item: string;
+        entry_data: Types_entry_item;
+        entry_id?: number;
         submit_method: string;
       }
 
@@ -256,8 +256,8 @@ app.get("/user_info",
     
 
       // FUNCTION TO FIND THE DATA TO BE ADDED AND CREATE A STRING FOR THE DB QUERY
-      function string_data({entry_item, entry_filter_item, submit_method }:Types_string_data){
-        console.log("THE CURRENT ITEM: ", entry_item);
+      function string_data({entry_data, entry_id, submit_method }:Types_string_data){
+        console.log("THE CURRENT ENTRY: ", entry_data);
         console.log("THE COLUMN NAMES: ", column_names)
         let search_condition = "";
         let name_values = "";
@@ -271,6 +271,8 @@ app.get("/user_info",
           } else {
             search_condition = `WHERE ${filter_key}='${filter_item}'`
           };
+        } else if(entry_id) {
+          search_condition = `WHERE id ='${entry_id}'`
         };
         
 
@@ -278,7 +280,7 @@ app.get("/user_info",
         column_names.map((column:string) => {
 
           const data_value = (()=>{
-            let item_data: string | null = entry_item[column];
+            let item_data: string | null = entry_data[column];
             if(item_data === null || item_data === undefined){
               item_data = null;
             } else {
@@ -319,7 +321,7 @@ app.get("/user_info",
       };
       
 
-      // FUNCTION FOR ADDING AND EDITING DATA
+      // FUNCTION FOR MANIPULATING DATA
       async function access_db({table_data, submit_method, array_edit}:{table_data:Types_table_data, submit_method:string, array_edit:boolean}){
 
         if(submit_method === "add"){
@@ -334,7 +336,7 @@ app.get("/user_info",
             )
             if(!array_edit){
               res.send({
-                item_id: response.rows[0].id,
+                entry_id: response.rows[0].id,
                 message: `successfully ${sent_submit_method}ed`
               });
               console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
@@ -390,14 +392,14 @@ app.get("/user_info",
 
       } else if(Array.isArray(submit_data)){
         let added_id:number = 0;
-        for await(let item of submit_data){
+        for await(let entry of submit_data){
           let adjust_submit_method = sent_submit_method;
-          if(sent_submit_method === "add" && item.id){
+          if(sent_submit_method === "add" && entry.id){
             adjust_submit_method = "edit"
           };
           const table_data:Types_table_data = string_data({
-            entry_item: item, 
-            entry_filter_item: item.id ? item.id : filter_item,
+            entry_data: entry, 
+            entry_id: Number(entry.id), 
             submit_method:adjust_submit_method
           });
           if(adjust_submit_method === "add"){
@@ -407,13 +409,13 @@ app.get("/user_info",
           }
         };
         res.send({
-          item_id: added_id !== 0 ? added_id : "",
+          entry_id: added_id !== 0 ? added_id : "",
           message: `successfully ${sent_submit_method}ed`
         });
         console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
 
       } else {
-        const table_data:Types_table_data = string_data({entry_item: submit_data, entry_filter_item: filter_item, submit_method:sent_submit_method});
+        const table_data:Types_table_data = string_data({entry_data: submit_data, submit_method:sent_submit_method});
         access_db({table_data:table_data, submit_method:sent_submit_method, array_edit:false});
       }
 

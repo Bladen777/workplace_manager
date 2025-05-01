@@ -5,7 +5,6 @@ import Control_panel_entry_data from "./Control_panel_entry_data.js";
 import Employee_deps from "./Employee_deps.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
 
 // HOOK IMPORTS 
 
@@ -13,11 +12,12 @@ import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
   /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../context/Context_db_table_info.js";
+import { Types_form_data } from "../../../context/Context_initial_data.js";
 
 
 interface Types_props{
     is_active:boolean;
+    active_table: string;
     item_data: Types_form_data;
     item_index: number;
     send_selected_ele: Function;
@@ -25,9 +25,8 @@ interface Types_props{
 
 
 // THE COMPONENT 
-function Control_panel_entry({is_active, item_data, item_index, send_selected_ele}:Types_props) {
+function Control_panel_entry({is_active, active_table, item_data, item_index, send_selected_ele}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Control_panel_entry for ${item_data.name}`);
-    const section_name = useContext(Use_Context_table_info).show_context.table_name;
 
 // MEMOS AND EFFECTS
 
@@ -48,8 +47,9 @@ function Control_panel_entry({is_active, item_data, item_index, send_selected_el
             <div className="control_panel_entry">
                 <Control_panel_entry_data     
                     table_item = {item_data}
+                    active_table = {active_table}
                 />
-                {section_name === "employees" &&
+                {active_table === "employees" &&
                     <Employee_deps
                         employee_id = {item_data.id!}
                     />

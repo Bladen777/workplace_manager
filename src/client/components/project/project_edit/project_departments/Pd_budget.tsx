@@ -19,26 +19,31 @@ import { Types_department_data } from "../../../context/Context_departments_data
 
 
 interface Types_props{
-    department_data: Types_department_data;
+    dep_data: Types_department_data;
 }
 
 // THE COMPONENT 
-export default function Pd_budget({department_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
+export default function Pd_budget({dep_data}:Types_props) {
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${dep_data.name}`);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context;
     const existing_pd_budget = existing_project_data.current_project.project_department_budgets.find((entry)=>{
-        if(entry.id === department_data.id){
+        if(entry.department_id === dep_data.id){
             return entry;
         };
     });
-    const initial_pd_budget_form_data = existing_pd_budget ? existing_pd_budget : existing_project_data.table_info.project_department_budgets.initial_form_data;
+    const initial_pd_budget_form_data = (
+        existing_pd_budget && existing_project_data.submit_method === "edit" 
+        ? existing_pd_budget : 
+        existing_project_data.table_info.project_department_budgets.initial_form_data
+    );
+
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
 
     const update_department_budget = useContext(Use_Context_project_budgets).update_func;
     
     const [department_percent, set_department_percent] = useState<number>(0);
-    const dep_id_name = `dep_id_${department_data.id}`
+    const dep_id_name = `dep_id_${dep_data.id}`
     const department_budget = project_budgets.departments[dep_id_name];
 /*
     console.log(`%c DATA `, `${ log_colors.data }`,`for project_budgets`,'\n' ,project_budgets);
@@ -76,8 +81,8 @@ export default function Pd_budget({department_data}:Types_props) {
         }
         
         update_department_budget.now({dep_id_name:dep_id_name, budget:(new_department_budget)})
-        process_data.handle_form_change({section_name: "projects", table_name: "project_department_budgets" ,form_data: {input:new_department_budget , db_column:"budget"}});
-        
+        process_data.update_data({table_name: "project_department_budgets", form_data:{input:new_department_budget, db_column:"budget"}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+
         if(db_column !== "percent"){
             find_percent()
         }

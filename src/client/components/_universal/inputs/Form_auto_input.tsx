@@ -4,8 +4,6 @@ import {memo, ReactElement, useContext, useEffect, useMemo, useRef, useState } f
 import Money_input from "./Money_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_table_info } from "../../control_panel/context/Context_db_table_info.js";
-import { Use_Context_current_table_item } from "../../control_panel/context/Context_current_table_item.js";
 
 // HOOK IMPORTS
 
@@ -13,8 +11,8 @@ import { Use_Context_current_table_item } from "../../control_panel/context/Cont
   /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
-import { Types_column_info } from "../../control_panel/context/Context_db_table_info.js";
-import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
+import { Types_column_info } from "../../context/Context_initial_data.js";
+import { Types_form_data } from "../../context/Context_initial_data.js";
 
 export interface Types_new_entry{
     label_name?:string;

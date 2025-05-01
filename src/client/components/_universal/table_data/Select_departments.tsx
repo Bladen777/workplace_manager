@@ -4,8 +4,10 @@ import axios from "axios";
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
-import { Use_Context_current_table_item } from "../../control_panel/context/Context_current_table_item.js";
 import { Use_Context_departments_data } from "../../context/Context_departments_data.js";
+import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
+import { Use_Process_input_data } from "../Process_input_data.js";
 
 // HOOK IMPORTS 
 
@@ -13,20 +15,21 @@ import { Use_Context_departments_data } from "../../context/Context_departments_
   /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
+import { Types_form_data } from "../../context/Context_initial_data.js";
 import { Types_input_change } from "../inputs/Form_auto_input.js";
 import { Types_department_data } from "../../context/Context_departments_data.js";
 
 interface Types_props{
-    submit_method:string;
-    send_table_data:Function
+    employee_id:number | undefined;
 }
 
 // THE COMPONENT 
-export default function Select_departments({submit_method, send_table_data}:Types_props) {
+export default function Select_departments({employee_id}:Types_props) {
     console.log(`%c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Select_departments`);
 
-    const current_employee_id = useContext(Use_Context_current_table_item).show_context.current_table_item.id;
+    const initial_data = useContext(Use_Context_initial_data).show_context;
+    const active_entry = useContext(Use_Context_active_entry).show_context;
+    const process_data = useContext(Use_Process_input_data);
 
     const initial_department_data = useContext(Use_Context_departments_data).show_context;
 
@@ -39,16 +42,8 @@ export default function Select_departments({submit_method, send_table_data}:Type
             const update_data = {...prev_vals, [db_column]:input}
             return update_data;
         })
-        
-        send_table_data({
-            table_name:"employee_departments",
-            form_data:{
-                input:input,
-                db_column:db_column
-            }
-        })
+        process_data.update_data({table_name:"employee_departments", form_data:{input: input, db_column:db_column}})
     }
-
 
     // GET THE DEPARTMENT NAMES FOR NEW ENTRY
     async function define_department_inputs(){
@@ -68,12 +63,9 @@ export default function Select_departments({submit_method, send_table_data}:Type
                 
             })
             set_departments(dep_names);
-            if(submit_method === "add"){
+            if(active_entry.submit_method === "add"){
                 set_input_data(form_data);
-                send_table_data({
-                    table_name:"employee_departments",
-                    form_data:[form_data]
-                });
+                process_data.update_data({table_name:"employees", form_data:form_data})
             }
 
 
@@ -86,7 +78,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
             const response = await axios.post("/get_table_info",{
                 table_name: "employee_departments",
                 filter_key: "employee_id",
-                filter_item: current_employee_id
+                filter_item: employee_id
             });
             console.log(`%c DATA `, `${ log_colors.data }`,`for response.data`,'\n' ,response.data);
             const form_data:Types_form_data = {};
@@ -97,10 +89,6 @@ export default function Select_departments({submit_method, send_table_data}:Type
             });
             console.log(`%c DATA `, `${ log_colors.data }`,`for Fetched form_data`,'\n' ,form_data);
             set_input_data(form_data);
-            send_table_data({
-                table_name:"employee_departments",
-                form_data:[form_data]
-            });
         } catch (error){
           console.log(`%c  has the following error: `, 'darkred', error); 
         };
@@ -109,7 +97,7 @@ export default function Select_departments({submit_method, send_table_data}:Type
 // MEMOS AND EFFECTS    
     useEffect(() =>{
         define_department_inputs()
-        if(submit_method === "edit"){
+        if(active_entry.submit_method === "edit"){
             fetch_departments()
         }
     },[])

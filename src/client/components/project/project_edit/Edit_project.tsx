@@ -22,13 +22,14 @@ import "../../../styles/project/edit_project.css"
 import "../../../styles/_universal/form_dd.css"
 
 // TYPE DEFINITIONS
-import { Types_column_info } from "../../control_panel/context/Context_db_table_info.js";
-import { Types_data_change } from "../../_universal/Process_input_data.js";
+import { Types_form_data } from "../../context/Context_initial_data.js";
+import { Types_update_data } from "../../_universal/Process_input_data.js";
 import { Types_input_change } from "../../_universal/inputs/Form_auto_input.js";
+import { Types_column_info } from "../../context/Context_initial_data.js";
 
 import { Types_department_budgets } from "../context/Context_project_budgets.js";
 import { Types_department_data } from "../../context/Context_departments_data.js";
-import { finished } from "stream";
+
 
 
 
@@ -53,10 +54,15 @@ export default function Edit_project() {
     console.log(`%c COMPONENT `, `${ log_colors.component }`, `Edit_project`);
 
     const existing_project_data = useContext(Use_Context_project_data).show_context
-    const project_initial_form_data = existing_project_data.table_info.projects.initial_form_data;
     const db_column_info = existing_project_data.table_info.projects.db_column_info;
     const current_project = existing_project_data.current_project;
+    const project_initial_form_data = (
+        existing_project_data.submit_method === "edit" 
+        ? current_project.project_data
+        : existing_project_data.table_info.projects.initial_form_data
+    );
     const project_submit_method = existing_project_data.submit_method;
+
 
     const departments = useContext(Use_Context_departments_data).show_context;
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
@@ -68,8 +74,8 @@ export default function Edit_project() {
     const [status_message, set_status_message] = useState<string>("");
     const [edit_btn_clicked, set_edit_btn_clicked] = useState<boolean>(false);
     const [project_dates, set_project_dates] = useState<Types_project_dates>({
-        start_date:undefined,
-        finish_date: undefined
+        start_date: typeof(project_initial_form_data.start_date) !== "number" ? project_initial_form_data.start_date : undefined,
+        finish_date: typeof(project_initial_form_data.finish_date) !== "number" ? project_initial_form_data.finish_date : undefined
     })
 
     //const [pd_inputs, set_pd_inputs] = useState<ReactElement[]>([]);
@@ -117,9 +123,9 @@ export default function Edit_project() {
 
     function adjust_initial_data({submit_method}:{submit_method?:string} = {}){
         if(submit_method === "edit"){
-            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [current_project.project_data]})
-            process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data: current_project.project_department_budgets})
-            process_data.handle_form_change({section_name:"projects", table_name: "employee_budgets", form_data: current_project.employee_budgets})
+            process_data.update_data({table_name: "projects", form_data: [current_project.project_data]})
+            process_data.update_data({table_name: "project_department_budgets", form_data: current_project.project_department_budgets})
+            process_data.update_data({table_name: "employee_budgets", form_data: current_project.employee_budgets})
             
 
             const department_budgets:Types_department_budgets = {};
@@ -139,7 +145,7 @@ export default function Edit_project() {
         } else {
             const date = new Date().toISOString().slice(0,10);
             let new_project_data = {...project_initial_form_data, date_added:date}
-            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: [new_project_data]})
+            process_data.update_data({section_name:"projects", table_name: "projects", form_data: [new_project_data]})
 
             const department_budget_data = departments.map((item:Types_department_data)=>{
                 return{
@@ -150,11 +156,12 @@ export default function Edit_project() {
                     budget: 0
                 }
             })
-            process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:department_budget_data}) 
-        } 
+            process_data.update_data({section_name:"projects", table_name: "project_department_budgets", form_data:department_budget_data}) 
+        }
+
     }
 
-    function handle_form_change({form_data}:Types_data_change){
+    function handle_form_change({form_data}:Types_update_data){
         if(!Array.isArray(form_data)){
             if(form_data.db_column === "production_budget"){
                 const budget = Number(form_data.input);
@@ -169,7 +176,7 @@ export default function Edit_project() {
                 }
             }
         }
-        process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: form_data})
+        process_data.update_data({section_name:"projects", table_name: "projects", form_data: form_data})
     }
     
 
@@ -198,14 +205,17 @@ export default function Edit_project() {
         set_project_dates((prev_vals)=>{
             let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
             const update_dates = {...prev_vals, [date_type]:input}
-            process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: {input:input ,db_column:db_column}})
+            process_data.update_data({section_name:"projects", table_name: "projects", form_data: {input:input ,db_column:db_column}})
             return update_dates;  
         })
     }
     async function post_form(){
-        const response:string = await process_data.post_form({section_name:"projects", submit_method:existing_project_data.submit_method})
-        update_current_project.now
-        set_status_message(response)
+        const response:{status_message:string, added_id:number} = await process_data.post_data({submit_method:existing_project_data.submit_method})
+        console.log(`%c POST FORM FOR PROJECTS `, `${ log_colors.important_2 }`,`for response`,'\n' ,response);
+        if(response.status_message.includes("Successfully")){
+            update_current_project.now({current_project_id:response.added_id});
+        }
+        set_status_message(response.status_message);
     }
 
 // MEMOS AND EFFECTS    
@@ -227,6 +237,8 @@ export default function Edit_project() {
     },[departments])
 */
 
+
+console.log(`%c PROJECT PROJECT DATES `, `${ log_colors.important_2 }`,`for project_dates`,'\n' ,project_dates);
 // RETURNED VALUES 
     return(
         <section id="edit_project_container" >
@@ -269,7 +281,7 @@ export default function Edit_project() {
                                 return(
                                     <Clients_dd
                                         key={`input_for_${column.column_name}`}
-                                        send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
+                                        send_table_data = {(form_data:Types_input_change)=>{handle_form_change({table_name: "projects", form_data:form_data})}}
                                     />
                                 )
                             } else if(
@@ -283,7 +295,7 @@ export default function Edit_project() {
                                         column_info = {column}
                                         initial_data_object={project_initial_form_data}
                                         adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
-                                        send_table_data = {(form_data:Types_input_change)=>{handle_form_change({form_data:form_data})}}
+                                        send_table_data = {(form_data:Types_input_change)=>{handle_form_change({table_name: "projects", form_data:form_data})}}
                                     />
                                 )
                             }

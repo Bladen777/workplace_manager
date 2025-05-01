@@ -2,10 +2,11 @@ import { useContext, useState } from "react";
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
+import Select_departments from "../../../_universal/table_data/Select_departments.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
-import { Use_Context_current_table_item } from "../../context/Context_current_table_item.js";
+import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
@@ -13,13 +14,13 @@ import { Use_Context_current_table_item } from "../../context/Context_current_ta
   /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS
-import { Types_column_info } from "../../context/Context_db_table_info.js";
-import { Types_form_data } from "../../context/Context_db_table_info.js";
+import { Types_column_info } from "../../../context/Context_initial_data.js";
+import { Types_form_data } from "../../../context/Context_initial_data.js";
 import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
 
 
 interface Types_props{
-    send_table_data: Function;
+    initial_data_object: Types_form_data;
 }
 
 interface Types_column_data{
@@ -31,21 +32,21 @@ interface Types_column_data{
  }
 
 // THE COMPONENT 
-export default function Employee_input_form({send_table_data}:Types_props) {
+export default function Employee_input_form({initial_data_object}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Employee_input`);
-    const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
 
-    const current_table_item = useContext(Use_Context_current_table_item).show_context.current_table_item;
-    const [input_data, set_input_data] = useState<Types_form_data>(current_table_item);
+    const initial_data = useContext(Use_Context_initial_data).show_context["employees"];
+    const process_data = useContext(Use_Process_input_data);
+
+    const [input_data, set_input_data] = useState<Types_form_data>(initial_data_object);
+    const employee_id: number | undefined = initial_data_object.id
 
     const column_data:Types_column_data = {};
-    db_column_info.forEach((column)=>{
+    initial_data.info.db_column_info.forEach((column)=>{
             column_data[column.column_name] = column 
     })
 
-    console.log(`%c DATA `, `${ log_colors.data }`,`for db_column_info`,'\n' ,db_column_info);
     console.log(`%c DATA `, `${ log_colors.data }`,`for column_data`,'\n' ,column_data);
-
 
     function handle_input_change({input, db_column, update}:Types_update_input_change){
         if(update){
@@ -54,42 +55,43 @@ export default function Employee_input_form({send_table_data}:Types_props) {
                 return update_data;
             })
         }
-        send_table_data({table_name:"employees", form_data:{input: input, db_column:db_column}})
+        process_data.update_data({table_name:"employees", form_data:{input: input, db_column:db_column}})
     }
 
 // MEMOS AND EFFECTS    
 
 // RETURNED VALUES 
     return(
+        <div id="cpe_input_box" className="cp_content_box">
             <form className="auto_form">
                 <Form_auto_input 
                     column_info={column_data.name}
-                    initial_data_object={current_table_item}
+                    initial_data_object={initial_data_object}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.email}
-                    initial_data_object={current_table_item}
+                    initial_data_object={initial_data_object}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.admin}
-                    initial_data_object={current_table_item}
+                    initial_data_object={initial_data_object}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.role}
-                    initial_data_object={current_table_item}
+                    initial_data_object={initial_data_object}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.title}
-                    initial_data_object={current_table_item}
+                    initial_data_object={initial_data_object}
                     send_table_data={handle_input_change}
                 />
                 <Form_auto_input 
                     column_info={column_data.pay_rate}
-                    initial_data_object={current_table_item}
+                    initial_data_object={initial_data_object}
                     send_table_data={handle_input_change}
                 />
 
@@ -144,7 +146,7 @@ export default function Employee_input_form({send_table_data}:Types_props) {
                 {input_data.part_time === "1" &&
                         <Form_auto_input 
                         column_info={column_data.hours_per_week}
-                        initial_data_object={current_table_item}
+                        initial_data_object={initial_data_object}
                         send_table_data={handle_input_change}
                         />
                     }
@@ -152,19 +154,23 @@ export default function Employee_input_form({send_table_data}:Types_props) {
                 <div id="employment_date_box">
                     <Form_auto_input 
                         column_info={column_data.employment_start_date}
-                        initial_data_object={current_table_item}
+                        initial_data_object={initial_data_object}
                         send_table_data={handle_input_change}
                     />
                         
                     {input_data.employment_type === "contract" &&
                         <Form_auto_input 
                             column_info={column_data.employment_end_date}
-                            initial_data_object={current_table_item}
+                            initial_data_object={initial_data_object}
                             send_table_data={handle_input_change}
                         />
                     }
 
                 </div>
             </form>
+            <Select_departments 
+                employee_id = {employee_id}
+            />
+        </div>
     ); 
 }

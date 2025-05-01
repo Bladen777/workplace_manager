@@ -3,7 +3,7 @@ import { useContext} from "react";
 // COMPONENT IMPORTS
 
 // CONTEXT IMPORTS
-import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
+import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
 
 // HOOK IMPORTS
 
@@ -11,13 +11,18 @@ import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
   /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // TYPE DEFINITIONS 
-import { Types_column_info } from "../../context/Context_db_table_info.js";
-import { Types_form_data } from "../../context/Context_db_table_info.js";
+import { Types_column_info } from "../../../context/Context_initial_data.js";
+import { Types_form_data } from "../../../context/Context_initial_data.js";
 
+
+interface Types_props{
+    table_item: Types_form_data;
+    active_table: string;
+}
 
 // THE COMPONENT
-export default function Control_panel_entry_data({table_item}:{table_item:Types_form_data}) {
-    const db_column_info = useContext(Use_Context_table_info).show_context.db_column_info;
+export default function Control_panel_entry_data({table_item, active_table}:Types_props) {
+    const db_column_info = useContext(Use_Context_initial_data).show_context[active_table].info.db_column_info;
     console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for control_panel_entry_data`,'\n         ' ,table_item);
 
         let entry_name;

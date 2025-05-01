@@ -4,8 +4,9 @@ import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
-import { Use_Context_table_data } from "../../context/Context_get_table_data.js";
+import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
+import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS
 
@@ -14,14 +15,13 @@ import { Use_Context_table_data } from "../../context/Context_get_table_data.js"
 import "../../../../styles/control_panel/cp_order_shift.css"
 
 // TYPE DEFINITIONS
-import { Types_form_data} from "../../context/Context_db_table_info.js";
+import { Types_form_data } from "../../../context/Context_initial_data.js";
 import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
 
 
 interface Prop_Types{
     ele_names:String;
-    send_table_data: Function;
-    submit_method: string;
+    table_name:string;
 }
 
 interface Types_pos{
@@ -42,14 +42,18 @@ interface Types_change_input_data extends Types_input_change{
 
 
 // THE COMPONENT
-export default function Order_shift({ele_names, send_table_data, submit_method}:Prop_Types) {
+export default function Order_shift({ele_names, table_name}:Prop_Types) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for Order_shift`);
 
+    const initial_data = useContext(Use_Context_initial_data).show_context[table_name];
+    const active_entry = useContext(Use_Context_active_entry).show_context;
+    const process_data = useContext(Use_Process_input_data);
+
     // CONSTANTS FOR TRACKING DATA
-    const table_info = useContext(Use_Context_table_info).show_context;
-    const db_column_info = table_info.db_column_info;
-    const initial_form_data = table_info.initial_form_data;
-    const initial_table_data = useContext(Use_Context_table_data).show_context;
+    const db_column_info = initial_data.info.db_column_info
+    const initial_form_data:Types_form_data = initial_data.info.form_data;
+    const initial_table_data:Types_form_data[] = initial_data.data;
+    
     const [table_data, set_table_data] = useState<Types_form_data[]>(initial_table_data);
     const table_data_ref = useRef<Types_form_data[]>(initial_table_data)
     const [entry_data, set_entry_data] = useState<ReactElement[]>([]);
@@ -83,7 +87,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
             set_selected_ele_name("");
             adjust_table_data(index);
             shift_ele_row.current.direction = "";
-            send_table_data({form_data:table_data_ref.current});
+            process_data.update_data({table_name:table_name, form_data:table_data_ref.current})
         }
     }
 
@@ -198,14 +202,14 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
         const temp_table_data:Types_form_data[] = [...table_data_ref.current];
         temp_table_data.splice(changed_entry_index, 1, update_form_data);
         table_data_ref.current = temp_table_data;
-        send_table_data({form_data:temp_table_data});
+        process_data.update_data({table_name:table_name, form_data:table_data_ref.current})
     }
 
     // SET THE INITIAL DATA VALUES
     function assign_initial_data(){
         console.log(`%c ENTRY ELEMENTS SET `, `${ log_colors.important} `);
         let temp_table_data:Types_form_data[] = [...initial_table_data];
-        if(submit_method === "add"){
+        if(active_entry.submit_method === "add"){
             const item_order_key:string | undefined = (Object.keys(initial_form_data)).find((key_name: string) => {
                 if(key_name.includes("order")){
                     return key_name;
@@ -242,7 +246,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
         });
         console.log(`%c DATA `, `${ log_colors.data }`,`for temp_table_data`,'\n' ,temp_table_data);
         table_data_ref.current = temp_table_data;
-        send_table_data({form_data:temp_table_data});
+        process_data.update_data({table_name:table_name, form_data:table_data_ref.current})
         set_table_data(temp_table_data);
         set_entry_data(entries);
     };
@@ -260,7 +264,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
                 <figure
                     ref={key_name === selected_ele_name ? current_ele_div_ref : undefined }
                     key={key_name}
-                    className={submit_method === "add" && index === table_data.length - 1 ? `o_shift_ele new_o_shift_entry ${ele_names}_o_shift_ele`  : `o_shift_ele ${ele_names}_o_shift_ele`}
+                    className={active_entry.submit_method === "add" && index === table_data.length - 1 ? `o_shift_ele new_o_shift_entry ${ele_names}_o_shift_ele`  : `o_shift_ele ${ele_names}_o_shift_ele`}
                     id={row.toString()}
                     onMouseMove={(e: React.MouseEvent)=>{pos_track.current && handle_mouse_move(e)}}
 
@@ -311,7 +315,7 @@ export default function Order_shift({ele_names, send_table_data, submit_method}:
 
 // RETURNED VALUES 
     return (
-        <div id={`${table_info.table_name}_o_shift_box`} className="o_shift_box cp_content_box">
+        <div id={`${table_name}_o_shift_box`} className="o_shift_box cp_content_box">
             {table_data && create_inputs()}
         </div>
     )

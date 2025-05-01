@@ -17,7 +17,7 @@ import { Use_Context_employee_data } from "./context/Context_employee_data.js";
 
 // TYPE DEFINITIONS
 import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
-import { Types_form_data } from "../../../../control_panel/context/Context_db_table_info.js";
+import { Types_form_data } from "../../../../context/Context_initial_data.js";
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
 import { Types_project_dates } from "../../Edit_project.js";
 
@@ -43,17 +43,16 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
     const dep_id_name = `dep_id_${dep_id}`
     const existing_project_data = useContext(Use_Context_project_data).show_context;
 
-    const existing_employee_data = existing_project_data.current_project.employee_budgets.find((entry:Types_form_data)=>{
-        //console.log(`%c DATA `, `${ log_colors.data }`,`for entry`,'\n' ,entry);
+    const existing_pd_budget = existing_project_data.current_project.employee_budgets.find((entry)=>{
         if(entry.employee_id === employee_id){
-            return entry
-        }
-    })
-    const initial_employee_form_data:Types_form_data = (
-        existing_project_data.submit_method === "edit"
-        ? existing_employee_data!
-        : existing_project_data.table_info.employee_budgets.initial_form_data
-    )
+            return entry;
+        };
+    });
+    const initial_employee_form_data = (
+        existing_pd_budget && existing_project_data.submit_method === "edit" 
+        ? existing_pd_budget 
+        : existing_project_data.table_info.project_department_budgets.initial_form_data
+    );
 
     //console.log(`%c DATA `, `${ log_colors.data }`,`for initial_employee_form_data`,'\n' ,initial_employee_form_data);
 
@@ -63,8 +62,8 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
     const [employee_budgets, set_employee_budgets] = useState<Types_employee_budgets>({
-        budget:0,
-        budget_hours:0
+        budget:Number(initial_employee_form_data.budget),
+        budget_hours:Number(initial_employee_form_data.budget_hours)
     })
 
 
@@ -195,7 +194,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         is_nullable: "YES",
                         input_type: "date"
                     }}
-                    initial_data_object={initial_employee_form_data!}
+                    initial_data_object={initial_employee_form_data}
                     date_range={{min: dep_dates.start_date, max: dep_dates.finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
@@ -208,7 +207,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         is_nullable: "YES",
                         input_type: "budget"
                     }}
-                    initial_data_object={initial_employee_form_data!}
+                    initial_data_object={initial_employee_form_data}
                     adjust_data_object={employee_budgets} 
                     send_table_data = {callback_handle_budget_change}
                 />
@@ -220,7 +219,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         is_nullable: "YES", 
                         input_type: "text"
                     }}
-                    initial_data_object={initial_employee_form_data!}
+                    initial_data_object={initial_employee_form_data}
                     adjust_data_object={employee_budgets}
                     send_table_data = {callback_handle_budget_change}
                 />

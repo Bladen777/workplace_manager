@@ -7,13 +7,14 @@ import Control_panel from "../components/control_panel/Control_panel.js"
 
 // CONTEXT IMPORTS
 import { Use_Context_user_info } from "../components/user_info/Context_user_info.js";
-import { Provide_Context_table_info } from "../components/control_panel/context/Context_db_table_info.js";
-import { Provide_Context_table_data } from "../components/control_panel/context/Context_get_table_data.js";
-import { Provide_Context_current_table_item } from "../components/control_panel/context/Context_current_table_item.js";
+
 import { Provide_Context_project_data } from "../components/project/context/Context_project_data.js";
 import { Provide_Context_departments_data } from "../components/context/Context_departments_data.js";
 import { Provide_Process_input_data } from "../components/_universal/Process_input_data.js";
 import { Provide_Context_project_budgets } from "../components/project/context/Context_project_budgets.js";
+
+import { Provide_Context_initial_data } from "../components/context/Context_initial_data.js";
+import { Provide_Context_active_entry } from "../components/context/Context_active_entry.js";
 
 
 // HOOK IMPORTS
@@ -40,23 +41,32 @@ export default function Home() {
   if(user_info.email !== "wait"){
     return (
       <>
-        <Provide_Context_table_info>
-          <Provide_Context_table_data>
-            <Provide_Context_current_table_item>
-              <Provide_Context_departments_data>
-                <Provide_Context_project_data>
-                  <Provide_Process_input_data>
-                    <Provide_Context_project_budgets>
-                        <Project_overview />
-                        {user_info.is_admin && <Edit_project />}
-                    </Provide_Context_project_budgets>
-                      {user_info.is_admin && <Control_panel />}
-                  </Provide_Process_input_data>
-                </Provide_Context_project_data>
-              </Provide_Context_departments_data>
-            </Provide_Context_current_table_item> 
-          </Provide_Context_table_data>
-        </Provide_Context_table_info>
+
+        <Provide_Context_departments_data>
+          <Provide_Context_project_data>
+
+              <Provide_Context_project_budgets>
+                <Provide_Context_initial_data>
+                  <Provide_Context_active_entry>
+                    <Provide_Process_input_data>
+
+                      <Project_overview />
+                      {user_info.is_admin && <Edit_project />}
+
+                    </Provide_Process_input_data>
+                  </Provide_Context_active_entry>
+                </Provide_Context_initial_data>
+              </Provide_Context_project_budgets>
+
+              
+              <Provide_Context_initial_data>
+                <Provide_Context_active_entry>
+                  {user_info.is_admin && <Control_panel />}
+                </Provide_Context_active_entry>
+              </Provide_Context_initial_data>
+
+          </Provide_Context_project_data>
+        </Provide_Context_departments_data>
 
       </>
     )

@@ -15,7 +15,7 @@ import { Use_Context_project_data } from "../../../context/Context_project_data.
   import "../../../../../styles/project/employee_select.css"
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../../../control_panel/context/Context_db_table_info.js";
+import { Types_form_data } from "../../../../context/Context_initial_data.js";
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
 import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
 import { Types_department_data } from "../../../../context/Context_departments_data.js";

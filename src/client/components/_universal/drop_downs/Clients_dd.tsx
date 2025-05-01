@@ -15,7 +15,7 @@ import { Use_Process_input_data } from "../Process_input_data.js";
 
 // TYPE DEFINITIONS
 import { Types_search_item } from "./Input_drop_down.js";
-import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js";
+import { Types_form_data } from "../../context/Context_initial_data.js";
 
 // THE COMPONENT 
 export default function Clients_dd({send_table_data}:{send_table_data:Function}) {
@@ -43,7 +43,7 @@ export default function Clients_dd({send_table_data}:{send_table_data:Function})
     }
     function handle_client_change({input}:{input:Types_search_item}){
         console.log(`%c DATA `, `${ log_colors.data }`,`for input`,'\n' ,input);
-        process_data.handle_form_change({section_name:"projects", table_name: "projects", form_data: {input:input.id , db_column:"client_id"}})
+        process_data.update_data({table_name: "projects", form_data: {input:input.id , db_column:"client_id"}})
     }
 
 

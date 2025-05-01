@@ -5,9 +5,10 @@ import Control_panel_view from "./components/Control_panel_view.js"
 import Control_panel_edit from "./components/Control_panel_edit.js"
 
 // CONTEXT IMPORTS
-import { Use_Context_table_info } from "./context/Context_db_table_info.js"
-import { Use_Context_table_data } from "./context/Context_get_table_data.js"
-import { Use_Context_current_table_item } from "./context/Context_current_table_item.js"
+
+import { Provide_Process_input_data } from "../_universal/Process_input_data.js"
+import { Use_Context_initial_data } from "../context/Context_initial_data.js"
+import { Use_Context_active_entry } from "../context/Context_active_entry.js"
 
 // HOOK IMPORTS
 
@@ -16,7 +17,7 @@ import { Use_Context_current_table_item } from "./context/Context_current_table_
 import "../../styles/control_panel/control_panel.css"
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "./context/Context_db_table_info.js"
+import { Types_form_data } from "../context/Context_initial_data.js"
 
 interface Types_cpv_button{
     submit_method:string;
@@ -30,24 +31,21 @@ export default function Control_panel() {
 
     // HANDLING NAVIGATIOIN ON CONTROL PANEL
     const [edit_section, set_edit_section] = useState<boolean>(false);
+    const [active_table, set_active_table] = useState<string>("clients")
+    const update_initial_data = useContext(Use_Context_initial_data).update_func;
 
-    const active_table = useContext(Use_Context_table_info).show_context.table_name;
-    const update_table_data = useContext(Use_Context_table_data).update_func;
-    const update_table_info = useContext(Use_Context_table_info).update_func;
-    const update_current_table_item = useContext(Use_Context_current_table_item).update_func;
-
-    async function update_context(section:string){
-        const table_data_update = await update_table_data.wait({active_table:section});
-        const table_info_update = await update_table_info.wait({active_table:section});
-        update_table_data.update_context(table_data_update);
-        update_table_info.update_context(table_info_update);
-        return
-    }
+    const [section_is_loading, set_section_is_loading] = useState<boolean>(true);
 
     // CONTROLLING VIEW UPDATES
     async function handle_cp_nav_btn_click(section:string) {
         if((section !== active_table) || edit_section){
-            await update_context(section);
+            set_section_is_loading(true)
+            const initial_data_update = await update_initial_data.wait({table_name: section})
+            if(Object.keys(initial_data_update).length !== 0){
+                update_initial_data.update_context(initial_data_update)
+            }
+            set_section_is_loading(false);
+            set_active_table(section);
             set_edit_section(false);
         };
     }
@@ -55,8 +53,18 @@ export default function Control_panel() {
 
 // MEMOS AND EFFECTS
     useMemo(() =>{
-        update_context("clients")
-      },[])
+        (async ()=>{
+  /*
+            const initial_data_update = await update_initial_data.wait({table_name: active_table})
+            if(Object.keys(initial_data_update).length !== 0){
+                update_initial_data.update_context(initial_data_update)
+                set_section_is_loading(false)
+            }
+  */        await update_initial_data.now({table_name: active_table});
+            set_section_is_loading(false);
+        })()
+        
+    },[])
 
 // RETRURNED VALUES      
     return (
@@ -86,23 +94,26 @@ export default function Control_panel() {
                 </button>
             </div>  
 
-                {!edit_section && active_table &&
-                    <Control_panel_view 
-                        handle_edit_btn_click = {async ({submit_method, table_item}:Types_cpv_button)=>{
-                            const current_table_item_update = await update_current_table_item.wait({
-                                current_table_item:table_item,
-                                submit_method:submit_method
-                            })
-                            update_current_table_item.update_context(current_table_item_update)
-                            set_edit_section(true)
-                        }}
-                    />   
-                }
-                {edit_section &&
-                    <Control_panel_edit 
+
+            {!edit_section && active_table && !section_is_loading &&
+                <Control_panel_view 
+                    active_table = {active_table}
+                    open_edit = {()=>set_edit_section(true)}
+                />   
+            }
+            {edit_section && !section_is_loading &&
+                <Provide_Process_input_data>
+                    <Control_panel_edit
+                        active_table = {active_table} 
                         handle_cancel_edit_click = {()=>{set_edit_section(false)}}
                     />
-                }      
+                </Provide_Process_input_data>
+            }
+            {section_is_loading &&
+                <div className="cp_loader">
+                    Loading
+                </div>
+            }      
              
         </section>
     );

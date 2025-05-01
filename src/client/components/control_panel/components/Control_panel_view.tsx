@@ -5,8 +5,8 @@ import Control_panel_sort_button from "./control_panel_view/Control_panel_sort_b
 import Control_panel_entry from "./control_panel_view/Control_panel_entry.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_table_data } from "../context/Context_get_table_data.js";
-import { Use_Context_table_info } from "../context/Context_db_table_info.js";
+import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS
@@ -16,7 +16,8 @@ import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 import "../../../styles/control_panel/cp_view.css"
 
 // TYPE DEFINITIONS 
-import { Types_form_data } from "../context/Context_db_table_info.js";
+import { Types_form_data } from "../../context/Context_initial_data.js";
+
 
 interface Types_entries{
     is_active:boolean;
@@ -28,54 +29,53 @@ interface Types_selected_entry{
     data:Types_form_data;
 }
 
+interface Types_props{
+    active_table:string;
+    open_edit: Function;
+}
+
 
 
 // THE COMPONENT
-export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_btn_click:Function}) {
-    const active_table = useContext(Use_Context_table_info).show_context.table_name;
-    const initial_form_data = useContext(Use_Context_table_info).show_context.initial_form_data;
-    const initial_table_data = useContext(Use_Context_table_data).show_context;
+export default function Control_panel_view({open_edit, active_table}:Types_props) {
+
+    
+    const initial_data = useContext(Use_Context_initial_data).show_context;
+    const update_active_entry = useContext(Use_Context_active_entry).update_func;
     const process_data = useContext(Use_Process_input_data);
 
-    const update_table_data = useContext(Use_Context_table_data).update_func;
-
-    const [entries, set_entries] = useState<Types_entries[]>(create_initial_entries());
+    
+    const [entries, set_entries] = useState<Types_entries[]>([]);
     const [status_message, set_status_message] = useState<string>("");
 
-    function create_initial_entries(){
-        const initial_entries:Types_entries[] = initial_table_data.map((item:Types_form_data)=>{
-            return{
-                is_active:false,
-                data:item
-            }
-        })
-        return initial_entries
-    }
+ 
 
-    console.log(`%c SUB-COMPONENT `, `${log_colors.sub_component}`, `Control_panel_view for`, active_table, "\n", initial_table_data);
+    console.log(`%c SUB-COMPONENT `, `${log_colors.sub_component}`, `Control_panel_view for`, active_table, "\n", initial_data);
 
     const [entry_selected, set_entry_selected] = useState<boolean>(false);
     const selected_entry = useRef<Types_selected_entry | null>(null);
 
-    useMemo(()=>{
-        set_entry_selected(false);
-        selected_entry.current = null;
-        set_entries(create_initial_entries());
-        set_status_message("")
-    },[active_table]);
 
-    useMemo(()=>{
-        set_entry_selected(false);
-        selected_entry.current = null;
-        set_entries(create_initial_entries());
-    },[initial_table_data])
-
+    async function handle_edit_btn_click({submit_method}:{submit_method:string}){
+        if (submit_method === "delete" ){
+            const item_id = selected_entry.current!.data.id;
+            const response:string = await process_data.delete_entry({table_name:active_table, item_id:item_id}); 
+            set_status_message(response);
+            return
+        } else if(submit_method === "add"){
+            await update_active_entry.now({submit_method:submit_method})
+        } else if (submit_method === "edit"){
+            await update_active_entry.now({submit_method:submit_method, target_id: selected_entry.current?.data.id})
+        } 
+        open_edit()
+    }
 
     const handle_callback_selected_entry = useCallback(({item, index}:{item:Types_form_data, index:number})=>{
         handle_selected_entry(item, index);
     },[entry_selected]);
 
     function handle_selected_entry(item:Types_form_data, index:number){
+        console.log(`%c DATA `, `${ log_colors.data }`,`for item`,'\n' ,item);
         if(!entry_selected){
             set_entry_selected(true);
         }
@@ -93,15 +93,25 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
         selected_entry.current = {data:item, index:index};
     };
 
-    async function handle_delete_entry(){
-        const item_id = selected_entry.current!.data.id;
-        const response:string = await process_data.delete_entry({section_name: "control_panel", table_name:active_table, item_id:item_id}); 
-        await update_table_data.now();
-        set_status_message(response);
-    }
-
-
 // MEMOS AND EFFECTS    
+
+useMemo(()=>{
+    set_entries(()=>{
+        const initial_entries:Types_entries[] = initial_data[active_table].data.map((item:Types_form_data)=>{
+            return{
+                is_active:false,
+                data:item
+            }
+        })
+        return initial_entries
+    })
+    
+
+    selected_entry.current = null;
+    set_entry_selected(false);
+    set_status_message("")
+},[active_table]);
+
 
 // RETURNED VALUES
     return (
@@ -112,6 +122,7 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
                         <Control_panel_entry
                             key={data.id}
                             is_active = {is_active}
+                            active_table = {active_table}
                             item_data={data}
                             item_index={index} 
                             send_selected_ele={handle_callback_selected_entry}                    
@@ -122,22 +133,24 @@ export default function Control_panel_view({handle_edit_btn_click}:{handle_edit_
 
             <div id="cpv_btns" className="cp_utility_bar">
                 <button id="cpv_add_btn" className="cp_utility_bar_btn general_btn"
-                        onClick={()=>{handle_edit_btn_click({submit_method:"add", table_item:initial_form_data})}}
+                        onClick={()=>{handle_edit_btn_click({submit_method:"add"})}}
                 > New </button>
                 {entry_selected &&
                 <button id="cpv_edit_btn" className="cp_utility_bar_btn general_btn"
-                        onClick={()=>{handle_edit_btn_click({submit_method:"edit", table_item:selected_entry.current?.data})}}
+                        onClick={()=>{handle_edit_btn_click({submit_method:"edit"})}}
                 > Edit  </button>
                 }
                 {entry_selected &&
                 <button id="cpv_delete_btn" className="cp_utility_bar_btn general_btn"
-                        onClick={()=>{handle_delete_entry()}}
+                        onClick={()=>{handle_edit_btn_click({submit_method:"delete"})}}
                 > Delete  </button>
                 }
                 {status_message !== "" &&
                     <h3>{status_message}</h3>
                 }
-                <Control_panel_sort_button />
+                <Control_panel_sort_button 
+                    active_table = {active_table}
+                />
                 
             </div>
         </article>

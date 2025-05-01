@@ -3,8 +3,8 @@ import { useContext, useRef, useState, useEffect } from "react";
 // COMPONENT IMPORTS
 
 // CONTEXT IMPORTS
-import { Use_Context_table_info } from "../../context/Context_db_table_info.js";
-import { Use_Context_table_data } from "../../context/Context_get_table_data.js";
+import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+
 
 // HOOK IMPORTS
 import useFindClickPosition from "../../../hooks/useFindClickPosition.js";
@@ -18,10 +18,16 @@ interface Types_active_sort_btn{
     direction?:string;
 }
 
+interface Types_props{
+    active_table:string;
+}
 
 // THE COMPONENT
-export default function Control_panel_sort_button() {
+export default function Control_panel_sort_button({active_table}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for control_panel_sort_btn`);
+
+    const initial_data = useContext(Use_Context_initial_data).show_context[active_table];
+    const change_initial_data_order = useContext(Use_Context_initial_data).change_order;
     
     const [clicked, set_clicked] = useState<boolean>(false);
     const options_menu_ref = useRef<HTMLDivElement | null>(null);
@@ -32,13 +38,12 @@ export default function Control_panel_sort_button() {
         direction: "asc"
     });
 
-    const update_table_data = useContext(Use_Context_table_data).update_func;
-    const db_column_names = useContext(Use_Context_table_info).show_context.db_column_info.map((item)=>item.column_name);
+    const db_column_names = initial_data.info.db_column_info.map((item)=>item.column_name);
     
     function handle_sort_btn_clicked({order_key, direction}:Types_active_sort_btn){
         order_key && (active_sort_btn.current.order_key = order_key);
         direction && (active_sort_btn.current.direction = direction);
-        update_table_data.now({order_key: active_sort_btn.current.order_key, order_direction: active_sort_btn.current.direction})
+        change_initial_data_order({order_key: active_sort_btn.current.order_key, order_direction: active_sort_btn.current.direction})
 
     }
     function convert_text(word:string){

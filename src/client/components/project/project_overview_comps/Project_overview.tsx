@@ -16,7 +16,7 @@ import { Use_Context_project_data } from "../context/Context_project_data.js"
 import "../../../styles/project/project_overview.css"
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../control_panel/context/Context_db_table_info.js"
+import { Types_form_data } from "../../context/Context_initial_data.js"
 
 interface Types_change_project{
   id:number;
