@@ -125,15 +125,21 @@
     grid-template-rows:3rem 13rem auto 3rem;
     overflow-y: auto;
     position: relative;
+    background-color: var(--section_primary);
+    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem;
+    padding: 0.5rem;
+    padding-right: 0;
 }
 
 .edit_project_input_box , h2{
     grid-row: 1;
 }
 
-#edit_project_form{
+#project_input_form{
     grid-row: 2;
-    overflow: hidden;
+
+
 }
 
 #edit_project_employee_select_box{
@@ -142,18 +148,26 @@
 }
 
 .edit_project_utility_bar{
+    height: 5rem;
     display: flex;
+    align-items: flex-end;
     flex-direction: row;
+    position: sticky;
+    transform: translate(0,0.5rem);
+    bottom: 0;
+}
+
+.utility_bar_buttons{
+    background-color: var(--section_primary);
+    width: 100%;
+    height: 3rem;
     padding: 0.5rem 0;
-    grid-row: 4;
 }
 
 #project_budget_tracker{
-    z-index: 99;
     background-color: var(--section_primary);
-    position:sticky;
-    bottom: 0;
     margin-left: auto;
+    margin-right: .5rem;
     min-width: fit-content;
     max-width: 15rem;
     padding:0.25rem;
@@ -164,7 +178,7 @@
 }
 
 .under_budget{
-    border: solid var(--section_bg) 0.25rem;
+    border: solid green 0.25rem;
 }
 
 .over_budget{

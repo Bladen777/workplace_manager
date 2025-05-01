@@ -270,104 +270,104 @@ console.log(`%c PROJECT PROJECT DATES `, `${ log_colors.important_2 }`,`for proj
                 ref = {edit_input_box_ref} 
                 className="edit_project_box general_section box_closed"
             >
-            {edit_btn_clicked && 
-                <div className="edit_project_input_box">
-                    <h2> {existing_project_data.submit_method === "add" ? "New" : "Edit"} Project</h2>
-                    <form 
-                        className="auto_form"
-                    >
-                        {db_column_info.map((column:Types_column_info)=>{
-                            if(column.column_name.includes("client")){
-                                return(
-                                    <Clients_dd
-                                        key={`input_for_${column.column_name}`}
-                                        send_table_data = {(form_data:Types_input_change)=>{handle_form_change({table_name: "projects", form_data:form_data})}}
-                                    />
-                                )
-                            } else if(
-                                !column.column_name.includes("start_date") 
-                                && !column.column_name.includes("finish_date") 
-                                && !column.column_name.includes("date_added") 
-                            ){
-                                return(
-                                    <Form_auto_input
-                                        key={`input_for_${column.column_name}`}
-                                        column_info = {column}
-                                        initial_data_object={project_initial_form_data}
-                                        adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
-                                        send_table_data = {(form_data:Types_input_change)=>{handle_form_change({table_name: "projects", form_data:form_data})}}
-                                    />
-                                )
-                            }
-                        })}
-                    </form>
-                    <div 
-                        id="project_budget_tracker"      
-                        className={production_budget.remaining < 0 ? "over_budget" : "under_budget"}
-                    >
-                        <p>Total Budget: ${project_budgets.total.toFixed(2)}</p>
-                        <p>Remaining Budget: ${production_budget.remaining.toFixed(2)}</p>
-                        <p>Budget Used: {production_budget.percent}%</p>
-                    </div>
+                {edit_btn_clicked && 
+                    <div className="edit_project_input_box">
+                        <h2> {existing_project_data.submit_method === "add" ? "New" : "Edit"} Project</h2>
                         
-                    <form className="auto_form" id="edit_project_employee_select_box">
-                        <h3>Department Budgets</h3>
-                        <div className="project_dates">
-                            <Form_auto_input
-                                column_info = {{
-                                    column_name: "start_date",
-                                    is_nullable: "YES",
-                                    input_type: "date"
-                                }}
-                                label_name="Project Start Date"
-                                initial_data_object={project_initial_form_data}
-                                adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
-                                send_table_data = {callback_handle_project_date_change}
-                            />
-                            <Form_auto_input
-                                column_info = {{
-                                    column_name: "finish_date",
-                                    is_nullable: "YES",
-                                    input_type: "date"
-                                }}
-                                label_name="Project Finish Date"
-                                initial_data_object={project_initial_form_data}
-                                adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
-                                send_table_data = {callback_handle_project_date_change}
-                            />
-                        </div>
-                        <Provide_Context_employee_data>
-                            {/* departments && pd_inputs */}
-                            {departments.map((item)=>
-                                <Pd_input
-                                    key={`pd_input_${item.name}`}
-                                    project_dates = {project_dates}
-                                    dep_data = {item}
-                                />)
-                            }
-                        </Provide_Context_employee_data>
-                    </form>
-                        
-                    <div className="edit_project_utility_bar">
-                        <button id="edit_project_done_btn" type="button"
-                                className="general_btn"
-                                onClick={post_form}
-                        >
-                            Done  
-                        </button>
-                        <button id="edit_project_cancel_btn" type="button" 
-                                className="general_btn" 
-                                onClick={()=>handle_edit_project_click()}
-                        > 
-                        {status_message !== "" ? "Return" : "Cancel"}
-                        </button>
-                        {status_message !== "" &&
-                            <h3>{status_message}</h3>
-                        }
-                    </div>                    
-                </div>
-            }
+                        <form className="auto_form" id="project_input_form">
+                            {db_column_info.map((column:Types_column_info)=>{
+                                if(column.column_name.includes("client")){
+                                    return(
+                                        <Clients_dd
+                                            key={`input_for_${column.column_name}`}
+                                            send_table_data = {(form_data:Types_input_change)=>{handle_form_change({table_name: "projects", form_data:form_data})}}
+                                        />
+                                    )
+                                } else if(
+                                    !column.column_name.includes("start_date") 
+                                    && !column.column_name.includes("finish_date") 
+                                    && !column.column_name.includes("date_added") 
+                                ){
+                                    return(
+                                        <Form_auto_input
+                                            key={`input_for_${column.column_name}`}
+                                            column_info = {column}
+                                            initial_data_object={project_initial_form_data}
+                                            adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
+                                            send_table_data = {(form_data:Types_input_change)=>{handle_form_change({table_name: "projects", form_data:form_data})}}
+                                        />
+                                    )
+                                }
+                            })}
+                        </form>
+                        <form className="auto_form" id="edit_project_employee_select_box">
+                            <h3>Department Budgets</h3>
+                            <div className="project_dates">
+                                <Form_auto_input
+                                    column_info = {{
+                                        column_name: "start_date",
+                                        is_nullable: "YES",
+                                        input_type: "date"
+                                    }}
+                                    label_name="Project Start Date"
+                                    initial_data_object={project_initial_form_data}
+                                    adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
+                                    send_table_data = {callback_handle_project_date_change}
+                                />
+                                <Form_auto_input
+                                    column_info = {{
+                                        column_name: "finish_date",
+                                        is_nullable: "YES",
+                                        input_type: "date"
+                                    }}
+                                    label_name="Project Finish Date"
+                                    initial_data_object={project_initial_form_data}
+                                    adjust_data_object={project_submit_method === "edit" ? current_project.project_data : project_initial_form_data}
+                                    send_table_data = {callback_handle_project_date_change}
+                                />
+                            </div>
+                            <Provide_Context_employee_data>
+                                {/* departments && pd_inputs */}
+                                {departments.map((item)=>
+                                    <Pd_input
+                                        key={`pd_input_${item.name}`}
+                                        project_dates = {project_dates}
+                                        dep_data = {item}
+                                    />)
+                                }
+                            </Provide_Context_employee_data>
+                        </form>
+                        <div className="edit_project_utility_bar">
+                            <div className="utility_bar_buttons">
+                                <button id="edit_project_done_btn" type="button"
+                                        className="general_btn"
+                                        onClick={post_form}
+                                >
+                                    Done  
+                                </button>
+                                <button id="edit_project_cancel_btn" type="button" 
+                                        className="general_btn" 
+                                        onClick={()=>handle_edit_project_click()}
+                                > 
+                                {status_message !== "" ? "Return" : "Cancel"}
+                                </button>
+                                {status_message !== "" &&
+                                    <h3>{status_message}</h3>
+                                }
+                            </div>
+                            <div 
+                                id="project_budget_tracker"      
+                                className={production_budget.remaining < 0 ? "over_budget" : "under_budget"}
+                            >
+                                <p>Total Budget: ${project_budgets.total.toFixed(2)}</p>
+                                <p>Remaining Budget: ${production_budget.remaining.toFixed(2)}</p>
+                                <p>Budget Used: {production_budget.percent}%</p>
+                            </div>
+                        </div> 
+                    </div>  
+                }
             </article>
+            
         </section>
     ); 
 }

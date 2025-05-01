@@ -50,7 +50,7 @@ interface Types_post_data {
     submit_method: string;
 }
 
-interface Types_post_response{
+export interface Types_post_response{
     message:string;
     entry_id?:number;
 }
@@ -77,8 +77,9 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
     function update_data({table_name, entry_id, entry_id_key, form_data}:Types_update_data){
 
-        const update_data = {...data_ref.current}
-
+        let update_data = {...data_ref.current}
+        console.log(`%c EXISTING DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,{...update_data});
+        console.log(`%c SENT DATA `, `${ log_colors.data }`,`for form_data`,'\n' ,form_data);
         if(Array.isArray(form_data)){
             update_data[table_name] = form_data;
         } else if(entry_id_key){
@@ -89,7 +90,10 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             })
             update_data[table_name][entry_index][form_data.db_column] = form_data.input;
         } else {
-            update_data[table_name][0][form_data.db_column] = form_data.input;
+            update_data[table_name] = {
+                ...update_data[table_name],
+                [form_data.db_column]:form_data.input
+            }
         }
 
         data_ref.current = update_data;
@@ -125,7 +129,16 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         table_names.forEach((table_name, index)=>{
             const missing_inputs:string[] = [];
             const db_column_info:Types_column_info[] = data_info[table_name].info.db_column_info
-            data_ref.current[table_name].map((current_entry:Types_form_data)=>{
+
+            if(Array.isArray(data_ref.current[table_name])){
+                data_ref.current[table_name].map((current_entry:Types_form_data)=>{
+                    check_columns({current_entry:current_entry});
+                })
+            } else {
+                check_columns({current_entry:data_ref.current[table_name]})
+            }
+
+            function check_columns({current_entry}:{current_entry:Types_form_data}){
                 db_column_info.map((item: Types_column_info) => {
                     const null_check = item.is_nullable;
                     const current_item = item.column_name;
@@ -133,7 +146,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                         missing_inputs.push(current_item);
                     }
                 }) 
-            })
+            }
     
             let missing_input_strings =""
     

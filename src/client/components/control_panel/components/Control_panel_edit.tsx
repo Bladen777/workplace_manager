@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 // COMPONENT IMPORTS
 import Order_shift from "./control_panel_edits/Order_shift.js";
 import Employee_input_form from "./control_panel_edits/Employee_input_form.js";
-import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
+import Form_auto_input, { Types_input_change } from "../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
@@ -55,6 +55,7 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
     const [status_message, set_status_message] = useState<string>("");
 
     function handle_form_change({form_data}:Types_data_change){
+        console.log(`%c DATA `, `${ log_colors.data }`,`for form_data`,'\n' ,form_data);
         process_data.update_data({table_name:active_table, form_data: form_data})
     }
 
@@ -94,7 +95,7 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
                                     key={`input_for_${column.column_name}`}
                                     column_info = {column}
                                     initial_data_object={target_entry}
-                                    send_table_data = {handle_form_change}
+                                    send_table_data = {({input, db_column}:Types_input_change)=>handle_form_change({form_data:{input:input, db_column:db_column}})}
                                 />
                             )
                         })
