@@ -52,8 +52,8 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     );
 
     const [dep_dates, set_dep_dates] = useState<Types_project_dates>({
-        start_date:String(pd_initial_form_data.start_date),
-        finish_date: String(pd_initial_form_data.finish_date)
+        start_date: typeof(pd_initial_form_data.start_date) !== "number" ? pd_initial_form_data.start_date : undefined,
+        finish_date: typeof(pd_initial_form_data.finish_date) !== "number" ? pd_initial_form_data.finish_date : undefined
     })    
 
     function convert_text({text}:{text:string}){
@@ -79,6 +79,7 @@ function Pd_input({dep_data, project_dates}:Types_props) {
 
     function adjust_date(){
         set_dep_dates((prev_vals)=>{
+            
             let update_dates = {...prev_vals};
             let date_type = "start_date"
     
@@ -87,6 +88,16 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     
             const dep_start_time = (new Date(dep_dates.start_date!)).getTime();
             const dep_finish_time = (new Date(dep_dates.finish_date!)).getTime();
+
+/*
+            console.log(`%c DATA `, `${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for dep_dates`,'\n' ,dep_dates);
+            console.log(`%c ADJUST DATE VALUES `, `${ log_colors.data }`,
+                '\n' , `start_date_time: ${start_date_time} vs dep_start_time: ${dep_start_time}`,
+                '\n' , `finish_date_time: ${finish_date_time} vs dep_finish_time: ${dep_finish_time}`,
+            );
+*/
+
     
             if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && dep_dates.start_date === undefined)){
                 update_dates = {...update_dates, start_date:project_dates.start_date}

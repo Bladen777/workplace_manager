@@ -14,7 +14,13 @@ employment_start_date date,
 employment_end_date date,
 );
 
-pr
+CREATE TABLE clients(
+id SERIAL PRIMARY KEY UNIQUE NOT NULL,
+name varchar(255) UNIQUE NOT NULL,
+address varchar(255),
+date_added date
+);
+
 
 CREATE TABLE departments(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
@@ -23,11 +29,9 @@ department_order int NOT NULL,
 department_color varchar(255) UNIQUE NOT NULL
 );
 
-CREATE TABLE clients(
+CREATE TABLE employee_departments(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-name varchar(255) UNIQUE NOT NULL,
-address varchar(255),
-date_added date
+employee_id int REFERENCES employees(id)
 );
 
 CREATE TABLE projects(

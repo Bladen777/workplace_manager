@@ -175,7 +175,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
     function re_arrange_tables(){
         let table_names:string[] = Object.keys(data_ref.current);
-
         if(table_names.includes("employees")){
             change_order({name:"employees"})
         } else if (table_names.includes("projects")){
@@ -184,7 +183,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         function change_order({name}:{name:string}){
             const index = table_names.indexOf(name);
-            table_names.slice(index,1);
+            table_names.splice(index,1);
             table_names.unshift(name);
         }
 
@@ -198,6 +197,18 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         }
 
         const table_names:string[] = re_arrange_tables();
+
+        function add_id(f_table_name:string){
+            let id_name = "";
+            if(table_names.includes("employees")){
+                id_name = "employee_id"
+            } else if (table_names.includes("projects")){
+                id_name = "project_id"
+            }
+            data_ref.current[f_table_name].map((entry)=>{
+                entry[id_name] = target_entry_id_ref.current
+            })
+        }
 
         const missing_inputs = check_empty_input({table_names:table_names});
         if(missing_inputs !== ""){
@@ -234,8 +245,15 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
                 if(table_name === "projects"){
                     target_entry_id_ref.current = response.data.entry_id;
+                    if(submit_method ==="add"){
+                        add_id("project_department_budgets");
+                        add_id("employee_budgets");
+                    }
                 } else if (table_name === "employees"){
                     target_entry_id_ref.current = response.data.entry_id;
+                    if(submit_method ==="add"){
+                        add_id("employee_departments");
+                    }
                 } else if( !table_names.includes("projects") && !table_names.includes("employees")){
                     target_entry_id_ref.current = response.data.entry_id;
                 }

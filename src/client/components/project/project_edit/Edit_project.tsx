@@ -111,7 +111,8 @@ export default function Edit_project() {
                 add_btn_ele: add_btn_ref.current!, 
                 edit_btn_ele: edit_btn_ref.current!
             })
-        }   
+        }
+        set_status_message("");   
     }
 
 
