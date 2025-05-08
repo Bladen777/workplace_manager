@@ -10,12 +10,11 @@ import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.j
 import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js";
 
-
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js"
-  import "../../../../../styles/project/employee_select.css"
+  import "../../../../../styles/project_edit/employee_select.css"
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../context/Context_initial_data.js";

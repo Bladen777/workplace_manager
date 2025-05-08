@@ -19,8 +19,8 @@ export default function Project_legend() {
 
 // RETURNED VALUES 
     return(
-        <>
-
-        </>
+        <div id="project_department_legend" className="project_overview_content_box">
+            Legend
+        </div>
     ); 
 }

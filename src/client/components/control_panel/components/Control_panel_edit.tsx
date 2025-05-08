@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // COMPONENT IMPORTS
 import Order_shift from "./control_panel_edits/Order_shift.js";
@@ -32,6 +32,7 @@ interface Types_props{
 export default function Control_panel_edit({active_table, handle_cancel_edit_click}:Types_props) {
     console.log(`%c SUB-COMPONENT `, `${log_colors.sub_component}`, `Control_panel_edit for `,active_table);
 
+    
     const initial_data = useContext(Use_Context_initial_data).show_context[active_table];
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
@@ -69,6 +70,16 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
 
 // MEMOS AND EFFECTS    
 
+    useMemo(() =>{
+        if(active_entry.submit_method === "edit"){
+            const existing_entry_data = initial_data.data.find((entry)=>{
+                if(entry.id === active_entry.target_id){
+                    return entry
+                }
+            })
+            process_data.update_data({table_name: active_table, form_data: [existing_entry_data]})
+        }
+    },[])
 
 // RETURNED VALUES 
     return (

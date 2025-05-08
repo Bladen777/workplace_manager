@@ -11,12 +11,11 @@ import { Use_Context_active_entry } from "../../../context/Context_active_entry.
 import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 import { Provide_Context_employee_data } from "./employee_dd/context/Context_employee_data.js";
 
-
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
-import "../../../../styles/project/pd_input.css"
+import "../../../../styles/project_edit/pd_input.css"
 
 // TYPE DEFINITIONS
 import { Types_department_data } from "../../../context/Context_departments_data.js";

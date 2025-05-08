@@ -31,6 +31,8 @@ export default function Select_departments({employee_id}:Types_props) {
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
+    const update_initial_data = useContext(Use_Context_initial_data).update_func;
+
     const initial_department_data = useContext(Use_Context_departments_data).show_context;
 
     const [departments, set_departments] = useState<Types_form_data[]>([]);
@@ -65,7 +67,7 @@ export default function Select_departments({employee_id}:Types_props) {
             set_departments(dep_names);
             if(active_entry.submit_method === "add"){
                 set_input_data(form_data);
-                process_data.update_data({table_name:"employees", form_data:form_data})
+                process_data.update_data({table_name:"employee_departments", form_data:[form_data]})
             }
 
 
@@ -74,24 +76,23 @@ export default function Select_departments({employee_id}:Types_props) {
     
     // GET THE DEPARTMENT DATA FOR EXISTING ENTRY
     async function fetch_departments(){
-        try{
-            const response = await axios.post("/get_table_info",{
-                table_name: "employee_departments",
-                filter_key: "employee_id",
-                filter_item: employee_id
-            });
-            console.log(`%c DATA `, `${ log_colors.data }`,`for response.data`,'\n' ,response.data);
+        const initial_data_update = await update_initial_data.wait({table_name: "employee_departments", entry_id: employee_id, entry_id_key: "employee_id"})
+        const existing_dep_data = initial_data_update["employee_departments"].data[0];
+
+        if(existing_dep_data){
             const form_data:Types_form_data = {};
-            Object.keys(response.data[0]).map((column_name)=>{
+            Object.keys(existing_dep_data).map((column_name)=>{
                 if(!column_name.includes("employee_id") && column_name !== "id"){
-                form_data[column_name] = response.data[0][column_name];
+                form_data[column_name] = existing_dep_data[column_name];
                 }
             });
+
             console.log(`%c DATA `, `${ log_colors.data }`,`for Fetched form_data`,'\n' ,form_data);
+            process_data.update_data({table_name:"employee_departments", form_data:[existing_dep_data]})
+            
             set_input_data(form_data);
-        } catch (error){
-          console.log(`%c  has the following error: `, 'darkred', error); 
-        };
+        }
+        update_initial_data.update_context(initial_data_update);
     }
 
 // MEMOS AND EFFECTS    

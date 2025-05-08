@@ -1,0 +1,28 @@
+.project_nav{
+    grid-column: 1/4;
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    grid-template-rows: 100%;
+}
+
+.project_selection{
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.project_nav_btn{
+    grid-row: 1;
+    margin: 0.5rem;
+    font-size: 3rem;
+    border: 0.25rem solid var(--section_primary);
+}
+
+#project_nav_left{
+    grid-column: 1;
+    border-bottom-left-radius: 25%;
+    border-top-left-radius: 25%;
+}
+
+#project_nav_right{
+    grid-column: 3;
+}

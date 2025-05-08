@@ -31,7 +31,7 @@ department_color varchar(255) UNIQUE NOT NULL
 
 CREATE TABLE employee_departments(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-employee_id int REFERENCES employees(id)
+employee_id int REFERENCES employees(id) NOT NULL
 );
 
 CREATE TABLE projects(
@@ -49,8 +49,8 @@ finish_date date
 
 CREATE TABLE project_department_budgets(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-project_id int REFERENCES projects(id),
-department_id int REFERENCES departments(id),
+project_id int REFERENCES projects(id) NOT NULL,
+department_id int REFERENCES departments(id) NOT NULL,
 start_date date,
 finish_date date,
 budget decimal(15,2)
@@ -58,9 +58,9 @@ budget decimal(15,2)
 
 CREATE TABLE employee_budgets(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-employee_id int REFERENCES employees(id),
-project_id int REFERENCES projects(id),
-department_id int REFERENCES departments(id),
+employee_id int REFERENCES employees(id) NOT NULL,
+project_id int REFERENCES projects(id) NOT NULL,
+department_id int REFERENCES departments(id) NOT NULL,
 start_date date,
 budget decimal(15,2),
 budget_hours decimal(15,2)

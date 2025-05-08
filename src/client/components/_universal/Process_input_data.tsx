@@ -79,10 +79,10 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         let update_data = {...data_ref.current}
         console.log(`%c EXISTING DATA `, `${ log_colors.process_data }`,`for update_data`,'\n' ,{...update_data});
-        console.log(`%c SENT DATA `, `${ log_colors.process_data }`,`for form_data`,'\n' ,form_data);
+        console.log(`%c SENT DATA `, `${ log_colors.process_data }`,`for form_data for ${table_name}`,'\n' ,form_data);
         if(Array.isArray(form_data)){
             update_data[table_name] = form_data;
-        } else if(entry_id_key){
+        }else if(entry_id_key){
             const entry_index = update_data[table_name].findIndex((entry)=>{
                 if(entry[entry_id_key!] === entry_id){
                     return entry   
@@ -90,9 +90,16 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             })
             update_data[table_name][entry_index][form_data.db_column] = form_data.input;
         } else {
-            update_data[table_name] = {
-                ...update_data[table_name],
-                [form_data.db_column]:form_data.input
+            if(!update_data[table_name]){
+                console.log(`%c DATA `, `${ log_colors.data }`,`for update_data[table_name]`,'\n' ,update_data[table_name]);
+                update_data[table_name] = [
+                    {[form_data.db_column]:form_data.input}
+                ];
+            } else {
+                update_data[table_name][0] = {
+                    ...update_data[table_name][0],
+                    [form_data.db_column]:form_data.input
+                };
             }
         }
 
@@ -128,7 +135,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         table_names.forEach((table_name, index)=>{
             const missing_inputs:string[] = [];
-            const db_column_info:Types_column_info[] = data_info[table_name].info.db_column_info
+            console.log(`%c DATA `, `${ log_colors.data }`,`for data_info`,'\n' ,data_info);
+            const db_column_info:Types_column_info[] = data_info[table_name].info.db_column_info;
 
             if(Array.isArray(data_ref.current[table_name])){
                 data_ref.current[table_name].map((current_entry:Types_form_data)=>{
@@ -251,9 +259,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     }
                 } else if (table_name === "employees"){
                     target_entry_id_ref.current = response.data.entry_id;
-                    if(submit_method ==="add"){
-                        add_id("employee_departments");
-                    }
+                    add_id("employee_departments");
+                    
                 } else if( !table_names.includes("projects") && !table_names.includes("employees")){
                     target_entry_id_ref.current = response.data.entry_id;
                 }

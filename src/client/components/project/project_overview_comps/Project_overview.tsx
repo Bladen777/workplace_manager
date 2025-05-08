@@ -1,11 +1,12 @@
 import { useContext, useEffect, useMemo, useState } from "react"
 
 // COMPONENT IMPORTS
+import Project_nav from "./project_overview_comps/Project_nav.js" 
+import Project_legend from "./project_overview_comps/Project_legend.js"
 import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
 import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import Project_details from "./project_overview_comps/Project_details.js"
-import Project_nav from "./project_overview_comps/Project_nav.js" 
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
@@ -15,7 +16,7 @@ import { Use_Context_active_entry } from "../../context/Context_active_entry.js"
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
-import "../../../styles/project/project_overview.css"
+import "../../../styles/project_overview/project_overview.css"
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../context/Context_initial_data.js"
@@ -98,10 +99,8 @@ export default function Project_overview() {
         <h1 id="project_overview_title">Project Overview</h1>
         {!content_is_loading &&
           <div className="project_overview_box">
-            <h3>{display_project.project_name}</h3>
-            <div id="project_department_legend" className="project_overview_content_box">
-              Legend
-            </div>
+            <Project_nav />
+            <Project_legend/>
             <Pie_chart />
             <Budget_tracker />
             <Date_tracker />
