@@ -4,8 +4,9 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "r
 import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
-import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
-import { Use_Context_project_data } from "../../../context/Context_project_data.js";
+
+import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js";
 import { Use_Context_project_budgets } from "../../../context/Context_project_budgets.js";
 import { Use_Context_employee_data } from "./context/Context_employee_data.js";
 
@@ -41,25 +42,25 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
     console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `P_employee_edit`);
 
     const dep_id_name = `dep_id_${dep_id}`
-    const existing_project_data = useContext(Use_Context_project_data).show_context;
 
-    const existing_pd_budget = existing_project_data.current_project.employee_budgets.find((entry)=>{
+    const initial_data = useContext(Use_Context_initial_data).show_context;
+    const active_entry = useContext(Use_Context_active_entry).show_context;
+    const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name];
+
+    const update_employee_data = useContext(Use_Context_employee_data).update_func;
+
+    const employee_budget_data = initial_data["employee_budgets"];
+
+    const existing_pd_budget = employee_budget_data.data.find((entry)=>{
         if(entry.employee_id === employee_id){
             return entry;
         };
     });
     const initial_employee_form_data = (
-        existing_pd_budget && existing_project_data.submit_method === "edit" 
+        existing_pd_budget && active_entry.submit_method === "edit" 
         ? existing_pd_budget 
-        : existing_project_data.table_info.project_department_budgets.initial_form_data
+        : employee_budget_data.info.form_data
     );
-
-    //console.log(`%c DATA `, `${ log_colors.data }`,`for initial_employee_form_data`,'\n' ,initial_employee_form_data);
-
-    const department_budget = useContext(Use_Context_project_budgets).show_context.departments[dep_id_name]
-    const employee_data = useContext(Use_Context_employee_data).show_context;
-
-    const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
     const [employee_budgets, set_employee_budgets] = useState<Types_employee_budgets>({
         budget:Number(initial_employee_form_data.budget),
@@ -120,7 +121,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
             start_date: input
         }
 
-        console.log(`%c DATA `, `${ log_colors.data }`,`for date_form_ data`,'\n' ,date_form_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for date_form_data`,'\n' ,date_form_data);
         update_employee_data.now(date_form_data); 
 
     }
@@ -141,12 +142,24 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
     useEffect(() =>{
         e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
         e_select_box_ele.current!.addEventListener("animationend", animation_done);
+
+        console.log(`%c DATA `, `${ log_colors.data }`,`for data`,'\n' ,data);
+        const added_employee_data:Types_form_data = {
+            budget_hours: employee_budgets.budget_hours,
+            budget: employee_budgets.budget,
+            employee_id: employee_id,
+            department_id: dep_id,  
+            start_date: initial_employee_form_data.start_date 
+        }
         
+        const employee_data_update = update_employee_data.wait(added_employee_data);
 
         function animation_done(){
             e_select_box_ele.current!.removeEventListener("animationend", animation_done);
             e_select_box_ele.current!.style.animation ="";
+            update_employee_data.update_context(employee_data_update);
         }
+
     },[])
 
 

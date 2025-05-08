@@ -50,6 +50,8 @@ export default function animate_edit_project() {
     function run_animation({animate_forwards}:Types_animate_forwards){
         console.log(`%c ANIMATION RAN `, `${ log_colors.animation }`, `animate_edit_project`);
 
+
+        const animation_direction = animate_forwards ? "normal" : "reverse";
         const ele_1:Types_animation_ele = {
             ele: animation_elements.current!.btn_box_ele!,
             animation: "toggle_btn_box_visibility 0.5s"
@@ -57,7 +59,7 @@ export default function animate_edit_project() {
     
         const ele_2:Types_animation_ele = {
             ele: animation_elements.current!.input_box_ele!,
-            animation: "toggle_input_box_visibility 1s"
+            animation: animation_direction === "reverse" ? "toggle_input_box_visibility 0.5s" :"toggle_input_box_visibility 1s"
         }
     
     
@@ -68,7 +70,7 @@ export default function animate_edit_project() {
 
         const start:Types_animation_ele = animate_forwards ? ele_1 : ele_2;
         const end:Types_animation_ele = !animate_forwards ? ele_1 : ele_2;
-        const animation_direction = animate_forwards ? "normal" : "reverse";
+        
     
     
         if(animate_forwards){

@@ -38,7 +38,7 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
 
     const update_initial_data = useContext(Use_Context_initial_data).update_func;
 
-    let target_entry = {}
+    let target_entry = {};
     
     if(active_entry.submit_method === "edit"){
         initial_data.data.find((entry)=>{

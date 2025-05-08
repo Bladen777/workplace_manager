@@ -4,7 +4,8 @@ import { createContext, useContext, useState, ReactNode, useMemo, useRef } from 
 // COMPONENT IMPORTS 
 
 // CONTEXT IMPORTS 
-import { Use_Context_project_data } from "../../../../context/Context_project_data.js";
+import { Use_Context_initial_data } from "../../../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../../../../_universal/Process_input_data.js";
 
 
@@ -66,9 +67,12 @@ export const Use_Context_employee_data = createContext<Types_context>({
 export function Provide_Context_employee_data({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
 
-    const existing_project_data = useContext(Use_Context_project_data).show_context;
-    const current_project = existing_project_data.current_project.project_data;
+    const initial_data = useContext(Use_Context_initial_data).show_context;
+    const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
+
+    const current_project = initial_data["projects"].data[0];
+
     const employee_data_ref = useRef<Types_context_content>([])
 
     // FETCH EXISTING DATA FROM THE DATABASE
@@ -120,7 +124,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
                     }
                 }
             } else {
-                const project_id = existing_project_data.current_project.project_data.id;
+                const project_id = active_entry.target_id;
                 update_data.push({
                     employee_id: employee_id,
                     department_id: department_id,

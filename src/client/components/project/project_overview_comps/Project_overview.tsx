@@ -7,7 +7,8 @@ import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import Project_details from "./project_overview_comps/Project_details.js" 
 
 // CONTEXT IMPORTS 
-import { Use_Context_project_data } from "../context/Context_project_data.js"
+import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
 
 // HOOK IMPORTS 
 
@@ -18,23 +19,54 @@ import "../../../styles/project/project_overview.css"
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../context/Context_initial_data.js"
 
-interface Types_change_project{
-  id:number;
-}
+
 
 // THE COMPONENT
 export default function Project_overview() {
   console.log(`%c COMPONENT `, `${log_colors.component}`, `Project_overview`);
 
-  const existing_project_data = useContext(Use_Context_project_data).show_context
-  const all_projects = existing_project_data.all_projects;
-  const current_project = existing_project_data.current_project.project_data;
-  const update_current_project = useContext(Use_Context_project_data).update_func; 
 
-  const [display_project, set_display_project] = useState<Types_form_data>(current_project) 
+  const initial_data = useContext(Use_Context_initial_data).show_context;
+  const active_entry = useContext(Use_Context_active_entry).show_context;
 
-  function change_current_project({id}:Types_change_project){
+  const update_initial_data = useContext(Use_Context_initial_data).update_func;
+  const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
+  const [ready, set_ready] = useState<boolean>(false);
+  if(!ready){
+    (async ()=>{
+      const all_projects = await update_initial_data.wait({table_name: "projects"});
+      console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
+      if(all_projects["projects"].data.length > 0){
+        const latest_project_id:number = all_projects["projects"].data[all_projects["projects"].data.length -1].id; 
+        console.log(`%c DATA `, `${ log_colors.data }`,`for latest_project_id`,'\n' ,latest_project_id);
+        await update_project_data({project_id:latest_project_id});
+      } else {
+        await update_active_entry.now({submit_method:"add"})
+      }
+      set_ready(true)
+      //console.log(`%c DATA `, `${ log_colors.data }`,`for skipped`);      
+  })()
+  
+  }
+
+  const [content_is_loading, set_content_is_loading] = useState<boolean>(true);
+  const display_project:Types_form_data =(
+    (initial_data["projects"] && active_entry.target_id && initial_data["projects"].data.length > 0) 
+    ? initial_data["projects"].data[0]
+    : {}
+  )
+
+  async function update_project_data({project_id}:{project_id:number}){
+    set_content_is_loading(true);
+
+    const active_entry_update = await update_active_entry.wait({target_id:project_id});
+    await update_initial_data.wait({table_name: "project_department_budgets", entry_id_key:"project_id" ,entry_id:project_id});
+    await update_initial_data.wait({table_name: "employee_budgets", entry_id_key:"project_id" ,entry_id:project_id});
+    await update_initial_data.now({table_name: "projects", entry_id_key:"id" ,entry_id:project_id});
+    update_active_entry.update_context(active_entry_update);
+
+    set_content_is_loading(false);
   }
   // Need data from departments table 
   // Need data from employee budget table
@@ -55,26 +87,31 @@ export default function Project_overview() {
   */
 
 // MEMOS AND EFFECTS
-  useMemo(()=>{
-    if(existing_project_data.submit_method !== "add"){
-      set_display_project(current_project);
-    }
-  },[current_project])
+
 
 // RETURNED VALUES
-  if(current_project && Object.keys(current_project).length > 0){
-    console.log(`%c CURRENT PROJECT EXISTS `, `${ log_colors.important }`,`for Object.keys(current_project).length`,'\n' ,Object.keys(current_project).length);
+  if(display_project && ready){
+    console.log(`%c DATA `, `${ log_colors.data }`,`for display_project`,'\n' ,display_project);
     return (
       <div id="project_overview" className="general_section">
         <h1 id="project_overview_title">Project Overview</h1>
-        <h3>{display_project.project_name}</h3>
-        <div id="project_department_legend" className="project_overview_content_box">
-          Legend
-        </div>
-        <Pie_chart />
-        <Budget_tracker />
-        <Date_tracker />
-        <Project_details />
+        {!content_is_loading &&
+          <div className="project_overview_box">
+            <h3>{display_project.project_name}</h3>
+            <div id="project_department_legend" className="project_overview_content_box">
+              Legend
+            </div>
+            <Pie_chart />
+            <Budget_tracker />
+            <Date_tracker />
+            <Project_details />
+          </div>
+        }
+        {content_is_loading &&
+          <div className="cp_loader">
+              Loading
+          </div>
+        }
       </div>
     )
   }      

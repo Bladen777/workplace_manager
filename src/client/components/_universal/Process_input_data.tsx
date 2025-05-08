@@ -78,8 +78,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
     function update_data({table_name, entry_id, entry_id_key, form_data}:Types_update_data){
 
         let update_data = {...data_ref.current}
-        console.log(`%c EXISTING DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,{...update_data});
-        console.log(`%c SENT DATA `, `${ log_colors.data }`,`for form_data`,'\n' ,form_data);
+        console.log(`%c EXISTING DATA `, `${ log_colors.process_data }`,`for update_data`,'\n' ,{...update_data});
+        console.log(`%c SENT DATA `, `${ log_colors.process_data }`,`for form_data`,'\n' ,form_data);
         if(Array.isArray(form_data)){
             update_data[table_name] = form_data;
         } else if(entry_id_key){
@@ -148,7 +148,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 }) 
             }
     
-            let missing_input_strings =""
+            let missing_input_strings ="";
     
             missing_inputs.map((item:string, index:number) => {
                 const item_string = item.replace("_"," ");
@@ -161,11 +161,13 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 }   
             })
     
-            if(index === 0){
-                missing_message += (`${missing_input_strings}`)
-            } else {
-                missing_message += (`, ${missing_input_strings}`)
-            }
+            if(missing_input_strings !== ""){
+                if(index === 0){
+                    missing_message += (`${missing_input_strings}`)
+                } else {
+                    missing_message += (`, ${missing_input_strings}`)
+                };
+            };  
         })
 
         return missing_message;
@@ -191,7 +193,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
     async function post_data({submit_method, display_entry_id}:Types_post_data):Promise<Types_post_response>{
         let status_message:string = "";
-        if(display_entry_id){
+        if(display_entry_id && display_entry_id !== 0){
             target_entry_id_ref.current = display_entry_id;
         }
 
@@ -229,7 +231,14 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         
                 console.log("The success_message: ",response.data);
                 status_message = (`${response.data.message}`);
-                target_entry_id_ref.current = response.data.entry_id
+
+                if(table_name === "projects"){
+                    target_entry_id_ref.current = response.data.entry_id;
+                } else if (table_name === "employees"){
+                    target_entry_id_ref.current = response.data.entry_id;
+                } else if( !table_names.includes("projects") && !table_names.includes("employees")){
+                    target_entry_id_ref.current = response.data.entry_id;
+                }
             } catch (error) {
                 console.log('%cError posting info to database: ', 'darkred',error);
                 status_message =("Failed to submit data");

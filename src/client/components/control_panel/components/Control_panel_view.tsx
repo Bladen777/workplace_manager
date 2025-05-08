@@ -39,11 +39,10 @@ interface Types_props{
 // THE COMPONENT
 export default function Control_panel_view({open_edit, active_table}:Types_props) {
 
-    
     const initial_data = useContext(Use_Context_initial_data).show_context;
-    const update_active_entry = useContext(Use_Context_active_entry).update_func;
     const process_data = useContext(Use_Process_input_data);
 
+    const update_active_entry = useContext(Use_Context_active_entry).update_func;
     
     const [entries, set_entries] = useState<Types_entries[]>([]);
     const [status_message, set_status_message] = useState<string>("");
@@ -54,7 +53,6 @@ export default function Control_panel_view({open_edit, active_table}:Types_props
 
     const [entry_selected, set_entry_selected] = useState<boolean>(false);
     const selected_entry = useRef<Types_selected_entry | null>(null);
-
 
     async function handle_edit_btn_click({submit_method}:{submit_method:string}){
         if (submit_method === "delete" ){

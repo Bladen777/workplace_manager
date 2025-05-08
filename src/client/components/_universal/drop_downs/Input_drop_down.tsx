@@ -43,7 +43,7 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
         table_data = form_table_data;
     }
 
-    const [selected_item, set_selected_item] = useState<string>("")
+    const [selected_item, set_selected_item] = useState<string>(selected_entry ? selected_entry : "")
     const empty_input = useRef<boolean>(true);
     const [matched_items, set_matched_items] = useState<ReactElement[]>([])
 

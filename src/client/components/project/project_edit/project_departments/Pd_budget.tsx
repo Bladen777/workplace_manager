@@ -4,9 +4,11 @@ import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } f
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS 
+import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
+
 import { Use_Context_project_budgets } from "../../context/Context_project_budgets.js";
-import { Use_Context_project_data } from "../../context/Context_project_data.js";
 
 // HOOK IMPORTS 
 
@@ -26,16 +28,21 @@ interface Types_props{
 export default function Pd_budget({dep_data}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${dep_data.name}`);
 
-    const existing_project_data = useContext(Use_Context_project_data).show_context;
-    const existing_pd_budget = existing_project_data.current_project.project_department_budgets.find((entry)=>{
+    const initial_data = useContext(Use_Context_initial_data).show_context;
+    const active_entry = useContext(Use_Context_active_entry).show_context;
+    const process_data = useContext(Use_Process_input_data);
+
+    const pd_budget_data = initial_data["project_department_budgets"];
+
+    const existing_pd_budget = pd_budget_data.data.find((entry)=>{
         if(entry.department_id === dep_data.id){
             return entry;
         };
     });
     const initial_pd_budget_form_data = (
-        existing_pd_budget && existing_project_data.submit_method === "edit" 
+        existing_pd_budget && active_entry.submit_method === "edit"
         ? existing_pd_budget : 
-        existing_project_data.table_info.project_department_budgets.initial_form_data
+        pd_budget_data.info.form_data
     );
 
     const project_budgets = useContext(Use_Context_project_budgets).show_context;
@@ -50,9 +57,6 @@ export default function Pd_budget({dep_data}:Types_props) {
     console.log(`%c DATA `, `${ log_colors.data }`,`for dep_id_name`,'\n' ,dep_id_name);
     console.log(`%c DATA `, `${ log_colors.data }`,`for department_budget`,'\n' ,department_budget);
 */
-
-    const process_data = useContext(Use_Process_input_data);
-
 
     function find_percent(){        
         let budget_percent:number = 0

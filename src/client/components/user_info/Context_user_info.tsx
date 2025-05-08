@@ -81,7 +81,7 @@ export function Provide_Context_user_info({children}:{children:ReactNode}) {
           console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`,`for user_info`, data);
           const user_check:Types_user_check = await check_user(data.email);
 
-          console.log(`%c DATA `, `${ log_colors.data }`,`for user_check`,'\n' ,user_check);
+          console.log(` %c CONTENT UPDATE DATA `, `${ log_colors.context }`,`for user_check`,'\n' ,user_check);
           
           if(user_check.email_exists){
             return({

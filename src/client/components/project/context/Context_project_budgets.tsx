@@ -57,6 +57,7 @@ export const Use_Context_project_budgets = createContext<Types_context>({
 export function Provide_Context_project_budgets({children}:{children:ReactNode}) {
     const [send_context, set_send_context] = useState<Types_context_content>(initial_context_content);
     const budgets = useRef<Types_context_content>(initial_context_content);
+    const [ready, set_ready] = useState<boolean>(false);
 
     const departments = useContext(Use_Context_departments_data).show_context;
 
@@ -74,7 +75,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
         budgets.current = department_budgets;
         set_send_context(department_budgets);
      
-        console.log(`   %c CONTEXT DATA `, `${ log_colors.data }`,`for department_budgets`,'\n' ,department_budgets);
+        console.log(`%c CONTEXT INITIAL DATA `, `${ log_colors.context }`,`for department_budgets`,'\n' ,department_budgets);
     }
 
     // UPDATE THE CONTEXT 
@@ -114,22 +115,24 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 
 useMemo(() =>{
     if(departments[0].id !== 0){
-        console.log(`%c DATA `, `${ log_colors.important_2 }`,`for departments`,'\n' ,departments);
         setup_department_budgets()
+        !ready && set_ready(true)
     }
 },[departments])
 
 // RETURN THE CONTEXT PROVIDER 
-    return (
-        <Use_Context_project_budgets.Provider value={{
-           update_func:{
-               now: async (props:Types_context_function)=>{set_send_context(await update_context(props))},
-               wait: update_context,
-               update_context: set_send_context 
-           },
-           show_context:send_context}}
-        >
-            {children} 
-        </Use_Context_project_budgets.Provider> 
-    );
+    if(ready){
+        return (
+            <Use_Context_project_budgets.Provider value={{
+            update_func:{
+                now: async (props:Types_context_function)=>{set_send_context(await update_context(props))},
+                wait: update_context,
+                update_context: set_send_context 
+            },
+            show_context:send_context}}
+            >
+                {children} 
+            </Use_Context_project_budgets.Provider> 
+        );
+    }
 }   

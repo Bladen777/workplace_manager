@@ -7,7 +7,6 @@ import { createContext, useContext, useState, ReactNode, useRef } from "react"
 
 // STYLE IMPORTS
     /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
-import { Types_form_data } from "./Context_initial_data.js";
 
 // TYPE DEFINITIONS 
 interface Types_context {
@@ -28,7 +27,7 @@ interface Types_context_function extends Types_context_content{   };
 
 // INITIAL CONTEXT CONTENT 
 const initial_context_content:Types_context_content = {
-    submit_method:"edit",
+    submit_method:"",
     target_id:0
 };
 
@@ -49,7 +48,7 @@ export function Provide_Context_active_entry({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({submit_method, target_id }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_active_entry`, target_id);
+        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_active_entry`, `sub_method: ${submit_method}  id:${target_id}`, `previous_vals: `, {...context_ref.current});
 
         const update_data = {...context_ref.current}
 
@@ -60,7 +59,8 @@ export function Provide_Context_active_entry({children}:{children:ReactNode}) {
             update_data.target_id = target_id;
         }
        
-        console.log(`%c CONTEXT UPDATE DATA`, `${ log_colors.context }`, `for Context_active_entry`, update_data);
+        context_ref.current = update_data;
+        console.log(`   %c CONTEXT UPDATE DATA `, `${ log_colors.context }`, `for Context_active_entry`, context_ref.current);
         return update_data;
     }
 

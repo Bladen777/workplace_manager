@@ -5,8 +5,11 @@ import axios from "axios";
 import P_employee_edit from "./P_employee_edit.js";
 import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
 
+
 // CONTEXT IMPORTS 
-import { Use_Context_project_data } from "../../../context/Context_project_data.js";
+import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js";
+
 
 // HOOK IMPORTS 
 
@@ -17,7 +20,6 @@ import { Use_Context_project_data } from "../../../context/Context_project_data.
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../context/Context_initial_data.js";
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
-import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
 import { Types_department_data } from "../../../../context/Context_departments_data.js";
 import { Types_project_dates } from "../../Edit_project.js";
 
@@ -31,8 +33,8 @@ interface Types_props{
 export default function Employee_select({department_data, dep_dates}:Types_props) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `employees_select for: `, department_data.name);
 
-    const existing_project_data = useContext(Use_Context_project_data).show_context;
-    const current_project = existing_project_data.current_project;
+    const initial_data = useContext(Use_Context_initial_data).show_context;
+    const active_entry = useContext(Use_Context_active_entry).show_context;
 
     const [initial_employee_list, set_initial_employee_list] = useState<Types_form_data[]>([])
     const [employee_list, set_employee_list] = useState<Types_form_data[]>([])
@@ -78,7 +80,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
 
     // CHECK IF THERE ARE EXISTING EMPLOYEES ASIGNED TO THIS PROJECT
     async function fetch_selected_employees(){
-        existing_project_data.current_project.employee_budgets.forEach((item:Types_form_data)=>{
+        initial_data["employee_budgets"].data.forEach((item:Types_form_data)=>{
             if(item.department_id === department_data.id){
                 add_employee({entry_id:Number(item.employee_id!)});
             }
@@ -113,7 +115,6 @@ export default function Employee_select({department_data, dep_dates}:Types_props
             }
         })
 
-        
         update_employee_list({f_employee_list:remaining_selected_employees});
         set_selected_employee_data(remaining_selected_employees);
     }
@@ -125,10 +126,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
         let remaining_employees:Types_form_data[] = [] 
         initial_employee_list.forEach((employee_data)=>{
             let employee_selected:boolean = false;
-            console.log(`%c EMPLOYEE SELECT ADJUST `, `${ log_colors.important }`,`for employee_data.id`,'\n' ,employee_data.id);
-            console.log(`%c DATA `, `${ log_colors.data }`,`for scan_employee_list`,'\n' ,scan_employee_list);
             scan_employee_list.forEach((s_employee_data)=>{
-                console.log(`%c DATA `, `${ log_colors.data }`,`for scan_employee_list.id`,'\n' ,s_employee_data.id);
                 if(employee_data.id === s_employee_data.id){
                     employee_selected = true;
                 }
@@ -153,7 +151,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
 
 
     useMemo(() => {
-        if(existing_project_data.submit_method === "edit" && initial_employee_list.length !== 0){
+        if(active_entry.submit_method === "edit" && initial_employee_list.length !== 0){
             const animating_ele = document.getElementById("edit_project_input_box");
             animating_ele?.addEventListener("animationend", animation_finished);
             
@@ -163,13 +161,6 @@ export default function Employee_select({department_data, dep_dates}:Types_props
             }
         }
     },[initial_employee_list])
-
-/*
-    useMemo(() =>{
-        console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
-    },[dep_dates])
-*/
-
 
 
 // RETURNED VALUES

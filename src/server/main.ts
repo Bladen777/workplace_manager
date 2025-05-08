@@ -355,13 +355,15 @@ app.get("/user_info",
           console.log(`UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition};`)
           try {
             const response = await db.query(
-              `UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition};`,
+              `UPDATE ${table_name} SET ${table_data.edit_values} ${table_data.search_condition} RETURNING id;`,
             );
             if(!array_edit){
               res.send({
                 message: `successfully ${sent_submit_method}ed`
               });
               console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
+            } else {
+              return response.rows[0].id;
             }
           } catch (error) {
             console.log(`Error editing data in ${table_name}: `,error);
@@ -402,17 +404,22 @@ app.get("/user_info",
             entry_id: Number(entry.id), 
             submit_method:adjust_submit_method
           });
+          added_id = await access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
+
+
+/*
           if(adjust_submit_method === "add"){
             added_id = await access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
           } else {
             access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
           }
+*/
         };
         res.send({
           entry_id: added_id !== 0 ? added_id : "",
           message: `successfully ${sent_submit_method}ed`
         });
-        console.log(`successfully ${sent_submit_method}ed to ${table_name}`)
+        console.log(`successfully ${sent_submit_method}ed to ${table_name}`, `entry_id:${added_id}`)
 
       } else {
         const table_data:Types_table_data = string_data({entry_data: submit_data, submit_method:sent_submit_method});

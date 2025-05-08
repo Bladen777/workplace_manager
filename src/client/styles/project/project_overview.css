@@ -3,14 +3,20 @@
     height: 70rem;
     margin: 1rem auto;
     padding: 10px;
-    display: grid;
-    grid-template-columns: 15% 70% 15%;
-    grid-template-rows: 10% 50% 15% auto;
+    display: flex;
+    flex-direction: column;
 }
 
 #project_overview_title{
     grid-column: 2;
     grid-row: 1;
+}
+
+.project_overview_box{
+    height: 100%;
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    grid-template-rows: 10% 50% 15% auto;
 }
 
 /* GENERAL CONTENT*/
