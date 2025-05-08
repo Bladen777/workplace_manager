@@ -384,7 +384,7 @@ export default function Edit_project() {
                                         className="general_btn"
                                         onClick={post_form}
                                 >
-                                    Done  
+                                    Save  
                                 </button>
                                 <button id="edit_project_cancel_btn" type="button" 
                                         className="general_btn" 
@@ -393,7 +393,7 @@ export default function Edit_project() {
                                 {status_message !== "" ? "Return" : "Cancel"}
                                 </button>
                                 {status_message !== "" &&
-                                    <h3>{status_message}</h3>
+                                    <h3 className="status_message">{status_message}</h3>
                                 }
                             </div>
                             <div 

@@ -4,7 +4,8 @@ import { useContext, useEffect, useMemo, useState } from "react"
 import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
 import Date_tracker from "./project_overview_comps/Date_tracker.js"
-import Project_details from "./project_overview_comps/Project_details.js" 
+import Project_details from "./project_overview_comps/Project_details.js"
+import Project_nav from "./project_overview_comps/Project_nav.js" 
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";

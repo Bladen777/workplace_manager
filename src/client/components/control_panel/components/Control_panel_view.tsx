@@ -73,17 +73,19 @@ export default function Control_panel_view({open_edit, active_table}:Types_props
     },[entry_selected]);
 
     function handle_selected_entry(item:Types_form_data, index:number){
-        console.log(`%c DATA `, `${ log_colors.data }`,`for item`,'\n' ,item);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for item`,'\n' ,item, '\n' ,`for index: ${index}` );
         if(!entry_selected){
             set_entry_selected(true);
         }
-        
+        console.log(`%c DATA `, `${ log_colors.data }`,`for entry_selected`,'\n' ,entry_selected);
+
         // Find previous selected entry and set is_active to false
+        const prev_entry_index = {...selected_entry.current}.index;
         set_entries((prev_vals)=>{
-            const prev_entry = {...selected_entry.current! }
             const update_data = [...prev_vals]
+            console.log(`%c DATA `, `${ log_colors.data }`,`for prev_entry_index`,'\n' ,prev_entry_index);
             if(entry_selected){
-                update_data[prev_entry.index].is_active = false;
+                update_data[prev_entry_index!].is_active = false;
             }
             update_data[index].is_active = true;
             return update_data;
@@ -104,7 +106,6 @@ useMemo(()=>{
         return initial_entries
     })
     
-
     selected_entry.current = null;
     set_entry_selected(false);
     set_status_message("")

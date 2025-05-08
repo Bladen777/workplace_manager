@@ -47,3 +47,26 @@ div{
     transform: scale(1.05);
     background-color: var(--section_btn_hover) !important;
 }
+
+.status_message{
+    animation: show_status_message 2s ease forwards;
+}
+
+@keyframes show_status_message {
+    0%{
+        color: rgba(255, 255, 255, 0);
+    }
+
+    25%{
+        color: rgba(255, 255, 255, 1);
+    }
+
+    75%{
+        color: rgba(255, 255, 255, 1);
+    }
+
+    100%{
+        color: rgba(255, 255, 255, 0);
+    }
+}
+

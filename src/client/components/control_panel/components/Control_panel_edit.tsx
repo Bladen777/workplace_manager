@@ -110,13 +110,13 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
                 <button id="cp_done_btn" type="button" 
                         className="cp_utility_bar_btn general_btn" 
                         onClick={()=> post_form() }
-                > Done 
+                > Save 
                 </button>
                 <button id="cp_cancel_btn" type="button" className="cp_utility_bar_btn general_btn" 
                         onClick={()=>handle_cancel_edit_click()}> {status_message !== "" ? "Return" : "Cancel"} 
                 </button>
                 {status_message !== "" &&
-                    <h3>{status_message}</h3>
+                    <h3 className="status_message">{status_message}</h3>
                 }
             </div>
             

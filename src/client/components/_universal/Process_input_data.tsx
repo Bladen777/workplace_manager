@@ -270,7 +270,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         }
     }
 
-    
     async function handle_departments_change({submit_method, entry_id}:{submit_method:string, entry_id:number}){
         if(submit_method !== "edit"){
             try{

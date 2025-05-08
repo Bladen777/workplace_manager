@@ -71,6 +71,8 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
+    const update_initial_data = useContext(Use_Context_initial_data).update_func;
+
     const current_project = initial_data["projects"].data[0];
 
     const employee_data_ref = useRef<Types_context_content>([])
@@ -139,6 +141,18 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             console.log(`%c DATA `, `${ log_colors.data }`,`for delete_entry ${entry_index}`);
             if (typeof(entry_index) === "number"){
                 update_data.splice(entry_index,1)
+            }
+            if(active_entry.submit_method === "edit" && initial_data["employee_budgets"].data.length > 0){
+                const entry_id = initial_data["employee_budgets"].data.find((entry)=>{
+                    if(entry.employee_id === employee_id && entry.project_id === active_entry.target_id){
+                        return entry
+                    }
+                });
+                if(entry_id){
+                    await process_data.delete_entry({table_name:"employee_budgets", entry_id:entry_id.id})
+                    await update_initial_data.now({table_name: "employee_budgets", entry_id_key:"project_id" ,entry_id:active_entry.target_id});
+
+                }
             }
         }
 
