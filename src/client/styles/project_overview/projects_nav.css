@@ -25,4 +25,6 @@
 
 #project_nav_right{
     grid-column: 3;
+    border-bottom-right-radius: 25%;
+    border-top-right-radius: 25%;
 }

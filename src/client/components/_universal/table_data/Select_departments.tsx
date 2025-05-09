@@ -69,8 +69,6 @@ export default function Select_departments({employee_id}:Types_props) {
                 set_input_data(form_data);
                 process_data.update_data({table_name:"employee_departments", form_data:[form_data]})
             }
-
-
     }
 
     

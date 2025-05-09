@@ -11,6 +11,7 @@ import Project_details from "./project_overview_comps/Project_details.js"
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
+import { Use_Context_user_info } from "../../user_info/Context_user_info.js"
 
 // HOOK IMPORTS 
 
@@ -27,9 +28,9 @@ import { Types_form_data } from "../../context/Context_initial_data.js"
 export default function Project_overview() {
   console.log(`%c COMPONENT `, `${log_colors.component}`, `Project_overview`);
 
-
   const initial_data = useContext(Use_Context_initial_data).show_context;
   const active_entry = useContext(Use_Context_active_entry).show_context;
+  const user_data = useContext(Use_Context_user_info).show_context;
 
   const update_initial_data = useContext(Use_Context_initial_data).update_func;
   const update_active_entry = useContext(Use_Context_active_entry).update_func;
@@ -38,14 +39,19 @@ export default function Project_overview() {
   if(!ready){
     (async ()=>{
       const all_projects = await update_initial_data.wait({table_name: "projects"});
+      const user_projects = await update_initial_data.wait({table_name: "employee_budgets", entry_id:user_data.id, entry_id_key:"employee_id"});
       console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
-      if(all_projects["projects"].data.length > 0){
+      if(all_projects["projects"].data.length === 0){
+        await update_active_entry.now({submit_method:"add"})
+      } else if(user_projects["employee_budgets"].data.length > 0){
+        const latest_project_id:number = user_projects["employee_budgets"].data[user_projects["employee_budgets"].data.length -1].project_id; 
+        console.log(`%c DATA `, `${ log_colors.data }`,`for latest_project_id`,'\n' ,latest_project_id);
+        await update_project_data({project_id:latest_project_id});
+      } else{
         const latest_project_id:number = all_projects["projects"].data[all_projects["projects"].data.length -1].id; 
         console.log(`%c DATA `, `${ log_colors.data }`,`for latest_project_id`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
-      } else {
-        await update_active_entry.now({submit_method:"add"})
-      }
+      } 
       set_ready(true)
       //console.log(`%c DATA `, `${ log_colors.data }`,`for skipped`);      
   })()
