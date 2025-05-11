@@ -1,7 +1,8 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
+import Animate_flip_switch from "../../../_universal/animations/Animate_flip_switch.js";
 
 // CONTEXT IMPORTS 
 import { Types_form_data, Use_Context_initial_data } from "../../../context/Context_initial_data.js";
@@ -13,8 +14,7 @@ import { Use_Context_user_info } from "../../../user_info/Context_user_info.js";
 // STYLE IMPORTS
     /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
     import "../../../../styles/project_overview/projects_nav.css"
-
-
+    import "../../../../styles/_universal/animations.css"
 
 // TYPE DEFINITIONS
 
@@ -25,11 +25,20 @@ export default function Project_nav() {
         const user_data = useContext(Use_Context_user_info).show_context;
         const initial_data = useContext(Use_Context_initial_data).show_context;
         const active_entry = useContext(Use_Context_active_entry).show_context;
-        const [project_selection, set_project_selection] = useState<string>("user");
+        
         const [all_projects, set_all_projects] = useState<Types_form_data[]>();
         const [user_projects, set_user_projects] = useState<Types_form_data[]>();
 
         const update_initial_data = useContext(Use_Context_initial_data).update_func;
+
+        // SWTICHES
+        const [project_selection, set_project_selection] = useState<string>("user");
+        const [ps_open, set_ps_open] = useState<boolean>(false); 
+
+        // CONSTS FOR ANIMATING
+            const animate_fs = Animate_flip_switch();
+            const animate_fs_btn_ref = useRef<HTMLDivElement | null>(null);
+            const animate_fs_box_ref = useRef<HTMLDivElement | null>(null);
 
         const project_data = initial_data["projects"].data[0];
 
@@ -89,6 +98,11 @@ export default function Project_nav() {
                 return([]) 
             }
         }
+
+        function handle_ps_click(){
+            set_ps_open(!ps_open)
+            animate_fs.run_animation({animate_forwards:!ps_open})
+        }
                 
 
         console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
@@ -105,23 +119,58 @@ export default function Project_nav() {
         })()
     },[initial_data])
 
+    useEffect(() =>{
+        animate_fs.initiate_animation({
+                        btn_ele: animate_fs_btn_ref.current!, 
+                        box_ele: animate_fs_box_ref.current!, 
+                    })
+    },[])
+
 // RETURNED VALUES 
     return(
         <div className="project_nav">
+            <h1
+                id="project_title"
+            >
+                {project_data.project_name}
+            </h1>
             <div className="project_selection">
-                {user_data.is_admin && 
+                {user_data.is_admin &&
                     <button 
                         className="project_selection_switch general_btn"
                         onClick={()=>{set_project_selection(project_selection === "user" ? "all" : "user")}}
                     >
-                        {project_selection === "user" ? "All Projects" : "My Projects"}
+                        <h4>{project_selection === "user" ? "All Projects" : "My Projects"}</h4>
 
                     </button>
                 }
+                <div
+                    className="animate_btn_box"
+                    ref= {animate_fs_btn_ref}
+                >
+                    <button 
+                        className="general_btn ps_btn"
+                        
+                        onClick={handle_ps_click}
+                    >
+                        <h4>Find Project</h4>
+                    </button>
+                </div>
                 
-                <h3>{project_data.project_name}</h3>
+                <div 
+                    className="ps_box animate_ele_closed animate_box"
+                    ref= {animate_fs_box_ref}    
+                >
+                    {ps_open &&
+                        <button
+                            className="general_btn"
+                            onClick={handle_ps_click}
+                        >
+                            <h4>Close</h4>
+                        </button>
+                    }
+                </div>
             </div>
-            
 
             <button
                 id="project_nav_left"

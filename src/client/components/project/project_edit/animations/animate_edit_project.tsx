@@ -30,7 +30,7 @@ interface Types_animation_ele{
 
 
 // THE COMPONENT 
-export default function animate_edit_project() {
+export default function Animate_edit_project() {
     console.log(`%c ANIMATION `, `${ log_colors.animation }`, `animate_edit_project`);
 
     const animation_elements = useRef<Types_animation_elements>({})

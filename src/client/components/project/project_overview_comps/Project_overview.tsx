@@ -102,7 +102,7 @@ export default function Project_overview() {
     console.log(`%c DATA `, `${ log_colors.data }`,`for display_project`,'\n' ,display_project);
     return (
       <div id="project_overview" className="general_section">
-        <h1 id="project_overview_title">Project Overview</h1>
+        <h2 id="project_overview_title">Project Overview</h2>
         {!content_is_loading &&
           <div className="project_overview_box">
             <Project_nav />

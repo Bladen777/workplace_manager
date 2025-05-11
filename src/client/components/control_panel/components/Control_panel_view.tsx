@@ -133,16 +133,22 @@ useMemo(()=>{
             <div id="cpv_btns" className="cp_utility_bar">
                 <button id="cpv_add_btn" className="cp_utility_bar_btn general_btn"
                         onClick={()=>{handle_edit_btn_click({submit_method:"add"})}}
-                > New </button>
+                > 
+                    <h4>New</h4> 
+                </button>
                 {entry_selected &&
                 <button id="cpv_edit_btn" className="cp_utility_bar_btn general_btn"
                         onClick={()=>{handle_edit_btn_click({submit_method:"edit"})}}
-                > Edit  </button>
+                > 
+                    <h4>Edit</h4>  
+                </button>
                 }
                 {entry_selected &&
                 <button id="cpv_delete_btn" className="cp_utility_bar_btn general_btn"
                         onClick={()=>{handle_edit_btn_click({submit_method:"delete"})}}
-                > Delete  </button>
+                > 
+                    <h4>Delete</h4>  
+                </button>
                 }
                 {status_message !== "" &&
                     <h3>{status_message}</h3>

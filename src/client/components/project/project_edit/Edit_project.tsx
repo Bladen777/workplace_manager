@@ -4,7 +4,7 @@ import { ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useS
 import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
 import Clients_dd from "../../_universal/drop_downs/Clients_dd.js";
 import Pd_input from "./project_departments/Pd_input.js";
-import animate_edit_project from "./animations/animate_edit_project.js";
+import Animate_edit_project from "./animations/Animate_edit_project.js";
 
 // CONTEXT IMPORTS 
 
@@ -76,8 +76,8 @@ export default function Edit_project() {
         percent: 0
     })
 
-    // consts for animating
-    const animate = animate_edit_project();
+    // CONSTS FOR ANIMATING
+    const animate = Animate_edit_project();
     const edit_btn_box_ref = useRef<HTMLDivElement | null>(null);
     const edit_input_box_ref = useRef<HTMLDivElement | null>(null);
     const edit_btn_ref = useRef<HTMLButtonElement | null>(null);
@@ -85,8 +85,7 @@ export default function Edit_project() {
     const btn_type = useRef<string>("");
 
 
-    async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){
-        // Handle animation 
+    async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){ 
         if(submit_method){
             await adjust_initial_data({submit_method:submit_method});
         }
@@ -379,13 +378,13 @@ export default function Edit_project() {
                                         className="general_btn"
                                         onClick={post_form}
                                 >
-                                    Save  
+                                    <h4>Save</h4>  
                                 </button>
                                 <button id="edit_project_cancel_btn" type="button" 
                                         className="general_btn" 
                                         onClick={()=>handle_edit_project_click()}
                                 > 
-                                {status_message !== "" ? "Return" : "Cancel"}
+                                    <h4>{status_message !== "" ? "Return" : "Cancel"}</h4>
                                 </button>
                                 {status_message !== "" &&
                                     <h3 className="status_message">{status_message}</h3>
