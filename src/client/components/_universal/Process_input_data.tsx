@@ -187,7 +187,10 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             change_order({name:"employees"})
         } else if (table_names.includes("projects")){
             change_order({name:"projects"})
-        }
+            if(table_names.includes("client_jobs")){
+                change_order({name:"client_jobs"})
+            }
+        } 
 
         function change_order({name}:{name:string}){
             const index = table_names.indexOf(name);
@@ -207,11 +210,16 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         const table_names:string[] = re_arrange_tables();
 
         function add_id(f_table_name:string){
+            console.log(`%c DATA `, `${ log_colors.data }`,`for table_names`,'\n' ,table_names);
             let id_name = "";
             if(table_names.includes("employees")){
-                id_name = "employee_id"
+                id_name = "employee_id";
             } else if (table_names.includes("projects")){
-                id_name = "project_id"
+                id_name = "project_id";
+                if(f_table_name === "projects" && table_names.includes("client_jobs")){
+                    id_name = "job_id";
+                    console.log(`%c DATA `, `${ log_colors.data }`,`for id_name`,'\n' ,id_name);
+                }
             }
             data_ref.current[f_table_name].map((entry)=>{
                 entry[id_name] = target_entry_id_ref.current
@@ -257,6 +265,12 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                         add_id("project_department_budgets");
                         add_id("employee_budgets");
                     }
+                } else if (table_name === "client_jobs" && table_names.includes("projects")){
+                    target_entry_id_ref.current = response.data.entry_id;
+                    if(submit_method ==="add"){
+                        add_id("projects");
+                    }
+                    console.log(`%c DATA `, `${ log_colors.data }`,`for data_ref.current["projects"]`,'\n' ,data_ref.current["projects"]);
                 } else if (table_name === "employees"){
                     target_entry_id_ref.current = response.data.entry_id;
                     add_id("employee_departments");

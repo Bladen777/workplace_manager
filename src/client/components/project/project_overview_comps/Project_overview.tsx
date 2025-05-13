@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react"
 
 // COMPONENT IMPORTS
-import Project_nav from "./project_overview_comps/Project_nav.js" 
+import Project_nav from "./project_overview_comps/project_nav/Project_nav.js" 
 import Project_legend from "./project_overview_comps/Project_legend.js"
 import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
@@ -36,12 +36,18 @@ export default function Project_overview() {
   const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
   const [ready, set_ready] = useState<boolean>(false);
+  const [content_is_loading, set_content_is_loading] = useState<boolean>(true);
+
   if(!ready){
     (async ()=>{
       const all_projects = await update_initial_data.wait({table_name: "projects"});
       const user_projects = await update_initial_data.wait({table_name: "employee_budgets", entry_id:user_data.id, entry_id_key:"employee_id"});
       console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
       if(all_projects["projects"].data.length === 0){
+        await update_initial_data.wait({table_name: "project_department_budgets"});
+        await update_initial_data.wait({table_name: "employee_budgets"});
+        await update_initial_data.wait({table_name: "client_jobs"});
+        await update_initial_data.now({table_name: "projects"});
         await update_active_entry.now({submit_method:"add"})
       } else if(user_projects["employee_budgets"].data.length > 0){
         const latest_project_id:number = user_projects["employee_budgets"].data[user_projects["employee_budgets"].data.length -1].project_id; 
@@ -58,7 +64,7 @@ export default function Project_overview() {
   
   }
 
-  const [content_is_loading, set_content_is_loading] = useState<boolean>(true);
+  
   const display_project:Types_form_data =(
     (initial_data["projects"] && active_entry.target_id && initial_data["projects"].data.length > 0) 
     ? initial_data["projects"].data[0]
@@ -98,7 +104,7 @@ export default function Project_overview() {
 
 
 // RETURNED VALUES
-  if(display_project && ready){
+  if(Object.keys(display_project).length !== 0 && ready){
     console.log(`%c DATA `, `${ log_colors.data }`,`for display_project`,'\n' ,display_project);
     return (
       <div id="project_overview" className="general_section">

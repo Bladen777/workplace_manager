@@ -87,6 +87,23 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
                         key={`input_for_${item_data.name}`}
                     />
                 )
+            } else if(item_data.input_type === "textarea"){
+                input = (
+                    <label className="auto_form_input_label">
+                        <p>{`${column_info.is_nullable === "NO" ? "* " : ""}${item_data.name_text}`}:</p>   
+                        <textarea
+                            id={item_data.name}
+                            className={`auto_form_${item_data.input_type} auto_form_input`}
+                            name={item_data.name}
+                            placeholder={item_data.name_text}
+                            value={item_data.value ===  null ? "" : item_data.value}
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>)=>{
+                                let value = e.target.value;
+                                handle_input_change({input:value, db_column:item_data.name})
+                            }}
+                        />
+                    </label>
+                )
             } else {
                 console.log(`       %c FORM AUTO INPUT `, `${ log_colors.input_component }`,`for ${item_data.name_text} is_nullable: ${column_info.is_nullable}`, `\n  `,   input_data);
                 input = (

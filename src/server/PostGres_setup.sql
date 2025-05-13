@@ -21,6 +21,12 @@ address varchar(255),
 date_added date
 );
 
+CREATE TABLE client_jobs(
+id SERIAL PRIMARY KEY UNIQUE NOT NULL,
+name varchar(255) NOT NULL,
+client_id int REFERENCES clients(id) NOT NULL, 
+date_added date
+);
 
 CREATE TABLE departments(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
@@ -37,14 +43,16 @@ employee_id int REFERENCES employees(id) NOT NULL
 CREATE TABLE projects(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 project_name varchar(255) NOT NULL,
-client_id int REFERENCES clients(id) NOT NULL, 
+client_id int REFERENCES clients(id) NOT NULL,
+job_id int REFERENCES client_jobs(id) NOT NULL, 
 production_budget decimal(15,2),
 project_address varchar(255),
 shipping_address varchar(255),
 date_added date,
 ship_date date,
 start_date date,
-finish_date date
+finish_date date,
+details text
 );
 
 CREATE TABLE project_department_budgets(

@@ -10,7 +10,6 @@
     color: var(--edit_project_btn_text);
     border-radius: 0.25rem;
     width: 25%;
-    height: 4rem;
     padding: 1rem;
     overflow: hidden;
 }
@@ -122,7 +121,7 @@
     height: 100%;
     display: grid;
     
-    grid-template-rows:3rem 13rem auto 3rem;
+    grid-template-rows:3rem 15rem auto 3rem;
     overflow-y: auto;
     position: relative;
     background-color: var(--section_primary);
@@ -132,14 +131,12 @@
     padding-right: 0;
 }
 
-.edit_project_input_box , h2{
+.edit_project_input_box > h2{
     grid-row: 1;
 }
 
 #project_input_form{
     grid-row: 2;
-
-
 }
 
 #edit_project_employee_select_box{
@@ -185,5 +182,12 @@
 
 .over_budget{
     border: solid red 0.25rem;
+}
 
+.job_select_box > *{
+    margin: 0.25rem 0;
+}
+
+.job_select_box > button{
+    margin: 0.25rem 0;
 }

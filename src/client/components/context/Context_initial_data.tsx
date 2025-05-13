@@ -123,11 +123,11 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
                     initial_item_value = "0";
                 } else if (item_name.includes("hours_per_week")){
                     initial_item_value = "40";
-    
-                    // FIX THIS, NEED FOR ARRAYS
                 } else if (item_name.includes("departments")){
                     initial_item_value = "";   
-                    
+                } else if (item_name.includes("details")) {
+                    item.input_type = "textarea"
+                    initial_item_value = "";    
                 } else {
                     item.input_type = "text"
                 }; 

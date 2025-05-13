@@ -19,10 +19,9 @@
 .project_selection{
     grid-column: 2;
     grid-row: 2;
-
     display: flex;
     position: relative;
-    align-items:flex-end;
+    justify-content: center;
 }
 
 .project_nav_btn{
@@ -51,5 +50,5 @@
     border: 0.25rem solid var(--section_bg);
     width: 100%;
     position: absolute;
-    top: 3rem;
+
 }

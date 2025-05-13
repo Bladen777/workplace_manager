@@ -2,19 +2,20 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 
 // COMPONENT IMPORTS 
-import Animate_flip_switch from "../../../_universal/animations/Animate_flip_switch.js";
+import Animate_flip_switch from "../../../../_universal/animations/Animate_flip_switch.js";
+import Project_search from "./Project_search.js";
 
 // CONTEXT IMPORTS 
-import { Types_form_data, Use_Context_initial_data } from "../../../context/Context_initial_data.js";
-import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
-import { Use_Context_user_info } from "../../../user_info/Context_user_info.js";
+import { Types_form_data, Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js";
+import { Use_Context_user_info } from "../../../../user_info/Context_user_info.js";
 
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
-    import "../../../../styles/project_overview/projects_nav.css"
-    import "../../../../styles/_universal/animations.css"
+    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+    import "../../../../../styles/project_overview/projects_nav.css";
+    import "../../../../../styles/_universal/animations.css"
 
 // TYPE DEFINITIONS
 
@@ -162,12 +163,9 @@ export default function Project_nav() {
                     ref= {animate_fs_box_ref}    
                 >
                     {ps_open &&
-                        <button
-                            className="general_btn"
-                            onClick={handle_ps_click}
-                        >
-                            <h4>Close</h4>
-                        </button>
+                        <Project_search
+                            close_dd={handle_ps_click}
+                        />
                     }
                 </div>
             </div>

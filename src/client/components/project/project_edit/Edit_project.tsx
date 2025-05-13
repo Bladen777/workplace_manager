@@ -2,7 +2,7 @@ import { ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useS
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
-import Clients_dd from "../../_universal/drop_downs/Clients_dd.js";
+import Clients_dd from "./project_departments/client_and_job/Clients_dd.js";
 import Pd_input from "./project_departments/Pd_input.js";
 import Animate_edit_project from "./animations/Animate_edit_project.js";
 
@@ -140,16 +140,7 @@ export default function Edit_project() {
             let new_project_data = {...project_initial_form_data, date_added:date}
             process_data.update_data({table_name: "projects", form_data: [new_project_data]})
 
-            const department_budgets:Types_department_budgets = {};
-            initial_data["project_department_budgets"].data.forEach((entry)=>{
-                department_budgets[`dep_id_${entry.department_id}`] = 0;
-            })
-
-            project_budgets_update = await update_project_budgets.wait({all_budgets:{
-                total:0,
-                used:0,
-                departments: department_budgets
-            }})
+            project_budgets_update = await update_project_budgets.wait({reset:true})
 
             const department_budget_data = departments.map((item:Types_department_data)=>{
                 return{
@@ -324,6 +315,8 @@ export default function Edit_project() {
                                             key={`input_for_${column.column_name}`}
                                         />
                                     )
+                                } else if(column.column_name.includes("job_id")){
+                                    return
                                 } else if(
                                     !column.column_name.includes("start_date") 
                                     && !column.column_name.includes("finish_date") 

@@ -35,6 +35,7 @@ export interface Types_search_item{
 // THE COMPONENT 
 export default function Input_drop_down({placeholder, selected_entry, table_name, string_table_data, form_table_data, send_table_data}:Types_props) {
     console.log(`       %c INPUT DROP DOWN `, `${ log_colors.input_component }`, `for ${table_name.specific ? table_name.specific : table_name.main}`);
+    //console.log(`%c DATA `, `${ log_colors.data }`,`for selected_entry`,'\n' ,selected_entry);
 
     let table_data: string[] | Types_form_data[] = [];
     if(string_table_data){
@@ -193,7 +194,10 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
 
 // RETURNED VALUES 
     return(
-        <div ref={drop_down_ref}>
+        <div 
+            className="form_dd_box"
+            ref={drop_down_ref}
+        >
             <input
                 className="form_dd_input"
                 value={selected_item}

@@ -34,6 +34,7 @@ interface Types_context_function {
     dep_id_name?: string;
     budget:number;
     all_budgets:Types_context_content;
+    reset?:boolean;
 };
 
 // INITIAL CONTEXT CONTENT 
@@ -63,8 +64,8 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 
     function setup_department_budgets(){
         const department_budgets:Types_context_content = {
-            total:send_context.total,
-            used: send_context.used,
+            total: 0,
+            used: 0,
             departments:{}
         }
 
@@ -73,18 +74,21 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
         })
 
         budgets.current = department_budgets;
-        set_send_context(department_budgets);
-     
-        console.log(`%c CONTEXT INITIAL DATA `, `${ log_colors.context }`,`for department_budgets`,'\n' ,department_budgets);
+        return department_budgets;
     }
 
     // UPDATE THE CONTEXT 
-    async function update_context({total, dep_id_name, budget, all_budgets}:Types_context_function){
+    async function update_context({total, dep_id_name, budget, all_budgets, reset }:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_budgets`, `total: `,total);
+        if(reset){
+            const budget_update = setup_department_budgets()
+            return budget_update;
+        }
+
         let update_budget: Types_context_content = {
             ...budgets.current!
         }
-
+        console.log(`%c CONTEXT `, `${ log_colors.context }`,`for update_budget`,'\n' ,update_budget);
         let used_budget:number;
 
         if(all_budgets){
@@ -115,7 +119,9 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 
 useMemo(() =>{
     if(departments[0].id !== 0){
-        setup_department_budgets()
+        const department_budgets = setup_department_budgets()
+        set_send_context(department_budgets);
+        console.log(`%c CONTEXT INITIAL DATA `, `${ log_colors.context }`,`for department_budgets`,'\n' ,department_budgets);
         !ready && set_ready(true)
     }
 },[departments])
