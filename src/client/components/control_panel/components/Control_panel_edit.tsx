@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 // COMPONENT IMPORTS
 import Order_shift from "./control_panel_edits/Order_shift.js";
 import Employee_input_form from "./control_panel_edits/Employee_input_form.js";
-import Form_auto_input, { Types_input_change } from "../../_universal/inputs/Form_auto_input.js";
+import Client_edit from "./control_panel_edits/Client_edit.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
@@ -17,8 +17,6 @@ import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 import "../../../styles/control_panel/cp_edit.css"
 
 // TYPE DEFINITIONS 
-
-import { Types_data_change } from "../../_universal/Process_input_data.js";
 import { Types_post_response } from "../../_universal/Process_input_data.js";
 
 interface Types_props{
@@ -27,12 +25,10 @@ interface Types_props{
 }
 
 
-
 // THE COMPONENT
 export default function Control_panel_edit({active_table, handle_cancel_edit_click}:Types_props) {
     console.log(`%c SUB-COMPONENT `, `${log_colors.sub_component}`, `Control_panel_edit for `,active_table);
 
-    
     const initial_data = useContext(Use_Context_initial_data).show_context[active_table];
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
@@ -52,13 +48,7 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
         target_entry = initial_data.info.form_data
     }
     
-
     const [status_message, set_status_message] = useState<string>("");
-
-    function handle_form_change({form_data}:Types_data_change){
-        console.log(`%c DATA `, `${ log_colors.data }`,`for form_data`,'\n' ,form_data);
-        process_data.update_data({table_name:active_table, form_data: form_data})
-    }
 
     async function post_form(){
         console.log(`%c POST FORM `, `${ log_colors.data }`);
@@ -96,26 +86,12 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
                         initial_data_object={target_entry} 
                     />   
             }
-            { (active_table !== "departments" && active_table !== "employees") &&
-                <div id="cpe_input_box" className="cp_content_box">
-                    <form className="auto_form">
-                    {
-                        initial_data.info.db_column_info.map((column)=>{
-                            return(
-                                <Form_auto_input
-                                    key={`input_for_${column.column_name}`}
-                                    column_info = {column}
-                                    initial_data_object={target_entry}
-                                    send_table_data = {({input, db_column}:Types_input_change)=>handle_form_change({form_data:{input:input, db_column:db_column}})}
-                                />
-                            )
-                        })
-
-                    }
-                    </form>
-                </div>
+            { active_table === "clients" &&
+                    <Client_edit
+                        initial_data_object={target_entry} 
+                    />   
             }
-            
+
             
             <div className="cp_utility_bar">
                 <button id="cp_done_btn" type="button" 

@@ -21,12 +21,6 @@ address varchar(255),
 date_added date
 );
 
-CREATE TABLE client_jobs(
-id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-name varchar(255) NOT NULL,
-client_id int REFERENCES clients(id) NOT NULL, 
-date_added date
-);
 
 CREATE TABLE departments(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
@@ -40,11 +34,18 @@ id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 employee_id int REFERENCES employees(id) NOT NULL
 );
 
+CREATE TABLE project_groups(
+id SERIAL PRIMARY KEY UNIQUE NOT NULL,
+name varchar(255) NOT NULL,
+client_id int REFERENCES clients(id) NOT NULL, 
+date_added date
+);x
+
 CREATE TABLE projects(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 project_name varchar(255) NOT NULL,
 client_id int REFERENCES clients(id) NOT NULL,
-job_id int REFERENCES client_jobs(id) NOT NULL, 
+project_group_id int REFERENCES project_groups(id) NOT NULL, 
 production_budget decimal(15,2),
 project_address varchar(255),
 shipping_address varchar(255),
@@ -55,7 +56,7 @@ finish_date date,
 details text
 );
 
-CREATE TABLE project_department_budgets(
+CREATE TABLE project_departments(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 project_id int REFERENCES projects(id) NOT NULL,
 department_id int REFERENCES departments(id) NOT NULL,
@@ -64,7 +65,7 @@ finish_date date,
 budget decimal(15,2)
 );
 
-CREATE TABLE employee_budgets(
+CREATE TABLE project_employees(
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 employee_id int REFERENCES employees(id) NOT NULL,
 project_id int REFERENCES projects(id) NOT NULL,

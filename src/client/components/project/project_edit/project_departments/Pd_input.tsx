@@ -37,7 +37,7 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
-    const pd_budget_data = initial_data["project_department_budgets"];
+    const pd_budget_data = initial_data["project_departments"];
 
     const existing_dep_data = pd_budget_data.data.find((entry)=>{
         if(entry.department_id === dep_data.id){
@@ -70,7 +70,7 @@ function Pd_input({dep_data, project_dates}:Types_props) {
         set_dep_dates((prev_vals)=>{
             let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
             const update_dates = {...prev_vals, [date_type]:input}
-            process_data.update_data({table_name: "project_department_budgets", form_data:{input:input, db_column:db_column}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+            process_data.update_data({table_name: "project_departments", form_data:{input:input, db_column:db_column}, entry_id_key:"department_id" ,entry_id:dep_data.id})
                 
             return update_dates;
         })
@@ -100,14 +100,14 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     
             if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && dep_dates.start_date === undefined)){
                 update_dates = {...update_dates, start_date:project_dates.start_date}
-                process_data.update_data({table_name: "project_department_budgets", form_data:{input:project_dates.start_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+                process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.start_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
 
             };
     
             if(finish_date_time < dep_finish_time || (project_dates.finish_date !== undefined && dep_dates.finish_date === undefined)){
                 update_dates = {...update_dates, finish_date:project_dates.finish_date}
                 date_type = "finish_date";
-                process_data.update_data({table_name: "project_department_budgets", form_data:{input:project_dates.finish_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+                process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.finish_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
 
             };
             console.log(`%c DATA `, `${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
@@ -119,7 +119,7 @@ function Pd_input({dep_data, project_dates}:Types_props) {
 // MEMOS AND EFFECTS
 
     useEffect(() =>{
-        //process_data.handle_form_change({section_name:"projects", table_name: "project_department_budgets", form_data:pd_initial_form_data, entry_id:dep_data.id})
+        //process_data.handle_form_change({section_name:"projects", table_name: "project_departments", form_data:pd_initial_form_data, entry_id:dep_data.id})
     },[])
 
     useMemo(() =>{

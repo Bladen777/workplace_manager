@@ -3,7 +3,7 @@ import axios from "axios";
 
 // COMPONENT IMPORTS 
 import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
-import Job_select from "./Job_select.js"
+import Project_group_select from "./Project_group_select.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
@@ -78,7 +78,7 @@ if(client_list.length > 0){
                 />
             </label>
             {chosen_client_id !== 0 && 
-                <Job_select 
+                <Project_group_select 
                     selected_client_id = {chosen_client_id}
                 />
             }

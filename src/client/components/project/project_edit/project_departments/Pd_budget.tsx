@@ -32,7 +32,7 @@ export default function Pd_budget({dep_data}:Types_props) {
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
-    const pd_budget_data = initial_data["project_department_budgets"];
+    const pd_budget_data = initial_data["project_departments"];
 
     const existing_pd_budget = pd_budget_data.data.find((entry)=>{
         if(entry.department_id === dep_data.id){
@@ -85,7 +85,7 @@ export default function Pd_budget({dep_data}:Types_props) {
         }
         
         update_department_budget.now({dep_id_name:dep_id_name, budget:(new_department_budget)})
-        process_data.update_data({table_name: "project_department_budgets", form_data:{input:new_department_budget, db_column:"budget"}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+        process_data.update_data({table_name: "project_departments", form_data:{input:new_department_budget, db_column:"budget"}, entry_id_key:"department_id" ,entry_id:dep_data.id})
 
         if(db_column !== "percent"){
             find_percent()

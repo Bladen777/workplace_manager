@@ -3,6 +3,7 @@ import { useContext, memo} from "react";
 // COMPONENT IMPORTS 
 import Control_panel_entry_data from "./Control_panel_entry_data.js";
 import Employee_deps from "./Employee_deps.js";
+import Client_project_groups from "./Client_project_groups.js";
 
 // CONTEXT IMPORTS 
 
@@ -49,6 +50,11 @@ function Control_panel_entry({is_active, active_table, item_data, item_index, se
                     table_item = {item_data}
                     active_table = {active_table}
                 />
+                {active_table === "clients" &&
+                    <Client_project_groups
+                        client_id = {item_data.id!}
+                    />
+                } 
                 {active_table === "employees" &&
                     <Employee_deps
                         employee_id = {item_data.id!}

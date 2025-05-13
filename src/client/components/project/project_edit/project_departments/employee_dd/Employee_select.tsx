@@ -79,7 +79,7 @@ export default function Employee_select({department_data, dep_dates}:Types_props
 
     // CHECK IF THERE ARE EXISTING EMPLOYEES ASIGNED TO THIS PROJECT
     async function fetch_selected_employees(){
-        initial_data["employee_budgets"].data.forEach((item:Types_form_data)=>{
+        initial_data["project_employees"].data.forEach((item:Types_form_data)=>{
             if(item.department_id === department_data.id){
                 add_employee({entry_id:Number(item.employee_id!)});
             }

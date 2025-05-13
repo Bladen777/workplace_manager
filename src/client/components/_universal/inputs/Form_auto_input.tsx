@@ -15,7 +15,7 @@ import { Types_column_info } from "../../context/Context_initial_data.js";
 import { Types_form_data } from "../../context/Context_initial_data.js";
 
 export interface Types_new_entry{
-    label_name?:string;
+    label_name?:string | boolean;
     column_info: Types_column_info;
     initial_data_object:Types_form_data;
     adjust_data_object?: Types_form_data;
@@ -57,7 +57,7 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
         const item_data: Types_entry_input ={
             name: column_info.column_name,
             input_type: column_info.input_type,
-            name_text: label_name ? label_name : convert_text(),
+            name_text: (label_name !== undefined && label_name !== false) ? String(label_name) : convert_text(),
             value: input_data[column_info.column_name] ? input_data[column_info.column_name] : ""
         }
 
@@ -108,7 +108,9 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
                 console.log(`       %c FORM AUTO INPUT `, `${ log_colors.input_component }`,`for ${item_data.name_text} is_nullable: ${column_info.is_nullable}`, `\n  `,   input_data);
                 input = (
                     <label className="auto_form_input_label">
-                        <p>{`${column_info.is_nullable === "NO" ? "* " : ""}${item_data.name_text}`}:</p>   
+                        {label_name !== false &&
+                            <p>{`${column_info.is_nullable === "NO" ? "* " : ""}${item_data.name_text}`}:</p> 
+                        }
                         <input
                             id={item_data.name}
                             className={`auto_form_${item_data.input_type} auto_form_input`}

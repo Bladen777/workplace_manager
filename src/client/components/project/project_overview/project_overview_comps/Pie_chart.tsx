@@ -4,7 +4,6 @@ import { useContext } from "react";
 // CONTEXT IMPORTS 
 import { Use_Context_departments_data } from "../../../context/Context_departments_data.js";
 import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
-import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
 
 // HOOK IMPORTS 
 
@@ -24,14 +23,13 @@ export default function Pie_chart() {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pie_chart`);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
-    const active_entry = useContext(Use_Context_active_entry).show_context;
     const departments_data = useContext(Use_Context_departments_data).show_context;
 
     const n_chart_data:Types_pie_slice[] = create_chart_data()
 
     function create_chart_data(){
         let current_degree = 0;
-        const chart_array:Types_pie_slice[] = initial_data["project_department_budgets"].data.map((entry)=>{
+        const chart_array:Types_pie_slice[] = initial_data["project_departments"].data.map((entry)=>{
             const pie_color = departments_data.find((s_entry)=>{
                 if(s_entry.id === entry["department_id"]){
                     return s_entry
@@ -46,6 +44,11 @@ export default function Pie_chart() {
                 degree: pie_degree
             }
         });
+
+        chart_array.push({
+            color: "#FFFFFF",
+            degree: 360 - current_degree
+        })
         return chart_array;
     }
 

@@ -39,8 +39,7 @@ export default function Employee_input_form({initial_data_object}:Types_props) {
     const process_data = useContext(Use_Process_input_data);
 
     const [input_data, set_input_data] = useState<Types_form_data>(initial_data_object);
-    const employee_id: number | undefined = initial_data_object.id
-
+    
     const column_data:Types_column_data = {};
     initial_data.info.db_column_info.forEach((column)=>{
             column_data[column.column_name] = column 
@@ -169,7 +168,7 @@ export default function Employee_input_form({initial_data_object}:Types_props) {
                 </div>
             </form>
             <Select_departments 
-                employee_id = {employee_id}
+                employee_id = {initial_data_object.id}
             />
         </div>
     ); 

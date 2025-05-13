@@ -41,16 +41,16 @@ export default function Project_overview() {
   if(!ready){
     (async ()=>{
       const all_projects = await update_initial_data.wait({table_name: "projects"});
-      const user_projects = await update_initial_data.wait({table_name: "employee_budgets", entry_id:user_data.id, entry_id_key:"employee_id"});
+      const user_projects = await update_initial_data.wait({table_name: "project_employees", entry_id:user_data.id, entry_id_key:"employee_id"});
       console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
       if(all_projects["projects"].data.length === 0){
-        await update_initial_data.wait({table_name: "project_department_budgets"});
-        await update_initial_data.wait({table_name: "employee_budgets"});
-        await update_initial_data.wait({table_name: "client_jobs"});
+        await update_initial_data.wait({table_name: "project_departments"});
+        await update_initial_data.wait({table_name: "project_employees"});
+        await update_initial_data.wait({table_name: "project_groups"});
         await update_initial_data.now({table_name: "projects"});
         await update_active_entry.now({submit_method:"add"})
-      } else if(user_projects["employee_budgets"].data.length > 0){
-        const latest_project_id:number = user_projects["employee_budgets"].data[user_projects["employee_budgets"].data.length -1].project_id; 
+      } else if(user_projects["project_employees"].data.length > 0){
+        const latest_project_id:number = user_projects["project_employees"].data[user_projects["project_employees"].data.length -1].project_id; 
         console.log(`%c DATA `, `${ log_colors.data }`,`for latest_project_id`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
       } else{
@@ -75,8 +75,8 @@ export default function Project_overview() {
     set_content_is_loading(true);
 
     const active_entry_update = await update_active_entry.wait({target_id:project_id});
-    await update_initial_data.wait({table_name: "project_department_budgets", entry_id_key:"project_id" ,entry_id:project_id});
-    await update_initial_data.wait({table_name: "employee_budgets", entry_id_key:"project_id" ,entry_id:project_id});
+    await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:project_id});
+    await update_initial_data.wait({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:project_id});
     await update_initial_data.now({table_name: "projects", entry_id_key:"id" ,entry_id:project_id});
     update_active_entry.update_context(active_entry_update);
 
@@ -101,6 +101,9 @@ export default function Project_overview() {
   */
 
 // MEMOS AND EFFECTS
+useEffect(() =>{
+  update_project_data({project_id:active_entry.target_id!})
+},[active_entry.target_id])
 
 
 // RETURNED VALUES

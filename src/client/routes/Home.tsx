@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 
 // COMPONENT IMPORTS
-import Project_overview from "../components/project/project_overview_comps/Project_overview.js"
+import Project_overview from "../components/project/project_overview/Project_overview.js";
 import Edit_project from "../components/project/project_edit/Edit_project.js";
 import Control_panel from "../components/control_panel/Control_panel.js"
 
@@ -48,8 +48,9 @@ export default function Home() {
               <Provide_Context_active_entry>
                 <Provide_Process_input_data>
 
-                  <Project_overview />
                   { user_info.is_admin && <Edit_project /> }
+                  <Project_overview />
+                  
 
                 </Provide_Process_input_data>
               </Provide_Context_active_entry>

@@ -116,12 +116,12 @@ export default function Edit_project() {
 
         if(submit_method === "edit"){
             process_data.update_data({table_name: "projects", form_data: initial_data["projects"].data})
-            process_data.update_data({table_name: "project_department_budgets", form_data: initial_data["project_department_budgets"].data})
-            process_data.update_data({table_name: "employee_budgets", form_data: initial_data["employee_budgets"].data})
+            process_data.update_data({table_name: "project_departments", form_data: initial_data["project_departments"].data})
+            process_data.update_data({table_name: "project_employees", form_data: initial_data["project_employees"].data})
             
             const department_budgets:Types_department_budgets = {};
             let budget_used:number = 0;
-            initial_data["project_department_budgets"].data.forEach((entry)=>{
+            initial_data["project_departments"].data.forEach((entry)=>{
 
                 department_budgets[`dep_id_${entry.department_id}`] = Number(entry.budget);
                 budget_used += Number(entry.budget);
@@ -151,7 +151,7 @@ export default function Edit_project() {
                     budget: 0
                 }
             })
-            process_data.update_data({table_name: "project_department_budgets", form_data:department_budget_data}) 
+            process_data.update_data({table_name: "project_departments", form_data:department_budget_data}) 
         }
 
         if(submit_method && submit_method !== active_entry.submit_method){
@@ -207,12 +207,12 @@ export default function Edit_project() {
     async function update_project_data({project_id}:{project_id:number}){
 
         const active_entry_update = await update_active_entry.wait({target_id:project_id});
-        await update_initial_data.wait({table_name: "project_department_budgets", entry_id_key:"project_id" ,entry_id:project_id});
-        await update_initial_data.wait({table_name: "employee_budgets", entry_id_key:"project_id" ,entry_id:project_id});
+        await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:project_id});
+        await update_initial_data.wait({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:project_id});
         await update_initial_data.now({table_name: "projects", entry_id_key:"id" ,entry_id:project_id});
         update_active_entry.update_context(active_entry_update);
 
-      }
+    }
 
     async function post_form(){
         const response:{message:string, entry_id:number} = await process_data.post_data({
@@ -221,7 +221,8 @@ export default function Edit_project() {
         })
         console.log(`%c POST FORM FOR PROJECTS `, `${ log_colors.important_2 }`,`for response`,'\n' ,response);
         if(response.message.includes("successfully")){
-            update_project_data({project_id:response.entry_id})
+            update_active_entry.update_context({target_id:response.entry_id});
+            //update_project_data({project_id:response.entry_id})
         }
         set_status_message(response.message);
     }
@@ -315,7 +316,7 @@ export default function Edit_project() {
                                             key={`input_for_${column.column_name}`}
                                         />
                                     )
-                                } else if(column.column_name.includes("job_id")){
+                                } else if(column.column_name.includes("project_group_id")){
                                     return
                                 } else if(
                                     !column.column_name.includes("start_date") 

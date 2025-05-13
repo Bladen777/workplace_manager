@@ -28,9 +28,11 @@ export default function Project_nav() {
         const active_entry = useContext(Use_Context_active_entry).show_context;
         
         const [all_projects, set_all_projects] = useState<Types_form_data[]>();
-        const [user_projects, set_user_projects] = useState<Types_form_data[]>();
+        const [selected_projects, set_selected_projects] = useState<Types_form_data[]>([]);
+        const [selected_index, set_selected_index] = useState<number>(0)
 
         const update_initial_data = useContext(Use_Context_initial_data).update_func;
+        const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
         // SWTICHES
         const [project_selection, set_project_selection] = useState<string>("user");
@@ -60,7 +62,7 @@ export default function Project_nav() {
             let search_items = "";
             try {
                 const employee_projects = await axios.post("/get_table_info",{
-                    table_name: "employee_budgets",
+                    table_name: "project_employees",
                     sort_field: "project_id" ,
                     filter_key: "employee_id",
                     filter_item: user_data.id
@@ -104,6 +106,31 @@ export default function Project_nav() {
             set_ps_open(!ps_open)
             animate_fs.run_animation({animate_forwards:!ps_open})
         }
+
+        async function change_project(direction:string){
+            let move:number = 1;
+            if(direction === "prev"){
+                move = -1;
+            }
+            let new_index = selected_index + move;
+            if(selected_index === (selected_projects.length - 1) && direction === "forw"){
+                new_index = 0;
+
+            } else if(selected_index === 0 && direction === "prev"){
+                new_index = selected_projects.length - 1;
+            };
+
+            console.log(`%c DATA `, `${ log_colors.data }`,`for direction`,'\n' ,direction);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for selected_index`,'\n' ,selected_index);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for selected_projects`,'\n' ,selected_projects);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for selected_projects.length`,'\n' ,selected_projects.length);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for new_index`,'\n' ,new_index);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for selected_projects[new_index]`,'\n' ,selected_projects[new_index]);
+
+        
+            await update_active_entry.now({target_id:selected_projects[new_index].id})
+            set_selected_index(new_index)
+        }
                 
 
         console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
@@ -113,10 +140,14 @@ export default function Project_nav() {
         (async () => {
             if(user_data.is_admin){
                 const update_all_projects = await fetch_all_projects();
-                set_all_projects(update_all_projects)
+                set_all_projects(update_all_projects);
+                set_selected_projects(update_all_projects);
+                set_selected_index(update_all_projects.length -1)
+            } else {
+                const update_selected_projects = await fetch_user_projects();
+                set_selected_projects(update_selected_projects);
+                set_selected_index(update_selected_projects.length -1)
             }
-            const update_user_projects = await fetch_user_projects();
-            set_user_projects(update_user_projects)
         })()
     },[initial_data])
 
@@ -151,7 +182,6 @@ export default function Project_nav() {
                 >
                     <button 
                         className="general_btn ps_btn"
-                        
                         onClick={handle_ps_click}
                     >
                         <h4>Find Project</h4>
@@ -173,12 +203,14 @@ export default function Project_nav() {
             <button
                 id="project_nav_left"
                 className="project_nav_btn"
+                onClick={()=>{change_project("prev")}}
             >
                 🠸
             </button>
             <button
                 id="project_nav_right"
                 className="project_nav_btn"
+                onClick={()=>{change_project("forw")}}
             >
                 🠺
             </button>

@@ -30,7 +30,7 @@ interface Types_props{
     remove_employee: Function;
 }
 
-interface Types_employee_budgets{
+interface Types_project_employees{
     [key:string]:number;
     budget:number;
     budget_hours:number;
@@ -48,7 +48,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
-    const employee_budget_data = initial_data["employee_budgets"];
+    const employee_budget_data = initial_data["project_employees"];
 
     const existing_pd_budget = employee_budget_data.data.find((entry)=>{
         if(entry.employee_id === employee_id){
@@ -61,7 +61,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
         : employee_budget_data.info.form_data
     );
 
-    const [employee_budgets, set_employee_budgets] = useState<Types_employee_budgets>({
+    const [project_employees, set_project_employees] = useState<Types_project_employees>({
         budget:Number(initial_employee_form_data.budget),
         budget_hours:Number(initial_employee_form_data.budget_hours)
     })
@@ -82,7 +82,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
     },[])
 
     function handle_budget_input_change({input, db_column}:Types_input_change){
-        set_employee_budgets((prev_vals)=>{
+        set_project_employees((prev_vals)=>{
 
             console.log(`%c DATA `, `${ log_colors.data }`,`for db_column`,'\n' ,db_column);
             console.log(`%c DATA `, `${ log_colors.data }`,`for input`,'\n' ,input);
@@ -144,8 +144,8 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
         console.log(`%c DATA `, `${ log_colors.data }`,`for data`,'\n' ,data);
         const added_employee_data:Types_form_data = {
-            budget_hours: employee_budgets.budget_hours,
-            budget: employee_budgets.budget,
+            budget_hours: project_employees.budget_hours,
+            budget: project_employees.budget,
             employee_id: employee_id,
             department_id: dep_id,  
             start_date: initial_employee_form_data.start_date 
@@ -185,7 +185,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
         <div 
             ref = {e_select_box_ele}
             className={
-                employee_budgets.budget > department_budget
+                project_employees.budget > department_budget
                 ? "over_budget e_select_box"
                 : "e_select_box" 
             }
@@ -220,7 +220,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         input_type: "budget"
                     }}
                     initial_data_object={initial_employee_form_data}
-                    adjust_data_object={employee_budgets} 
+                    adjust_data_object={project_employees} 
                     send_table_data = {callback_handle_budget_change}
                 />
 
@@ -232,7 +232,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         input_type: "text"
                     }}
                     initial_data_object={initial_employee_form_data}
-                    adjust_data_object={employee_budgets}
+                    adjust_data_object={project_employees}
                     send_table_data = {callback_handle_budget_change}
                 />
             </div>

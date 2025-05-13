@@ -135,7 +135,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         table_names.forEach((table_name, index)=>{
             const missing_inputs:string[] = [];
-            console.log(`%c DATA `, `${ log_colors.data }`,`for data_info`,'\n' ,data_info);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for data_info for ${table_name}`,'\n' ,data_info);
             const db_column_info:Types_column_info[] = data_info[table_name].info.db_column_info;
 
             if(Array.isArray(data_ref.current[table_name])){
@@ -187,8 +187,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             change_order({name:"employees"})
         } else if (table_names.includes("projects")){
             change_order({name:"projects"})
-            if(table_names.includes("client_jobs")){
-                change_order({name:"client_jobs"})
+            if(table_names.includes("project_groups")){
+                change_order({name:"project_groups"})
             }
         } 
 
@@ -216,8 +216,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 id_name = "employee_id";
             } else if (table_names.includes("projects")){
                 id_name = "project_id";
-                if(f_table_name === "projects" && table_names.includes("client_jobs")){
-                    id_name = "job_id";
+                if(f_table_name === "projects" && table_names.includes("project_groups")){
+                    id_name = "project_group_id";
                     console.log(`%c DATA `, `${ log_colors.data }`,`for id_name`,'\n' ,id_name);
                 }
             }
@@ -262,10 +262,10 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 if(table_name === "projects"){
                     target_entry_id_ref.current = response.data.entry_id;
                     if(submit_method ==="add"){
-                        add_id("project_department_budgets");
-                        add_id("employee_budgets");
+                        add_id("project_departments");
+                        add_id("project_employees");
                     }
-                } else if (table_name === "client_jobs" && table_names.includes("projects")){
+                } else if (table_name === "project_groups" && table_names.includes("projects")){
                     target_entry_id_ref.current = response.data.entry_id;
                     if(submit_method ==="add"){
                         add_id("projects");

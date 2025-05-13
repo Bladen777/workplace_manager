@@ -82,7 +82,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
 
         try{
             const response = await axios.post("/get_table_info", {
-                table_name: "employee_budgets",
+                table_name: "project_employees",
                 filter_key: "project_id",
                 filter_item: current_project.id,
             })
@@ -99,7 +99,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({ employee_id, department_id, start_date, budget, budget_hours, method  }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_employee_budgets`);
+        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_employees`);
         let update_data:Types_context_content = [...employee_data_ref.current];
         console.log(`%c DATA `, `${ log_colors.data }`,`for ...employee_data_ref.current`,'\n' ,...employee_data_ref.current);
         console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,...update_data);
@@ -142,15 +142,15 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             if (typeof(entry_index) === "number"){
                 update_data.splice(entry_index,1)
             }
-            if(active_entry.submit_method === "edit" && initial_data["employee_budgets"].data.length > 0){
-                const entry_id = initial_data["employee_budgets"].data.find((entry)=>{
+            if(active_entry.submit_method === "edit" && initial_data["project_employees"].data.length > 0){
+                const entry_id = initial_data["project_employees"].data.find((entry)=>{
                     if(entry.employee_id === employee_id && entry.project_id === active_entry.target_id){
                         return entry
                     }
                 });
                 if(entry_id){
-                    await process_data.delete_entry({table_name:"employee_budgets", entry_id:entry_id.id})
-                    await update_initial_data.now({table_name: "employee_budgets", entry_id_key:"project_id" ,entry_id:active_entry.target_id});
+                    await process_data.delete_entry({table_name:"project_employees", entry_id:entry_id.id})
+                    await update_initial_data.now({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:active_entry.target_id});
 
                 }
             }
@@ -158,7 +158,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
 
         
         console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
-        process_data.update_data({table_name: "employee_budgets", form_data:update_data })
+        process_data.update_data({table_name: "project_employees", form_data:update_data })
         employee_data_ref.current = update_data;
         return(update_data);
     }

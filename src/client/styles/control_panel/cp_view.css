@@ -18,6 +18,12 @@
     height: 3rem;
 }
 
+
+.client_project_groups_view_box{
+    margin-top: 0.5rem;
+}
+
+
 /* SORT OPTIONS */
 #cpv_sort_btn{
     position: relative;
