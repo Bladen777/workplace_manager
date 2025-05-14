@@ -31,7 +31,6 @@ interface Types_animation_ele{
 
 // THE COMPONENT 
 export default function Animate_edit_project() {
-    console.log(`%c ANIMATION `, `${ log_colors.animation }`, `animate_edit_project`);
 
     const animation_elements = useRef<Types_animation_elements>({})
     function initiate_animation({ btn_box_ele, input_box_ele, btn_type, add_btn_ele, edit_btn_ele}:Types_animation_elements) {
@@ -48,7 +47,7 @@ export default function Animate_edit_project() {
 
 
     function run_animation({animate_forwards}:Types_animate_forwards){
-        console.log(`%c ANIMATION RAN `, `${ log_colors.animation }`, `animate_edit_project`);
+        console.log(`%c ANIMATION RAN `, `${ log_colors.animation }`, `Animate_edit_project`);
 
 
         const animation_direction = animate_forwards ? "normal" : "reverse";

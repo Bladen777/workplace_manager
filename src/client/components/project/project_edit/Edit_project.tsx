@@ -222,7 +222,7 @@ export default function Edit_project() {
         console.log(`%c POST FORM FOR PROJECTS `, `${ log_colors.important_2 }`,`for response`,'\n' ,response);
         if(response.message.includes("successfully")){
             update_active_entry.update_context({target_id:response.entry_id});
-            //update_project_data({project_id:response.entry_id})
+            update_project_data({project_id:response.entry_id})
         }
         set_status_message(response.message);
     }

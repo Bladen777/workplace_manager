@@ -27,7 +27,7 @@ export default function Project_nav() {
         const initial_data = useContext(Use_Context_initial_data).show_context;
         const active_entry = useContext(Use_Context_active_entry).show_context;
         
-        const [all_projects, set_all_projects] = useState<Types_form_data[]>();
+        const [all_projects, set_all_projects] = useState<Types_form_data[]>([]);
         const [selected_projects, set_selected_projects] = useState<Types_form_data[]>([]);
         const [selected_index, set_selected_index] = useState<number>(0)
 
@@ -108,6 +108,7 @@ export default function Project_nav() {
         }
 
         async function change_project(direction:string){
+            
             let move:number = 1;
             if(direction === "prev"){
                 move = -1;
@@ -119,6 +120,8 @@ export default function Project_nav() {
             } else if(selected_index === 0 && direction === "prev"){
                 new_index = selected_projects.length - 1;
             };
+            
+            set_selected_index(new_index);
 
             console.log(`%c DATA `, `${ log_colors.data }`,`for direction`,'\n' ,direction);
             console.log(`%c DATA `, `${ log_colors.data }`,`for selected_index`,'\n' ,selected_index);
@@ -127,26 +130,29 @@ export default function Project_nav() {
             console.log(`%c DATA `, `${ log_colors.data }`,`for new_index`,'\n' ,new_index);
             console.log(`%c DATA `, `${ log_colors.data }`,`for selected_projects[new_index]`,'\n' ,selected_projects[new_index]);
 
-        
-            await update_active_entry.now({target_id:selected_projects[new_index].id})
-            set_selected_index(new_index)
+            await update_active_entry.now({target_id:selected_projects[new_index].id});
         }
                 
-
+        console.log(`%c DATA `, `${ log_colors.data }`,`for selected_index`,'\n' ,selected_index);
         console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
 // MEMOS AND EFFECTS
 
-    useMemo(() =>{
+    useEffect(() =>{
         (async () => {
             if(user_data.is_admin){
                 const update_all_projects = await fetch_all_projects();
-                set_all_projects(update_all_projects);
-                set_selected_projects(update_all_projects);
-                set_selected_index(update_all_projects.length -1)
+                if(update_all_projects.length !== all_projects!.length){
+                    set_all_projects(update_all_projects);
+                    set_selected_projects(update_all_projects);
+                    set_selected_index(update_all_projects.length -1)
+                }
+    
             } else {
                 const update_selected_projects = await fetch_user_projects();
-                set_selected_projects(update_selected_projects);
-                set_selected_index(update_selected_projects.length -1)
+                if(update_selected_projects.length !== selected_projects.length){
+                    set_selected_projects(update_selected_projects);
+                    set_selected_index(update_selected_projects.length -1)
+                }
             }
         })()
     },[initial_data])

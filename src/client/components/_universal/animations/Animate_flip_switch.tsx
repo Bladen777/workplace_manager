@@ -28,8 +28,6 @@ interface Types_animation_ele{
 
 // THE COMPONENT 
 export default function Animate_flip_switch() {
-    console.log(`%c ANIMATION `, `${ log_colors.animation }`, `Animate_flip_switch`);
-
     const animation_elements = useRef<Types_animation_elements>({})
     function initiate_animation({ btn_ele, box_ele}:Types_animation_elements) {
         animation_elements.current = {
@@ -40,6 +38,7 @@ export default function Animate_flip_switch() {
 
 
         function run_animation({animate_forwards}:Types_animate_forwards){
+            console.log(`%c ANIMATION RAN `, `${ log_colors.animation }`, `Animate_flip_switch`);
     
             const animation_direction = animate_forwards ? "normal" : "reverse";
             const ele_1:Types_animation_ele = {

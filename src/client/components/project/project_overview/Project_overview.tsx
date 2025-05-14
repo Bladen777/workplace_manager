@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useRef, useState } from "react"
 
 // COMPONENT IMPORTS
 import Project_nav from "./project_overview_comps/project_nav/Project_nav.js" 
@@ -7,6 +7,7 @@ import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
 import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import Project_details from "./project_overview_comps/Project_details.js"
+import Animate_po_load from "./animations/Animate_po_load.js"
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
@@ -23,7 +24,6 @@ import "../../../styles/project_overview/project_overview.css"
 import { Types_form_data } from "../../context/Context_initial_data.js"
 
 
-
 // THE COMPONENT
 export default function Project_overview() {
   console.log(`%c COMPONENT `, `${log_colors.component}`, `Project_overview`);
@@ -36,7 +36,12 @@ export default function Project_overview() {
   const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
   const [ready, set_ready] = useState<boolean>(false);
-  const [content_is_loading, set_content_is_loading] = useState<boolean>(true);
+
+  // CONSTS FOR ANIMATING
+      const animate_po_load = Animate_po_load();
+      const animate_po_load_box_ref = useRef<HTMLDivElement | null>(null);
+      const animate_po_load_hide_box_ref = useRef<HTMLDivElement | null>(null);
+      
 
   if(!ready){
     (async ()=>{
@@ -64,69 +69,71 @@ export default function Project_overview() {
   
   }
 
-  
-  const display_project:Types_form_data =(
-    (initial_data["projects"] && active_entry.target_id && initial_data["projects"].data.length > 0) 
-    ? initial_data["projects"].data[0]
-    : {}
-  )
-
   async function update_project_data({project_id}:{project_id:number}){
-    set_content_is_loading(true);
-
+    ready && await animate_po_load.run_animation({animate_forwards:true});
+    
+    
     const active_entry_update = await update_active_entry.wait({target_id:project_id});
     await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:project_id});
     await update_initial_data.wait({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:project_id});
     await update_initial_data.now({table_name: "projects", entry_id_key:"id" ,entry_id:project_id});
     update_active_entry.update_context(active_entry_update);
 
-    set_content_is_loading(false);
+    ready && await animate_po_load.run_animation({animate_forwards:false})
+
   }
-  // Need data from departments table 
-  // Need data from employee budget table
-  // Need data from projects table
-
-
-  /* 1. Pie Chart for project hours breakdown
-        - has legend on side for department colours
-        - has progress bars on side for % of budget used
-          - has large bar on top for overall % of budget
-        - has bar on bottom to indicate time until ship
-          - has sections that separate when departments need to be done
-          - have buffer hours as a nutral colour
-
-      *** ONLY ADMIN SHOULD BE ABLE TO VIEW ALL DEPARTMENTS ON THIS CHART
-
-      *** EMPLOYEES ONLY GET TO VIEW THE INFORMATION RELAVENT TO THEIR ASSIGNED PROJECTS
-  */
 
 // MEMOS AND EFFECTS
-useEffect(() =>{
-  update_project_data({project_id:active_entry.target_id!})
-},[active_entry.target_id])
+  useEffect(() =>{
+    if(ready){
+      animate_po_load.initiate_animation({
+          hide_ele:animate_po_load_hide_box_ref.current!,
+          box_ele: animate_po_load_box_ref.current!,
+      })
+    }
+    console.log(`%c DATA `, `${ log_colors.data }`,`for ready`,'\n' ,ready);
+    console.log(`%c DATA `, `${ log_colors.data }`,`for animate_po_load_box_ref.current`,'\n' ,animate_po_load_box_ref.current);
+  },[ready])
+
+  useEffect(() =>{
+    if(ready && active_entry.target_id !== initial_data["projects"].data[0].id){
+      update_project_data({project_id:active_entry.target_id!})
+    }
+  },[active_entry.target_id])
 
 
 // RETURNED VALUES
-  if(Object.keys(display_project).length !== 0 && ready){
-    console.log(`%c DATA `, `${ log_colors.data }`,`for display_project`,'\n' ,display_project);
+  if(ready && initial_data["projects"].data.length > 0){
     return (
       <div id="project_overview" className="general_section">
         <h2 id="project_overview_title">Project Overview</h2>
-        {!content_is_loading &&
-          <div className="project_overview_box">
-            <Project_nav />
-            <Project_legend/>
-            <Pie_chart />
-            <Budget_tracker />
-            <Date_tracker />
-            <Project_details />
-          </div>
-        }
-        {content_is_loading &&
-          <div className="cp_loader">
-              Loading
-          </div>
-        }
+        <button
+          className="general_btn"
+          onClick={()=>{update_project_data({project_id:active_entry.target_id!})}}
+        >restart</button>
+          <div className="project_overview_container">
+            <div
+              ref = {animate_po_load_hide_box_ref}
+              className={"project_overview_hide_box project_overview_box_closed"}
+            > 
+            <p className="loading_text">LOADING</p>
+            
+              
+            </div>
+            <div 
+              ref = {animate_po_load_box_ref}
+              className={"project_overview_box "}
+            >
+              <Project_nav />
+              <Project_legend/>
+              <Pie_chart />
+              <Budget_tracker />
+              <Date_tracker />
+              <Project_details />
+            </div>
+          
+          
+        </div>
       </div>
     )
   }      
