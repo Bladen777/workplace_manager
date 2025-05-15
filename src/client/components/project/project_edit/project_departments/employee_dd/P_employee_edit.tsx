@@ -48,17 +48,17 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
-    const employee_budget_data = initial_data["project_employees"];
+    const p_employee_data = initial_data["project_employees"];
 
-    const existing_pd_budget = employee_budget_data.data.find((entry)=>{
-        if(entry.employee_id === employee_id){
+    const exisiting_p_employee = p_employee_data.data.find((entry)=>{
+        if(entry["employee_id"] === employee_id && entry["department_id"] === dep_id){
             return entry;
         };
     });
     const initial_employee_form_data = (
-        existing_pd_budget && active_entry.submit_method === "edit" 
-        ? existing_pd_budget 
-        : employee_budget_data.info.form_data
+        exisiting_p_employee && active_entry.submit_method === "edit" 
+        ? exisiting_p_employee 
+        : p_employee_data.info.form_data
     );
 
     const [project_employees, set_project_employees] = useState<Types_project_employees>({
@@ -144,6 +144,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
         console.log(`%c DATA `, `${ log_colors.data }`,`for data`,'\n' ,data);
         const added_employee_data:Types_form_data = {
+            id: exisiting_p_employee ? exisiting_p_employee.id : - 1,
             budget_hours: project_employees.budget_hours,
             budget: project_employees.budget,
             employee_id: employee_id,
@@ -210,6 +211,17 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                     date_range={{min: dep_dates.start_date, max: dep_dates.finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
+                {/* INPUT FOR HOURS */}
+                <Form_auto_input 
+                    column_info={{
+                        column_name: `budget_hours`,
+                        is_nullable: "YES", 
+                        input_type: "text"
+                    }}
+                    initial_data_object={initial_employee_form_data}
+                    adjust_data_object={project_employees}
+                    send_table_data = {callback_handle_budget_change}
+                />
               
                 {/* INPUT FOR BUDGET */}
 
@@ -224,17 +236,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                     send_table_data = {callback_handle_budget_change}
                 />
 
-                {/* INPUT FOR HOURS */}
-                <Form_auto_input 
-                    column_info={{
-                        column_name: `budget_hours`,
-                        is_nullable: "YES", 
-                        input_type: "text"
-                    }}
-                    initial_data_object={initial_employee_form_data}
-                    adjust_data_object={project_employees}
-                    send_table_data = {callback_handle_budget_change}
-                />
+                
             </div>
             
             {/* BUTTON TO REMOVE EMPLOYEE */}

@@ -105,12 +105,8 @@ export default function Project_overview() {
 // RETURNED VALUES
   if(ready && initial_data["projects"].data.length > 0){
     return (
-      <div id="project_overview" className="general_section">
+      <section id="project_overview" className="general_section">
         <h2 id="project_overview_title">Project Overview</h2>
-        <button
-          className="general_btn"
-          onClick={()=>{update_project_data({project_id:active_entry.target_id!})}}
-        >restart</button>
           <div className="project_overview_container">
             <div
               ref = {animate_po_load_hide_box_ref}
@@ -134,7 +130,7 @@ export default function Project_overview() {
           
           
         </div>
-      </div>
+      </section>
     )
   }      
  

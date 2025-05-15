@@ -48,6 +48,7 @@ function Control_panel_entry({is_active, active_table, item_data, item_index, se
             <div className="control_panel_entry">
                 <Control_panel_entry_data     
                     table_item = {item_data}
+                    item_index = {item_index}
                     active_table = {active_table}
                 />
                 {active_table === "clients" &&

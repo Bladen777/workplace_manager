@@ -42,8 +42,8 @@ export default function Project_legend() {
 
 // RETURNED VALUES 
     return(
-        <div id="project_department_legend" className="project_overview_content_box">
-            <h2>Legend</h2>
+        <article id="project_department_legend" className="project_overview_content_box">
+            <h3>Legend</h3>
             <div className="legend_box_container">
                 <div 
                     className="legend_box"
@@ -65,6 +65,6 @@ export default function Project_legend() {
             </div>
             
 
-        </div>
+        </article>
     ); 
 }

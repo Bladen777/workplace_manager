@@ -98,7 +98,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
     }
 
     // UPDATE THE CONTEXT 
-    async function update_context({ employee_id, department_id, start_date, budget, budget_hours, method  }:Types_context_function){
+    async function update_context({ id, employee_id, department_id, start_date, budget, budget_hours, method  }:Types_context_function){
         console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_employees`);
         let update_data:Types_context_content = [...employee_data_ref.current];
         console.log(`%c DATA `, `${ log_colors.data }`,`for ...employee_data_ref.current`,'\n' ,...employee_data_ref.current);
@@ -111,6 +111,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             }
         })
 
+        console.log(`%c DATA `, `${ log_colors.data }`,`for entry_index`,'\n' ,entry_index);
         if(method !== "delete"){
             if (typeof(entry_index) === "number"){
                 if(start_date){
@@ -128,6 +129,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
             } else {
                 const project_id = active_entry.target_id;
                 update_data.push({
+                    id: id,
                     employee_id: employee_id,
                     department_id: department_id,
                     project_id:  project_id ? project_id : -1,

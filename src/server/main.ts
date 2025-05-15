@@ -221,7 +221,7 @@ app.get("/user_info",
   app.post("/edit_form_data",
     async (req, res) => {
       interface Types_entry_item{
-        [key:string]: string;
+        [key:string]: string | number;
       }
 
       interface Types_table_data{
@@ -280,7 +280,7 @@ app.get("/user_info",
         column_names.map((column:string) => {
 
           const data_value = (()=>{
-            let item_data: string | null = entry_data[column];
+            let item_data: string | number | null = entry_data[column];
             if(item_data === null || item_data === undefined){
               item_data = null;
             } else {
@@ -396,8 +396,11 @@ app.get("/user_info",
         let added_id:number = 0;
         for await(let entry of submit_data){
           let adjust_submit_method = sent_submit_method;
-          if(sent_submit_method === "add" && entry.id){
-            adjust_submit_method = "edit"
+          console.log(`entry.id === ${entry.id}, type === ${typeof(entry.id)}`)
+          if(entry.id === -1){
+            adjust_submit_method = "add";
+          }else if(sent_submit_method === "add" && entry.id){
+            adjust_submit_method = "edit";
           };
           const table_data:Types_table_data = string_data({
             entry_data: entry, 
@@ -406,14 +409,6 @@ app.get("/user_info",
           });
           added_id = await access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
 
-
-/*
-          if(adjust_submit_method === "add"){
-            added_id = await access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
-          } else {
-            access_db({table_data:table_data, submit_method: adjust_submit_method, array_edit: true});
-          }
-*/
         };
         res.send({
           entry_id: added_id !== 0 ? added_id : "",

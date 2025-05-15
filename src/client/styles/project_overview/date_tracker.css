@@ -1,0 +1,52 @@
+.date_tracker_date_box{
+    height:9rem ;
+    position: relative;
+    background-color: var(--section_bg);
+    display:grid;
+    overflow-y: hidden;
+    overflow-x: auto;
+    scrollbar-width:thin;
+    grid-template-rows: 3rem auto;
+}
+
+.tracker_graph_box{
+    grid-row: 2;
+    overflow-y: auto;
+    width:fit-content;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    min-width: 20rem;
+}
+
+.tracker_graph{
+    height: 0.5rem;
+    margin: 0.25rem 0;
+}
+
+.tracker_unique_date_box{
+    grid-row:1/2;
+}
+
+.tracker_unique_date{
+    height: 100%;
+    width: auto;
+    border-left: solid black 0.125rem;
+    background-color: black;
+    position: absolute;
+}
+
+.tracker_unique_date > p{
+    margin: 0.25rem;
+    position: absolute;
+}
+
+.tracker_main_dates{
+    display: flex;
+    justify-content: space-between;
+    height: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.tracker_main_dates > *{
+    margin: 0 0.5rem
+}

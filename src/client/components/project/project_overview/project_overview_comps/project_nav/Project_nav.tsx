@@ -6,7 +6,7 @@ import Animate_flip_switch from "../../../../_universal/animations/Animate_flip_
 import Project_search from "./Project_search.js";
 
 // CONTEXT IMPORTS 
-import { Types_form_data, Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
+import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js";
 import { Use_Context_user_info } from "../../../../user_info/Context_user_info.js";
 
@@ -18,6 +18,7 @@ import { Use_Context_user_info } from "../../../../user_info/Context_user_info.j
     import "../../../../../styles/_universal/animations.css"
 
 // TYPE DEFINITIONS
+import { Types_form_data } from "../../../../context/Context_initial_data.js";
 
 // THE COMPONENT 
 export default function Project_nav() {
@@ -39,9 +40,9 @@ export default function Project_nav() {
         const [ps_open, set_ps_open] = useState<boolean>(false); 
 
         // CONSTS FOR ANIMATING
-            const animate_fs = Animate_flip_switch();
-            const animate_fs_btn_ref = useRef<HTMLDivElement | null>(null);
-            const animate_fs_box_ref = useRef<HTMLDivElement | null>(null);
+        const animate_fs = Animate_flip_switch();
+        const animate_fs_btn_ref = useRef<HTMLDivElement | null>(null);
+        const animate_fs_box_ref = useRef<HTMLDivElement | null>(null);
 
         const project_data = initial_data["projects"].data[0];
 
@@ -166,14 +167,14 @@ export default function Project_nav() {
 
 // RETURNED VALUES 
     return(
-        <div className="project_nav">
+        <div id="project_nav">
             <h1
                 id="project_title"
             >
                 {project_data.project_name}
             </h1>
             <div className="project_selection">
-                {user_data.is_admin &&
+                {/*{user_data.is_admin && 
                     <button 
                         className="project_selection_switch general_btn"
                         onClick={()=>{set_project_selection(project_selection === "user" ? "all" : "user")}}
@@ -181,7 +182,8 @@ export default function Project_nav() {
                         <h4>{project_selection === "user" ? "All Projects" : "My Projects"}</h4>
 
                     </button>
-                }
+                } */}
+                
                 <div
                     className="animate_btn_box"
                     ref= {animate_fs_btn_ref}
@@ -211,14 +213,14 @@ export default function Project_nav() {
                 className="project_nav_btn"
                 onClick={()=>{change_project("prev")}}
             >
-                🠸
+               <p>🠸</p> 
             </button>
             <button
                 id="project_nav_right"
                 className="project_nav_btn"
                 onClick={()=>{change_project("forw")}}
             >
-                🠺
+                <p>🠺</p>
             </button>
         </div>
     ); 

@@ -9,7 +9,6 @@ import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
-import { Provide_Context_employee_data } from "./employee_dd/context/Context_employee_data.js";
 
 // HOOK IMPORTS 
 
@@ -171,12 +170,11 @@ function Pd_input({dep_data, project_dates}:Types_props) {
                 <Pd_budget
                     dep_data = {dep_data}
                 />
-                <Provide_Context_employee_data>
-                    <Employee_select
-                        department_data = {dep_data}
-                        dep_dates = {dep_dates}
-                    />
-                </Provide_Context_employee_data>
+                <Employee_select
+                    department_data = {dep_data}
+                    dep_dates = {dep_dates}
+                />
+               
             </div>
         ); 
     }

@@ -14,6 +14,8 @@ import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 import { Use_Context_project_budgets } from "../context/Context_project_budgets.js";
 import { Use_Context_departments_data } from "../../context/Context_departments_data.js";
 
+import { Provide_Context_employee_data } from "./project_departments/employee_dd/context/Context_employee_data.js";
+
 // HOOK IMPORTS 
 
 // STYLE IMPORTS
@@ -316,13 +318,16 @@ export default function Edit_project() {
                                             key={`input_for_${column.column_name}`}
                                         />
                                     )
-                                } else if(column.column_name.includes("project_group_id")){
-                                    return
                                 } else if(
-                                    !column.column_name.includes("start_date") 
-                                    && !column.column_name.includes("finish_date") 
-                                    && !column.column_name.includes("date_added") 
+                                    column.column_name.includes("project_group_id")
+                                    || column.column_name.includes("start_date")
+                                    || column.column_name.includes("finish_date")
+                                    ||  column.column_name.includes("date_added")
+                                    ||  column.column_name.includes("ship_date") 
+                                    ||  column.column_name.includes("shipping_address")
                                 ){
+                                    return
+                                } else {
                                     return(
                                         <Form_auto_input
                                             key={`input_for_${column.column_name}`}
@@ -335,8 +340,7 @@ export default function Edit_project() {
                                 }
                             })}
                         </form>
-                        <form className="auto_form" id="edit_project_employee_select_box">
-                            <h3>Department Budgets</h3>
+                        <form className="auto_form" id="edit_project_dep_forms_box">
                             <div className="project_dates">
                                 <Form_auto_input
                                     column_info = {{
@@ -359,12 +363,13 @@ export default function Edit_project() {
                                     send_table_data = {callback_handle_project_date_change}
                                 />
                             </div>
-
+                            <h3>Department Budgets</h3>
                             {/* departments && pd_inputs */}
-                            {departments.map((item:Types_department_data)=>
-                                create_pd_input(item)
-                            )}
-
+                            <Provide_Context_employee_data>
+                                {departments.map((item:Types_department_data)=>
+                                    create_pd_input(item)
+                                )}
+                            </Provide_Context_employee_data>
                         </form>
                         <div className="edit_project_utility_bar">
                             <div className="utility_bar_buttons">

@@ -17,11 +17,12 @@ import { Types_form_data } from "../../../context/Context_initial_data.js";
 
 interface Types_props{
     table_item: Types_form_data;
+    item_index: number;
     active_table: string;
 }
 
 // THE COMPONENT
-export default function Control_panel_entry_data({table_item, active_table}:Types_props) {
+export default function Control_panel_entry_data({table_item, item_index, active_table}:Types_props) {
     const db_column_info = useContext(Use_Context_initial_data).show_context[active_table].info.db_column_info;
     console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for control_panel_entry_data`,'\n         ' ,table_item);
 
@@ -59,7 +60,7 @@ export default function Control_panel_entry_data({table_item, active_table}:Type
 // RETRURNED VALUES        
     return(
         <>
-            <h3>{entry_name}</h3>
+            <h3>{`${item_index}. ${entry_name}`}</h3>
             {entry_item}
         </>
     ); 

@@ -120,7 +120,6 @@
     width: 100%;
     height: 100%;
     display: grid;
-    
     grid-template-rows:3rem 15rem auto 3rem;
     overflow-y: auto;
     position: relative;
@@ -139,7 +138,8 @@
     grid-row: 2;
 }
 
-#edit_project_employee_select_box{
+
+#edit_project_dep_forms_box{
     position: relative;
     grid-row: 3;
 }
@@ -184,10 +184,12 @@
     border: solid red 0.25rem;
 }
 
-.job_select_box > *{
+.project_group_select_box > *{
     margin: 0.25rem 0;
 }
 
-.job_select_box > button{
+.project_group_select_box > button{
     margin: 0.25rem 0;
 }
+
+

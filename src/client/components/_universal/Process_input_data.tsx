@@ -50,6 +50,11 @@ interface Types_post_data {
     submit_method: string;
 }
 
+interface Types_access_db{
+    db_submit_method:string;
+    db_submit_data: Types_form_data[];
+}
+
 export interface Types_post_response{
     message:string;
     entry_id?:number;
@@ -67,7 +72,7 @@ export const Use_Process_input_data = createContext<Types_context>({
 // CONTEXT PROVIDER & UPDATE 
 export function Provide_Process_input_data({children}:{children:ReactNode}) {
    
-    const data_info = useContext(Use_Context_initial_data).show_context;
+    const initial_data = useContext(Use_Context_initial_data).show_context;
     const data_ref = useRef<Types_data>({});
     const target_entry_id_ref = useRef<number>()
 
@@ -135,8 +140,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         table_names.forEach((table_name, index)=>{
             const missing_inputs:string[] = [];
-            console.log(`%c DATA `, `${ log_colors.data }`,`for data_info for ${table_name}`,'\n' ,data_info);
-            const db_column_info:Types_column_info[] = data_info[table_name].info.db_column_info;
+            console.log(`%c DATA `, `${ log_colors.data }`,`for initial_data for ${table_name}`,'\n' ,initial_data);
+            const db_column_info:Types_column_info[] = initial_data[table_name].info.db_column_info;
 
             if(Array.isArray(data_ref.current[table_name])){
                 data_ref.current[table_name].map((current_entry:Types_form_data)=>{
@@ -236,7 +241,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         
         for await(table_name of table_names){
 
-            const db_column_names = data_info[table_name].info.db_column_info.map((entry)=>entry.column_name);
+            const db_column_names = initial_data[table_name].info.db_column_info.map((entry)=>entry.column_name);
             let filter_key = "";
             let filter_item: string | number | undefined = "";
 
@@ -245,44 +250,96 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 filter_item = data_ref.current[table_name][0].id;
             }
 
-            console.log(`%c DATA SENT TO BACKEND `, `${ log_colors.important }`,`for data_ref.current[table_name]`,'\n' ,data_ref.current[table_name]);
-            try {
-                const response = await axios.post("/edit_form_data",{
-                    table_name: table_name,
-                    filter_key: filter_key,
-                    filter_item: filter_item,
-                    submit_method: submit_method,
-                    db_column_info: db_column_names, 
-                    submit_data: data_ref.current[table_name]
-                })
-        
-                console.log("The success_message: ",response.data);
-                status_message = (`${response.data.message}`);
 
-                if(table_name === "projects"){
-                    target_entry_id_ref.current = response.data.entry_id;
-                    if(submit_method ==="add"){
-                        add_id("project_departments");
-                        add_id("project_employees");
-                    }
-                } else if (table_name === "project_groups" && table_names.includes("projects")){
-                    target_entry_id_ref.current = response.data.entry_id;
-                    if(submit_method ==="add"){
-                        add_id("projects");
-                    }
-                    console.log(`%c DATA `, `${ log_colors.data }`,`for data_ref.current["projects"]`,'\n' ,data_ref.current["projects"]);
-                } else if (table_name === "employees"){
-                    target_entry_id_ref.current = response.data.entry_id;
-                    add_id("employee_departments");
+            if(table_name === "project_employees" && submit_method === "edit"){
+                let p_employee_add:Types_form_data[] = [];
+                let p_employee_edit:Types_form_data[] = [];
+                let p_employee_delete:Types_form_data[] = []; 
+
+                const start_employees = initial_data["project_employees"].data;
+                const update_employees = data_ref.current["project_employees"];
+
+                if(start_employees.length === 0){
+                    console.log(`%c NO INITIAL EMPLOYEES `, `${ log_colors.important }`);
+                    await access_db({
+                        db_submit_method:"add", 
+                        db_submit_data:data_ref.current[table_name]
+                });
+                }else if(update_employees.length === start_employees.length){
+                        await access_db({
+                            db_submit_method:"edit", 
+                            db_submit_data:data_ref.current[table_name]
+                        });
                     
-                } else if( !table_names.includes("projects") && !table_names.includes("employees")){
-                    target_entry_id_ref.current = response.data.entry_id;
+                }else if(update_employees.length > start_employees.length){
+                        update_employees.forEach((entry)=>{
+                            if(start_employees.find((s_entry)=>{
+                                return s_entry.id === entry.id
+                            })){
+                                p_employee_edit.push(entry);
+                            } else {
+                                p_employee_add.push(entry);
+                            }
+                        });
+                        await access_db({
+                            db_submit_method:"edit", 
+                            db_submit_data:p_employee_edit
+                        });
+                        await access_db({
+                            db_submit_method:"add", 
+                            db_submit_data:p_employee_add
+                        });
+                    }
+                
+                } else {
+                    await access_db({
+                        db_submit_method:submit_method, 
+                        db_submit_data:data_ref.current[table_name]
+                    });
                 }
-            } catch (error) {
-                console.log('%cError posting info to database: ', 'darkred',error);
-                status_message =("Failed to submit data");
-            }  
 
+        
+            async function access_db({db_submit_method, db_submit_data}:Types_access_db){
+                console.log(`%c DATA SENT TO BACKEND `, `${ log_colors.important }`,`${db_submit_method} ${table_name}`,'\n' ,db_submit_data);
+
+                try {
+                    const response = await axios.post("/edit_form_data",{
+                        table_name: table_name,
+                        filter_key: filter_key,
+                        filter_item: filter_item,
+                        submit_method: db_submit_method,
+                        db_column_info: db_column_names, 
+                        submit_data: db_submit_data
+                    })
+            
+                    console.log("The success_message: ",response.data);
+                    status_message = (`${response.data.message}`);
+
+                    if(table_name === "projects"){
+                        target_entry_id_ref.current = response.data.entry_id;
+                        if(submit_method ==="add"){
+                            add_id("project_departments");
+                            add_id("project_employees");
+                        }
+                    } else if (table_name === "project_groups" && table_names.includes("projects")){
+                        target_entry_id_ref.current = response.data.entry_id;
+                        if(submit_method ==="add"){
+                            add_id("projects");
+                        }
+                        console.log(`%c DATA `, `${ log_colors.data }`,`for data_ref.current["projects"]`,'\n' ,data_ref.current["projects"]);
+                    } else if (table_name === "employees"){
+                        target_entry_id_ref.current = response.data.entry_id;
+                        add_id("employee_departments");
+                        
+                    } else if( !table_names.includes("projects") && !table_names.includes("employees")){
+                        target_entry_id_ref.current = response.data.entry_id;
+                    }
+                } catch (error) {
+                    console.log('%cError posting info to database: ', 'darkred',error);
+                    status_message =("Failed to submit data");
+                } 
+            }
+             
         }
 
         return {

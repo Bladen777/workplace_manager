@@ -74,12 +74,17 @@ useEffect(() =>{
 
 // RETURNED VALUES 
     return (
-        <div id="pie_chart" className="project_overview_content_box">
-            <div    id="pie_chart_graphic"
-                    style={{backgroundImage: chart_gradient}}
+        <article id="pie_chart" className="project_overview_content_box">
+            <div
+                className="pie_chart_box"
             >
-
+                <div    
+                    id="pie_chart_graphic"
+                    style={{backgroundImage: chart_gradient}}
+                />
+         
             </div>
-        </div>
+            
+        </article>
     );
 }
