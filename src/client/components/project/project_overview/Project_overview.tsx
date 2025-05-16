@@ -47,7 +47,7 @@ export default function Project_overview() {
     (async ()=>{
       const all_projects = await update_initial_data.wait({table_name: "projects"});
       const user_projects = await update_initial_data.wait({table_name: "project_employees", entry_id:user_data.id, entry_id_key:"employee_id"});
-      console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
+      console.log(`%c DATA `, `${ log_colors.important_2 }`,`for all_projects`,'\n' ,all_projects);
       if(all_projects["projects"].data.length === 0){
         await update_initial_data.wait({table_name: "project_departments"});
         await update_initial_data.wait({table_name: "project_employees"});
@@ -56,11 +56,11 @@ export default function Project_overview() {
         await update_active_entry.now({submit_method:"add"})
       } else if(user_projects["project_employees"].data.length > 0){
         const latest_project_id:number = user_projects["project_employees"].data[user_projects["project_employees"].data.length -1].project_id; 
-        console.log(`%c DATA `, `${ log_colors.data }`,`for latest_project_id`,'\n' ,latest_project_id);
+        console.log(`%c DATA `, `${ log_colors.important_2 }`,`for latest_project_id`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
       } else{
         const latest_project_id:number = all_projects["projects"].data[all_projects["projects"].data.length -1].id; 
-        console.log(`%c DATA `, `${ log_colors.data }`,`for latest_project_id`,'\n' ,latest_project_id);
+        console.log(`%c DATA `, `${ log_colors.important_2 }`,`for latest_project_id`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
       } 
       set_ready(true)
@@ -71,7 +71,7 @@ export default function Project_overview() {
 
   async function update_project_data({project_id}:{project_id:number}){
     ready && await animate_po_load.run_animation({animate_forwards:true});
-    
+    console.log(`%c PROJECT OVERVIEW UPDATE PROJECT DATA `, `${ log_colors.important_2 }`);
     
     const active_entry_update = await update_active_entry.wait({target_id:project_id});
     await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:project_id});

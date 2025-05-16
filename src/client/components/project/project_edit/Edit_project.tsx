@@ -113,14 +113,31 @@ export default function Edit_project() {
 
 
     async function adjust_initial_data({submit_method}:{submit_method?:string} = {}){
-        let project_budgets_update = {};
-        let project_initial_form_data_update = initial_data["projects"].info.form_data;
 
+        let project_budgets_update = {};
+        const initial_p_data = {...initial_data["projects"].info.form_data};
+        let project_initial_form_data_update = initial_p_data;
+
+        // SET INITIAL VALUES FOR EDIT/ADD PROJECTS
         if(submit_method === "edit"){
-            process_data.update_data({table_name: "projects", form_data: initial_data["projects"].data})
-            process_data.update_data({table_name: "project_departments", form_data: initial_data["project_departments"].data})
-            process_data.update_data({table_name: "project_employees", form_data: initial_data["project_employees"].data})
-            
+
+            process_data.update_data({table_name: "projects", form_data: [initial_data["projects"].data[0]]});
+            process_data.update_data({
+                table_name: "project_departments", 
+                form_data: JSON.parse(JSON.stringify( initial_data["project_departments"].data))
+            });
+            initial_data["project_employees"].data.length > 0 && process_data.update_data({
+                table_name: "project_employees", 
+                form_data: JSON.parse(JSON.stringify( initial_data["project_employees"].data))
+            });
+
+        } else {
+            process_data.update_data({table_name: "projects", form_data: [initial_data["projects"].info.form_data]});
+
+        }
+        
+        // SET INITIAL VALUES FOR PROJECT BUDGETS
+        if(submit_method === "edit"){
             const department_budgets:Types_department_budgets = {};
             let budget_used:number = 0;
             initial_data["project_departments"].data.forEach((entry)=>{
@@ -131,30 +148,17 @@ export default function Edit_project() {
             console.log(`%c DATA `, `${ log_colors.important }`,`for budget_used`,'\n' ,budget_used);
 
             project_budgets_update = await update_project_budgets.wait({all_budgets:{
-                total:Number(initial_data["projects"].data[0].production_budget),
+                total:Number(initial_data["projects"].data[0]["production_budget"]),
                 used:budget_used,
                 departments: department_budgets
             }})
             project_initial_form_data_update = initial_data["projects"].data[0];
 
         } else {
-            const date = new Date().toISOString().slice(0,10);
-            let new_project_data = {...project_initial_form_data, date_added:date}
-            process_data.update_data({table_name: "projects", form_data: [new_project_data]})
-
             project_budgets_update = await update_project_budgets.wait({reset:true})
 
-            const department_budget_data = departments.map((item:Types_department_data)=>{
-                return{
-                    department_id: item.id,
-                    project_id: -1,
-                    start_date: undefined,
-                    finish_date: undefined,
-                    budget: 0
-                }
-            })
-            process_data.update_data({table_name: "project_departments", form_data:department_budget_data}) 
         }
+
 
         if(submit_method && submit_method !== active_entry.submit_method){
             const active_entry_update = await update_active_entry.wait({submit_method:submit_method});
@@ -162,15 +166,21 @@ export default function Edit_project() {
             
         }
         await update_project_budgets.update_context(project_budgets_update);
-        console.log(`%c UPDATE EDIT PROJECT NOW `, `${ log_colors.important }`);
         set_project_dates({
             start_date: typeof(project_initial_form_data_update.start_date) !== "number" ? project_initial_form_data_update.start_date : undefined,
             finish_date: typeof(project_initial_form_data_update.finish_date) !== "number" ? project_initial_form_data_update.finish_date : undefined
         })
+
+        console.log(`%c UPDATE EDIT PROJECT NOW `, `${ log_colors.important }`);
+
         set_project_initial_form_data(project_initial_form_data_update);
+
+
     }
 
     function handle_form_change({form_data}:Types_update_data){
+        process_data.update_data({section_name:"projects", table_name: "projects", form_data: form_data})
+
         if(!Array.isArray(form_data)){
             if(form_data.db_column === "production_budget"){
                 const budget = Number(form_data.input);
@@ -185,7 +195,8 @@ export default function Edit_project() {
                 }
             }
         }
-        process_data.update_data({section_name:"projects", table_name: "projects", form_data: form_data})
+
+
     }
     
 
@@ -194,16 +205,18 @@ export default function Edit_project() {
     },[])
 
     const callback_handle_project_date_change = useCallback(({ input, db_column}:Types_input_change) =>{
+        console.log(`%c ----- CALL BACK DATE CHANGED ----- `, `${ log_colors.important }`);
             handle_project_date_change({ input, db_column})
         },[])
     
     function handle_project_date_change({input, db_column}:Types_input_change){
+
         set_project_dates((prev_vals)=>{
             let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
             const update_dates = {...prev_vals, [date_type]:input}
-            process_data.update_data({table_name: "projects", form_data: {input:input ,db_column:db_column}})
             return update_dates;  
         })
+        process_data.update_data({table_name: "projects", form_data: {input:input ,db_column:db_column}})
     }
 
     async function update_project_data({project_id}:{project_id:number}){
@@ -217,16 +230,22 @@ export default function Edit_project() {
     }
 
     async function post_form(){
+        
         const response:{message:string, entry_id:number} = await process_data.post_data({
             submit_method:active_entry.submit_method, 
             display_entry_id: (active_entry.submit_method === "edit" ? initial_data["projects"].data[0].id : 0)
         })
         console.log(`%c POST FORM FOR PROJECTS `, `${ log_colors.important_2 }`,`for response`,'\n' ,response);
+        
         if(response.message.includes("successfully")){
             update_active_entry.update_context({target_id:response.entry_id});
             update_project_data({project_id:response.entry_id})
         }
         set_status_message(response.message);
+        setTimeout(() => {
+            set_status_message("saved");
+        }, 2000);
+
     }
 
     const create_pd_input = useCallback((item:Types_department_data)=>{
@@ -258,20 +277,17 @@ export default function Edit_project() {
         console.log(`%c PROJECT BUDGETS CHANGED `, `${ log_colors.data }`);
     },[project_budgets])
 
-    
-/*
-    useMemo(()=>{
-        //update_current_project.now({current_project_id:10})
-        if(project_initial_form_data && Object.keys(project_initial_form_data).length < 1){
-            adjust_initial_data({submit_method:"add"});
-        }
-    },[active_entry.target_id])
-*/
 
 /*
     useMemo(() =>{
-        departments && create_pd_inputs()
-    },[departments])
+        (async ()=>{
+            const test_id = 5;
+            await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:test_id});
+            await update_initial_data.wait({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:test_id});
+            await update_initial_data.now({table_name: "projects", entry_id_key:"id" ,entry_id:test_id});
+            await update_active_entry.now({target_id:test_id});
+        })()
+    },[])
 */
 
 // RETURNED VALUES 
@@ -313,11 +329,13 @@ export default function Edit_project() {
                         <form className="auto_form" id="project_input_form">
                             {initial_data["projects"].info.db_column_info.map((column:Types_column_info)=>{
                                 if(column.column_name.includes("client")){
+                               
                                     return(
                                         <Clients_dd
                                             key={`input_for_${column.column_name}`}
                                         />
                                     )
+                              
                                 } else if(
                                     column.column_name.includes("project_group_id")
                                     || column.column_name.includes("start_date")
@@ -363,13 +381,16 @@ export default function Edit_project() {
                                     send_table_data = {callback_handle_project_date_change}
                                 />
                             </div>
+
                             <h3>Department Budgets</h3>
                             {/* departments && pd_inputs */}
-                            <Provide_Context_employee_data>
-                                {departments.map((item:Types_department_data)=>
+                              
+                                <Provide_Context_employee_data>
+                                    {departments.map((item:Types_department_data)=>
                                     create_pd_input(item)
                                 )}
-                            </Provide_Context_employee_data>
+                                </Provide_Context_employee_data>
+                            
                         </form>
                         <div className="edit_project_utility_bar">
                             <div className="utility_bar_buttons">
@@ -385,7 +406,7 @@ export default function Edit_project() {
                                 > 
                                     <h4>{status_message !== "" ? "Return" : "Cancel"}</h4>
                                 </button>
-                                {status_message !== "" &&
+                                {status_message !== "" && status_message !== "saved" &&
                                     <h3 className="status_message">{status_message}</h3>
                                 }
                             </div>

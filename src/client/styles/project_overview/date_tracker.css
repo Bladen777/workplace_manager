@@ -9,6 +9,10 @@
     grid-template-rows: 3rem auto;
 }
 
+#date_tracker > h3{
+    margin: 0.5rem 0;
+}
+
 .tracker_graph_box{
     grid-row: 2;
     overflow-y: auto;
@@ -16,6 +20,7 @@
     scrollbar-width: thin;
     scrollbar-gutter: stable;
     min-width: 20rem;
+
 }
 
 .tracker_graph{
@@ -31,7 +36,6 @@
     height: 100%;
     width: auto;
     border-left: solid black 0.125rem;
-    background-color: black;
     position: absolute;
 }
 
@@ -40,13 +44,20 @@
     position: absolute;
 }
 
-.tracker_main_dates{
-    display: flex;
-    justify-content: space-between;
-    height: 1rem;
-    margin-bottom: 0.5rem;
+.tracker_unique_date_end{
+    text-align: center;
+    padding: 0.5rem 0;
+    width: 64px;
+    
 }
 
-.tracker_main_dates > *{
-    margin: 0 0.5rem
+.tracker_unique_date_end > p {
+    margin: 50% 0.25rem;
 }
+
+#tracker_unique_date_start{
+    border-left: 0;
+    border-right: solid black 0.125rem;
+}
+
+

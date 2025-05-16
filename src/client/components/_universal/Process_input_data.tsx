@@ -76,41 +76,71 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
     const data_ref = useRef<Types_data>({});
     const target_entry_id_ref = useRef<number>()
 
+
     function clear_form(){
         data_ref.current = ({})
     }
 
     function update_data({table_name, entry_id, entry_id_key, form_data}:Types_update_data){
 
+        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
         let update_data = {...data_ref.current}
         console.log(`%c EXISTING DATA `, `${ log_colors.process_data }`,`for update_data`,'\n' ,{...update_data});
         console.log(`%c SENT DATA `, `${ log_colors.process_data }`,`for form_data for ${table_name}`,'\n' ,form_data);
-        if(Array.isArray(form_data)){
-            update_data[table_name] = form_data;
-        }else if(entry_id_key){
+
+        function find_index(){
             const entry_index = update_data[table_name].findIndex((entry)=>{
                 if(entry[entry_id_key!] === entry_id){
                     return entry   
                 }
             })
-            update_data[table_name][entry_index][form_data.db_column] = form_data.input;
+            return entry_index
+        }
+
+        if(Array.isArray(form_data)){
+            const form_copy = [...form_data];
+            
+            if(!entry_id_key || !update_data[table_name]){
+                update_data[table_name] = form_copy;
+            } else{
+                const entry_index = find_index();
+                console.log(`%c DATA `, `${ log_colors.data }`,`for entry_index`,'\n' ,entry_index);
+                if(entry_index >= 0){
+                    update_data[table_name][entry_index] = form_copy[0];
+                } else {
+                    update_data[table_name].push(form_copy[0])
+                }
+                
+            }
+            
+            
+        }else if(entry_id_key){
+            const form_copy = {...form_data};
+            const entry_index = find_index();
+            update_data[table_name][entry_index][form_copy.db_column] = form_copy.input;
         } else {
+            const form_copy = {...form_data};
             if(!update_data[table_name]){
+      
                 console.log(`%c DATA `, `${ log_colors.data }`,`for update_data[table_name]`,'\n' ,update_data[table_name]);
                 update_data[table_name] = [
-                    {[form_data.db_column]:form_data.input}
+                    {[form_copy.db_column]:form_copy.input}
                 ];
+      
             } else {
                 update_data[table_name][0] = {
                     ...update_data[table_name][0],
-                    [form_data.db_column]:form_data.input
+                    [form_copy.db_column]:form_copy.input
                 };
             }
         }
+        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
 
         data_ref.current = update_data;
+
         console.log(`%c UPDATE_DATA `, `${ log_colors.process_data }`,`for update_data`,'\n' ,update_data);
     }
+
 
     async function delete_entry({table_name, entry_id}:Types_data_info){
 
@@ -141,7 +171,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         table_names.forEach((table_name, index)=>{
             const missing_inputs:string[] = [];
             console.log(`%c DATA `, `${ log_colors.data }`,`for initial_data for ${table_name}`,'\n' ,initial_data);
-            const db_column_info:Types_column_info[] = initial_data[table_name].info.db_column_info;
+            const db_column_info:Types_column_info[] = [...initial_data[table_name].info.db_column_info];
 
             if(Array.isArray(data_ref.current[table_name])){
                 data_ref.current[table_name].map((current_entry:Types_form_data)=>{
@@ -282,13 +312,15 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                             }
                         });
                         await access_db({
-                            db_submit_method:"edit", 
-                            db_submit_data:p_employee_edit
-                        });
-                        await access_db({
                             db_submit_method:"add", 
                             db_submit_data:p_employee_add
                         });
+
+                        await access_db({
+                            db_submit_method:"edit", 
+                            db_submit_data:p_employee_edit
+                        });
+                        
                     }
                 
                 } else {

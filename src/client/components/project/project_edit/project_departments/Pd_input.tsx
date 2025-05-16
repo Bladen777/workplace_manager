@@ -36,8 +36,9 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
-    const pd_budget_data = initial_data["project_departments"];
 
+    const pd_budget_data = initial_data["project_departments"];
+    
     const existing_dep_data = pd_budget_data.data.find((entry)=>{
         if(entry.department_id === dep_data.id){
             return entry;
@@ -50,8 +51,8 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     );
 
     const [dep_dates, set_dep_dates] = useState<Types_project_dates>({
-        start_date: typeof(pd_initial_form_data.start_date) !== "number" ? pd_initial_form_data.start_date : undefined,
-        finish_date: typeof(pd_initial_form_data.finish_date) !== "number" ? pd_initial_form_data.finish_date : undefined
+        start_date:  pd_initial_form_data["start_date"] ? String(pd_initial_form_data["start_date"])  :undefined,
+        finish_date:  pd_initial_form_data["finish_date"] ? String(pd_initial_form_data["finish_date"])  :undefined
     })    
 
     function convert_text({text}:{text:string}){
@@ -78,35 +79,37 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     function adjust_date(){
         set_dep_dates((prev_vals)=>{
             
+            const prev_dates = {...prev_vals};
             let update_dates = {...prev_vals};
             let date_type = "start_date"
     
             const start_date_time = (new Date(project_dates.start_date!)).getTime();
             const finish_date_time = (new Date(project_dates.finish_date!)).getTime();
     
-            const dep_start_time = (new Date(dep_dates.start_date!)).getTime();
-            const dep_finish_time = (new Date(dep_dates.finish_date!)).getTime();
+            const dep_start_time = (new Date(prev_dates.start_date!)).getTime();
+            const dep_finish_time = (new Date(prev_dates.finish_date!)).getTime();
 
-/*
+            console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
+            console.log(`%c DATA `, `${ log_colors.data }`,`for initial_data`,'\n' ,initial_data);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for pd_budget_data`,'\n',  pd_budget_data);
             console.log(`%c DATA `, `${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for prev_dates`,'\n' ,prev_dates);
             console.log(`%c DATA `, `${ log_colors.data }`,`for dep_dates`,'\n' ,dep_dates);
             console.log(`%c ADJUST DATE VALUES `, `${ log_colors.data }`,
                 '\n' , `start_date_time: ${start_date_time} vs dep_start_time: ${dep_start_time}`,
                 '\n' , `finish_date_time: ${finish_date_time} vs dep_finish_time: ${dep_finish_time}`,
             );
-*/
 
-    
-            if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && dep_dates.start_date === undefined)){
+            if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && prev_dates.start_date === undefined)){
                 update_dates = {...update_dates, start_date:project_dates.start_date}
                 process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.start_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
 
             };
     
-            if(finish_date_time < dep_finish_time || (project_dates.finish_date !== undefined && dep_dates.finish_date === undefined)){
+            if(finish_date_time < dep_finish_time || (project_dates.finish_date !== undefined && prev_dates.finish_date === undefined)){
                 update_dates = {...update_dates, finish_date:project_dates.finish_date}
                 date_type = "finish_date";
-                process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.finish_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+                //process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.finish_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
 
             };
             console.log(`%c DATA `, `${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
@@ -122,12 +125,30 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     },[])
 
     useMemo(() =>{
+        if(active_entry.submit_method ==="add" && initial_data["project_departments"].info.form_data){
+
+            const pd_form_data = initial_data["project_departments"].info.form_data;
+            const new_project_department_data:Types_form_data = {};
+            Object.keys(pd_form_data).forEach((key_name)=>{
+                if(key_name === "department_id"){
+                    new_project_department_data[key_name] = dep_data.id;
+                } else {
+                    new_project_department_data[key_name] = pd_form_data[key_name];
+                }   
+            })
+
+            process_data.update_data({table_name: "project_departments", form_data: [new_project_department_data], entry_id_key:"department_id", entry_id:dep_data.id});
+
+        }
+    },[active_entry.submit_method])
+
+    useMemo(() =>{
     //console.log(`%c DEP DATA CHANGED `, `${log_colors.data}`,`for dep_data`,'\n' ,dep_data);
     },[dep_data])
 
     useMemo(() =>{
         if(project_dates.start_date || project_dates.finish_date){
-            //console.log(`%c PROJECT DATES CHANGED `, `${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
+            console.log(`%c PROJECT DATES CHANGED `, `${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
             adjust_date()
         }
     },[project_dates])
@@ -141,7 +162,7 @@ function Pd_input({dep_data, project_dates}:Types_props) {
             >
                 <h4>{convert_text({text:dep_data.name})}</h4>
     
-                <div className="pd_dates project_dates">
+                                    <div className="pd_dates project_dates">
                     <Form_auto_input
                         column_info = {{
                             column_name: "start_date",
@@ -152,7 +173,7 @@ function Pd_input({dep_data, project_dates}:Types_props) {
                         initial_data_object={pd_initial_form_data}
                         adjust_data_object={dep_dates}
                         date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                        send_table_data = {callback_handle_date_change}
+                        send_table_data = {handle_date_change}
                     />
                     <Form_auto_input
                         column_info = {{
@@ -163,17 +184,24 @@ function Pd_input({dep_data, project_dates}:Types_props) {
                         initial_data_object={pd_initial_form_data}
                         adjust_data_object={dep_dates}
                         date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                        send_table_data = {callback_handle_date_change}
+                        send_table_data = {handle_date_change}
                     />
                 </div> 
-    
-                <Pd_budget
+
+
+                    <Pd_budget
                     dep_data = {dep_data}
                 />
                 <Employee_select
                     department_data = {dep_data}
                     dep_dates = {dep_dates}
                 />
+    
+                {/* 
+
+                
+                */}
+                
                
             </div>
         ); 

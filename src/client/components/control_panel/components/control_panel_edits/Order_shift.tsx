@@ -4,7 +4,7 @@ import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+import { Types_column_info, Use_Context_initial_data } from "../../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 
@@ -45,7 +45,7 @@ interface Types_change_input_data extends Types_input_change{
 export default function Order_shift({ele_names, table_name}:Prop_Types) {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`,`for Order_shift`);
 
-    const initial_data = useContext(Use_Context_initial_data).show_context[table_name];
+    const initial_data = JSON.parse(JSON.stringify(useContext(Use_Context_initial_data).show_context[table_name]));
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
@@ -224,7 +224,7 @@ export default function Order_shift({ele_names, table_name}:Prop_Types) {
             entry_indexes.current.push(index);
             return(
                 <form className="auto_form o_shift_form">
-                    {db_column_info.map((column)=>{
+                    {db_column_info.map((column:Types_column_info)=>{
                         return(
                             <Form_auto_input 
                                 key={`input_for_${column.column_name}`}

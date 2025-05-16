@@ -23,7 +23,7 @@
     max-width: 100%;
     display: grid;
     grid-template-columns: 15% 70% 15%;
-    grid-template-rows: 8rem 35rem 14rem auto;
+    grid-template-rows:8rem auto 35rem 14rem;
     overflow: hidden;
 }
 
@@ -74,13 +74,25 @@
     padding:1rem;
 }
 
+#project_nav{
+    grid-column: 1/4;
+    grid-row: 1;
+}
+
+/* PROJECT DETAILS */
+#project_details{
+    background-color: var(--section_primary);
+    grid-row: 2;
+    grid-column: 1/4;
+    min-height: 5rem;
+}
 
 
 /* PROJECT DEPARTMENT LEGEND */
 #project_department_legend{
     background-color: var(--section_primary);
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 3;
 }
 
 .legend_box_container{
@@ -102,7 +114,7 @@
 #pie_chart{
     background-color: var(--section_primary);
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 3;
     padding: 2rem;
 }
 
@@ -123,32 +135,30 @@
 #budget_tracker{
     background-color: var(--section_primary);
     grid-column: 3;
-    grid-row: 2;
+    grid-row: 3;
 }
 
 /* DATE TRACKER */
 #date_tracker{
     background-color: var(--section_primary);
     grid-column: 1/4;
-    grid-row: 3;
-}
-
-
-
-/* PROJECT DETAILS */
-#project_details{
-    background-color: var(--section_primary);
     grid-row: 4;
-    grid-column: 1/4;
-    min-height: 5rem;
 }
+
+
+
+
 
 @media (max-width: 1000px) {
 
     .project_overview_box{
         grid-template-columns: 0% 100% 0%;
-        grid-template-rows: 8rem auto auto 8rem 16rem auto;
+        grid-template-rows: 8rem auto auto auto 8rem 16rem ;
         overflow-y: auto;
+    }
+
+    #project_details{
+        grid-row: 2;
     }
 
     #pie_chart{
@@ -157,7 +167,7 @@
 
     #project_department_legend{
         grid-column: 1/4;
-        grid-row: 3;
+        grid-row: 4;
     }
 
     .legend_box_container{
@@ -171,11 +181,11 @@
 
     #budget_tracker{
         grid-column: 1/4;
-        grid-row: 4;
+        grid-row: 5;
     }
 
     #date_tracker{
-        grid-row: 5;
+        grid-row: 6;
     }
 
     .date_tracker_date_box{
@@ -187,8 +197,6 @@
     }
 
 
-    #project_details{
-        grid-row: 6;
-    }
+    
 }
 

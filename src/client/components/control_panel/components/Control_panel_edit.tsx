@@ -56,6 +56,9 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
         await update_initial_data.now({table_name:active_table});
         console.log(`%c THE POST RESPONSE `, `${ log_colors.data }`,`for response`,'\n' ,response);
         set_status_message(response.message)
+                setTimeout(() => {
+            set_status_message("saved");
+        }, 2000);
     }
 
 // MEMOS AND EFFECTS    
@@ -105,9 +108,9 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
                 > 
                     <h4>{status_message !== "" ? "Return" : "Cancel"}</h4> 
                 </button>
-                {status_message !== "" &&
-                    <h3 className="status_message">{status_message}</h3>
-                }
+                    {status_message !== "" && status_message !== "saved" &&
+                        <h3 className="status_message">{status_message}</h3>
+                    }
             </div>
             
         </article>

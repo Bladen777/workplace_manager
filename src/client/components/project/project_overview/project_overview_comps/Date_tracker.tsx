@@ -4,6 +4,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 // CONTEXT IMPORTS 
 import { Use_Context_departments_data } from "../../../context/Context_departments_data.js";
 import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
 
 // HOOK IMPORTS 
 
@@ -36,6 +37,7 @@ export default function Date_tracker() {
 
     const departments_data = useContext(Use_Context_departments_data).show_context;
     const initial_data = useContext(Use_Context_initial_data).show_context;
+    const active_entry = useContext(Use_Context_active_entry).show_context;
 
     const tracker_ele_ref = useRef<HTMLDivElement | null>(null);
     const tracker_pos_ref = useRef<DOMRect | null>(null);
@@ -74,11 +76,16 @@ export default function Date_tracker() {
 
       if(project_date_data.start && project_date_data.finish){
 
+        update_unique_dates.push({
+          date:project_date_data.start,
+          position: min_width
+        });
+
         update_tracker_date_data.push({
-          ["project_date_data"]: {
+          ["project"]: {
             start:project_date_data.start,
             finish:project_date_data.finish,
-            start_pos: 0,
+            start_pos: min_width,
             width: max_width,
             color: "#FFFFFF"
           }
@@ -100,8 +107,8 @@ export default function Date_tracker() {
               const dep_finish_time = (new Date(entry.finish_date!)).getTime();
 
               const date_range = finish_date_time - start_date_time;
-              const start_pos = ((dep_start_time - start_date_time)/date_range)* max_width;
-              const finish_pos = ((dep_finish_time - start_date_time)/date_range)* max_width;
+              const start_pos = ((dep_start_time - start_date_time)/date_range)* max_width + min_width;
+              const finish_pos = ((dep_finish_time - start_date_time)/date_range)* max_width + min_width;
 
               return{
                 start: start_pos,
@@ -112,9 +119,6 @@ export default function Date_tracker() {
 
             const position = find_position()
 
-            console.log(`%c DATA `, `${ log_colors.data }`,`for position`,'\n' ,position);
-
-            
             if((!update_unique_dates.find((s_entry)=> s_entry.position === position.start)) && position.start !== 0){
               update_unique_dates.push({
                 date:String(entry["start_date"]),
@@ -122,7 +126,7 @@ export default function Date_tracker() {
               });
             }
 
-            if((!update_unique_dates.find((s_entry)=> s_entry.position === position.finish)) && position.finish !== max_width){
+            if((!update_unique_dates.find((s_entry)=> s_entry.position === position.finish)) && position.finish !== max_width + min_width){
               update_unique_dates.push({
                 date:String(entry["finish_date"]),
                 position: position.finish
@@ -139,11 +143,19 @@ export default function Date_tracker() {
               }
             })
           }
-
         })  
+        if((!update_unique_dates.find((s_entry)=> s_entry.position === max_width + min_width))){
+              update_unique_dates.push({
+                date:project_date_data.finish,
+                position: max_width + min_width
+              });
+            }
+
       }
+
       console.log(`%c DATA `, `${ log_colors.data }`,`for update_unique_dates`,'\n' ,update_unique_dates);
       console.log(`%c DATA `, `${ log_colors.data }`,`for update_tracker_date_data`,'\n' ,update_tracker_date_data);
+
       set_unique_dates(update_unique_dates);
       set_date_data(update_tracker_date_data);
     }
@@ -164,38 +176,72 @@ useEffect(() =>{
       id="date_tracker" 
       className="project_overview_content_box"
     >
-      <div
-        className="tracker_main_dates"
-      >
-        <p className="tracker_start_date"> Start: {initial_data["projects"].data[0]["start_date"]}</p>
-        <h3>Progress Dates</h3>
-        <p className="tracker_finish_date"> Finish: {initial_data["projects"].data[0]["finish_date"]}</p>
-      </div>
+      <h3>Milestone Dates</h3>
+      {date_data[0] && !date_data[0]["project"].width &&
+        <p>Add Dates in Edit Project</p>
       
+      } 
+
+      {date_data[0] && date_data[0]["project"].width > 0 && 
       <div
         className="date_tracker_date_box"
         ref = {tracker_ele_ref}
       >
         <div className="tracker_unique_date_box">
           {unique_dates.map((entry, index)=>{
-            return(
-              <div 
-                key = {`unique_date_${index}`}
-                className="tracker_unique_date"
-                style={{
-                  marginLeft:`${entry.position}px`
-                }}
-              >
-                <p>{entry.date}</p>
+            if(index === 0){
+              return(
+                <div 
+                  key = {`unique_date_${index}`}
+                  id="tracker_unique_date_start"
+                  className="tracker_unique_date tracker_unique_date_end"
+                  
+                >
+                  <p>{`Start: ${entry.date}`}</p>
 
-              </div>
-            )
+                </div>
+              )
+            } else if( index === unique_dates.length -1){
+              return(
+                <div 
+                  key = {`unique_date_${index}`}
+                  id="tracker_unique_date_finish"
+                  className="tracker_unique_date tracker_unique_date_end"
+                  style={{
+                    marginLeft:`${entry.position}px`
+                  }}
+                >
+                  <p>{`Finish: ${entry.date}`}</p>
+
+                </div>
+              )
+
+            } else {
+              return(
+                <div 
+                  key = {`unique_date_${index}`}
+                  className="tracker_unique_date"
+                  style={{
+                    marginLeft:`${entry.position}px`
+                  }}
+                >
+                  <p>{entry.date}</p>
+
+                </div>
+              )
+            }
+            
           })}
         </div>
 
-        <div className="tracker_graph_box">
-            {date_data.map((entry)=>{
-              const key_name = Object.keys(entry)[0];
+        <div className="tracker_graph_box"
+              style={date_data[0] && {
+                    width:`${date_data[0]["project"].width + 128 + 16}px`,
+              }}
+        >
+            {date_data.map((entry,index)=>{
+              if(index !== 0){
+                const key_name = Object.keys(entry)[0];
               return(
                 <div
                   key={`date_tracker_for_${key_name}`}
@@ -209,10 +255,12 @@ useEffect(() =>{
                 >
                 </div>
               )
+              }
+              
             })}
         </div>
       </div>
-
+    }
 
     </article>
   ) 

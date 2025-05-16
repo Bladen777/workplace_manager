@@ -47,14 +47,19 @@ export default function Project_group_select({selected_client_id}:Types_props) {
             })
 
             let initial_data_update = await update_initial_data.wait({table_name: "project_groups"});
-            response.data.forEach(async(item:Types_form_data)=>{
+
+            let item:Types_form_data;
+
+            for await (item of response.data){
                 if(active_entry.submit_method === "edit" && item["client_id"] === initial_data["projects"].data[0].client_id){
                     set_existing_project_group(item);
                     initial_data_update = await update_initial_data.wait({table_name: "project_groups", entry_id_key:"client_id" ,entry_id:item["client_id"]});
                 }
-            });
 
-            await update_initial_data.update_context(initial_data_update);
+            }
+
+            //await update_initial_data.update_context(initial_data_update);
+            console.log(`%c DATA `, `${ log_colors.important }`,`for initial_data_update`,'\n' ,initial_data_update);
             set_project_group_list(response.data);
             
         } catch (error){

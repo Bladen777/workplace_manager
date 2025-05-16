@@ -49,14 +49,12 @@ export default function Home() {
                 <Provide_Process_input_data>
 
                   { user_info.is_admin && <Edit_project /> }
-                  <Project_overview />
+                   <Project_overview /> 
                   
-
                 </Provide_Process_input_data>
               </Provide_Context_active_entry>
             </Provide_Context_initial_data>
           </Provide_Context_project_budgets>
-
 
           <Provide_Context_initial_data>
             <Provide_Context_active_entry>
@@ -64,10 +62,6 @@ export default function Home() {
             </Provide_Context_active_entry>
           </Provide_Context_initial_data>
 
-              {/* 
-
-              */}
-              
         </Provide_Context_departments_data>
 
       </>
