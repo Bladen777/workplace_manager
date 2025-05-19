@@ -1,20 +1,21 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
-// COMPONENT IMPORTS
-import Order_shift from "./control_panel_edits/Order_shift.js";
-import Employee_input_form from "./control_panel_edits/Employee_input_form.js";
-import Client_edit from "./control_panel_edits/Client_edit.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+import "../../../styles/control_panel/cp_edit.css"
 
 // CONTEXT IMPORTS
+import { Use_Context_departments_data } from "../../context/Context_departments_data.js";
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
-import "../../../styles/control_panel/cp_edit.css"
+// COMPONENT IMPORTS
+import Order_shift from "./control_panel_edits/Order_shift.js";
+import Employee_input_form from "./control_panel_edits/Employee_input_form.js";
+import Client_edit from "./control_panel_edits/Client_edit.js";
 
 // TYPE DEFINITIONS 
 import { Types_post_response } from "../../_universal/Process_input_data.js";
@@ -33,6 +34,7 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
+    const update_department_data = useContext(Use_Context_departments_data).update_func;
     const update_initial_data = useContext(Use_Context_initial_data).update_func;
 
     let target_entry = {};
@@ -54,6 +56,9 @@ export default function Control_panel_edit({active_table, handle_cancel_edit_cli
         console.log(`%c POST FORM `, `${ log_colors.data }`);
         const response:Types_post_response = await process_data.post_data({submit_method:active_entry.submit_method});
         await update_initial_data.now({table_name:active_table});
+        if(active_table === "departments"){
+            update_department_data.now();
+        }
         console.log(`%c THE POST RESPONSE `, `${ log_colors.data }`,`for response`,'\n' ,response);
         set_status_message(response.message)
                 setTimeout(() => {

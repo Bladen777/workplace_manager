@@ -1,14 +1,14 @@
 import { createContext, useState, ReactNode, useEffect, useMemo } from "react"
 import axios from "axios";
 
-// COMPONENT IMPORTS 
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS 
 import { Types_form_data } from "./Context_initial_data.js";
@@ -54,7 +54,7 @@ export function Provide_Context_departments_data({children}:{children:ReactNode}
     const [ready, set_ready] = useState<boolean>(false);
 
     // UPDATE THE CONTEXT 
-    async function update_context({   }:Types_context_function){
+    async function update_context({}:Types_context_function = {}){
         console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_departments_data`);
 
         try{

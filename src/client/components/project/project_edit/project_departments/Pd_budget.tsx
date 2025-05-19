@@ -1,7 +1,7 @@
 import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-// COMPONENT IMPORTS 
-import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
@@ -12,21 +12,20 @@ import { Use_Context_project_budgets } from "../../context/Context_project_budge
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // TYPE DEFINITIONS
 import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
 import { Types_department_data } from "../../../context/Context_departments_data.js";
 
-
 interface Types_props{
-    dep_data: Types_department_data;
+    department_data: Types_department_data;
 }
 
 // THE COMPONENT 
-export default function Pd_budget({dep_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${dep_data.name}`);
+export default function Pd_budget({department_data}:Types_props) {
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const active_entry = useContext(Use_Context_active_entry).show_context;
@@ -35,7 +34,7 @@ export default function Pd_budget({dep_data}:Types_props) {
     const pd_budget_data = initial_data["project_departments"];
 
     const existing_pd_budget = pd_budget_data.data.find((entry)=>{
-        if(entry.department_id === dep_data.id){
+        if(entry.department_id === department_data.id){
             return entry;
         };
     });
@@ -50,7 +49,7 @@ export default function Pd_budget({dep_data}:Types_props) {
     const update_department_budget = useContext(Use_Context_project_budgets).update_func;
     
     const [department_percent, set_department_percent] = useState<number>(0);
-    const dep_id_name = `dep_id_${dep_data.id}`
+    const dep_id_name = `dep_id_${department_data.id}`
     const department_budget = project_budgets.departments[dep_id_name];
 /*
     console.log(`%c DATA `, `${ log_colors.data }`,`for project_budgets`,'\n' ,project_budgets);
@@ -85,7 +84,7 @@ export default function Pd_budget({dep_data}:Types_props) {
         }
         
         update_department_budget.now({dep_id_name:dep_id_name, budget:(new_department_budget)})
-        process_data.update_data({table_name: "project_departments", form_data:{input:new_department_budget, db_column:"budget"}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+        process_data.update_data({table_name: "project_departments", form_data:{input:new_department_budget, db_column:"budget"}, entry_id_key:"department_id" ,entry_id:department_data.id})
 
         if(db_column !== "percent"){
             find_percent()

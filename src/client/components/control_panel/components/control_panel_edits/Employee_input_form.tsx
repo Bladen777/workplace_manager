@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
 
-// COMPONENT IMPORTS 
-import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
-import Select_departments from "../../../_universal/table_data/Select_departments.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
@@ -10,8 +9,9 @@ import { Use_Process_input_data } from "../../../_universal/Process_input_data.j
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
+import Select_departments from "../../../_universal/table_data/Select_departments.js";
 
 // TYPE DEFINITIONS
 import { Types_column_info } from "../../../context/Context_initial_data.js";

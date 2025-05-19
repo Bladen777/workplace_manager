@@ -1,16 +1,16 @@
 import { useContext, memo} from "react";
 
-// COMPONENT IMPORTS 
-import Control_panel_entry_data from "./Control_panel_entry_data.js";
-import Employee_deps from "./Employee_deps.js";
-import Client_project_groups from "./Client_project_groups.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
+import Control_panel_entry_data from "./Control_panel_entry_data.js";
+import Employee_deps from "./Employee_deps.js";
+import Client_project_groups from "./Client_project_groups.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../context/Context_initial_data.js";

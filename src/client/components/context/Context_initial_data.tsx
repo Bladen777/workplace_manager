@@ -1,14 +1,14 @@
 import { createContext, useContext, useState, ReactNode, useRef, useMemo } from "react"
 import axios from "axios";
-// COMPONENT IMPORTS 
+
+// STYLE IMPORTS
+    /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
-
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS 
 interface Types_context {
@@ -189,7 +189,6 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
         
 
         const copy_data_array = Object.keys(update_data).map((key_name)=>{
-
             const entry_data = {...update_data}[key_name].data.map((entry_data)=>{
                 return Object.freeze({...entry_data})
             });
@@ -208,24 +207,18 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
                 }
             }}
             return entry_copy
-        
+        });
 
-        })
-
-        console.log(`%c DATA `, `${ log_colors.data }`,`for copy_data_array`,'\n' ,copy_data_array);
         const copy_data:Types_context_content = {};
-        
         copy_data_array.forEach((entry)=>{
             const key_name = Object.keys(entry)[0];
             copy_data[key_name] = entry[key_name];
         })
-
-
-        //const copy_data = JSON.parse( JSON.stringify( update_data ) );
         context_ref.current = copy_data;
 
-        console.log(`%c DATA `, `${ log_colors.data }`,`for copy_data`,'\n' ,copy_data);
-        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+        //console.log(`%c DATA `, `${ log_colors.data }`,`for copy_data_array`,'\n' ,copy_data_array);
+        //console.log(`%c DATA `, `${ log_colors.data }`,`for copy_data`,'\n' ,copy_data);
+        //console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
         console.log(`   %c CONTEXT UPDATE DATA `, `${ log_colors.context }`, `for Context_initial_data`, context_ref.current);
 
         return copy_data;

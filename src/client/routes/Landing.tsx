@@ -1,14 +1,14 @@
 import {  Link } from "react-router-dom";
 
-// COMPONENT IMPORTS 
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
+import "../styles/landing.css"
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
-import "../styles/landing.css"
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS
 

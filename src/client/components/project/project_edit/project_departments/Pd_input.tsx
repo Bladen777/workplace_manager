@@ -1,20 +1,20 @@
 import { memo, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-// COMPONENT IMPORTS 
-import Employee_select from "./employee_dd/Employee_select.js";
-import Pd_budget from "./Pd_budget.js";
-import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+import "../../../../styles/project_edit/pd_input.css"
 
-// CONTEXT IMPORTS 
+// CONTEXT IMPORTS
 import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
-import "../../../../styles/project_edit/pd_input.css"
+// COMPONENT IMPORTS 
+import Employee_select from "./employee_dd/Employee_select.js";
+import Pd_budget from "./Pd_budget.js";
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // TYPE DEFINITIONS
 import { Types_department_data } from "../../../context/Context_departments_data.js";
@@ -23,30 +23,32 @@ import { Types_form_data } from "../../../context/Context_initial_data.js";
 import { Types_project_dates } from "../Edit_project.js";
 
 interface Types_props{
-    dep_data:Types_department_data;
+    department_data: Types_department_data;
     project_dates: Types_project_dates;
 }
 
 
 // THE COMPONENT 
-function Pd_input({dep_data, project_dates}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_input for ${dep_data.name}`);
+function Pd_input({department_data, project_dates}:Types_props) {
+
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_input for ${department_data.name}`);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
+    const [dep_selected, set_dep_selected] = useState<boolean>(false);
 
     const pd_budget_data = initial_data["project_departments"];
     
-    const existing_dep_data = pd_budget_data.data.find((entry)=>{
-        if(entry.department_id === dep_data.id){
+    const existing_department_data = pd_budget_data.data.find((entry)=>{
+        if(entry.department_id === department_data.id){
             return entry;
         };
     });
     const pd_initial_form_data = (
-        existing_dep_data && active_entry.submit_method === "edit" ?
-        existing_dep_data : 
+        existing_department_data && active_entry.submit_method === "edit" ?
+        existing_department_data : 
         pd_budget_data.info.form_data
     );
 
@@ -62,15 +64,11 @@ function Pd_input({dep_data, project_dates}:Types_props) {
         return new_text;
     }
 
-    const callback_handle_date_change = useCallback(({input, db_column}:Types_input_change) =>{
-        handle_date_change({input, db_column})
-    },[])
-
     function handle_date_change({input, db_column}:Types_input_change){
         set_dep_dates((prev_vals)=>{
             let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
             const update_dates = {...prev_vals, [date_type]:input}
-            process_data.update_data({table_name: "project_departments", form_data:{input:input, db_column:db_column}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+            process_data.update_data({table_name: "project_departments", form_data:{input:input, db_column:db_column}, entry_id_key:"department_id" ,entry_id:department_data.id})
                 
             return update_dates;
         })
@@ -102,14 +100,14 @@ function Pd_input({dep_data, project_dates}:Types_props) {
 
             if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && prev_dates.start_date === undefined)){
                 update_dates = {...update_dates, start_date:project_dates.start_date}
-                process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.start_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+                process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.start_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:department_data.id})
 
             };
     
             if(finish_date_time < dep_finish_time || (project_dates.finish_date !== undefined && prev_dates.finish_date === undefined)){
                 update_dates = {...update_dates, finish_date:project_dates.finish_date}
                 date_type = "finish_date";
-                //process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.finish_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:dep_data.id})
+                process_data.update_data({table_name: "project_departments", form_data:{input:project_dates.finish_date, db_column:date_type}, entry_id_key:"department_id" ,entry_id:department_data.id})
 
             };
             console.log(`%c DATA `, `${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
@@ -121,8 +119,14 @@ function Pd_input({dep_data, project_dates}:Types_props) {
 // MEMOS AND EFFECTS
 
     useEffect(() =>{
-        //process_data.handle_form_change({section_name:"projects", table_name: "project_departments", form_data:pd_initial_form_data, entry_id:dep_data.id})
+        //process_data.handle_form_change({section_name:"projects", table_name: "project_departments", form_data:pd_initial_form_data, entry_id:department_data.id})
     },[])
+
+/*
+    useMemo(() =>{
+      console.log(`%c DEPARTMENT_DATA CHANGED `, `${ log_colors.important }`,`for department_data`,'\n' ,department_data);
+    },[department_data])
+*/
 
     useMemo(() =>{
         if(active_entry.submit_method ==="add" && initial_data["project_departments"].info.form_data){
@@ -131,20 +135,20 @@ function Pd_input({dep_data, project_dates}:Types_props) {
             const new_project_department_data:Types_form_data = {};
             Object.keys(pd_form_data).forEach((key_name)=>{
                 if(key_name === "department_id"){
-                    new_project_department_data[key_name] = dep_data.id;
+                    new_project_department_data[key_name] = department_data.id;
                 } else {
                     new_project_department_data[key_name] = pd_form_data[key_name];
                 }   
             })
 
-            process_data.update_data({table_name: "project_departments", form_data: [new_project_department_data], entry_id_key:"department_id", entry_id:dep_data.id});
+            process_data.update_data({table_name: "project_departments", form_data: [new_project_department_data], entry_id_key:"department_id", entry_id:department_data.id});
 
         }
     },[active_entry.submit_method])
 
     useMemo(() =>{
-    //console.log(`%c DEP DATA CHANGED `, `${log_colors.data}`,`for dep_data`,'\n' ,dep_data);
-    },[dep_data])
+    //console.log(`%c DEP DATA CHANGED `, `${log_colors.data}`,`for department_data`,'\n' ,department_data);
+    },[department_data])
 
     useMemo(() =>{
         if(project_dates.start_date || project_dates.finish_date){
@@ -154,55 +158,58 @@ function Pd_input({dep_data, project_dates}:Types_props) {
     },[project_dates])
 
 // RETURNED VALUES 
-    if(dep_data){
+    if(department_data){
         return(
             <div 
-                className="project_department_input_box" 
-                style={{backgroundColor:dep_data.color}}
+                className="pd_input_container" 
+                style={{backgroundColor:department_data.color}}
             >
-                <h4>{convert_text({text:dep_data.name})}</h4>
-    
-                                    <div className="pd_dates project_dates">
-                    <Form_auto_input
-                        column_info = {{
-                            column_name: "start_date",
-                            is_nullable: "YES",
-                            input_type: "date"
-                            
-                        }}
-                        initial_data_object={pd_initial_form_data}
-                        adjust_data_object={dep_dates}
-                        date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                        send_table_data = {handle_date_change}
-                    />
-                    <Form_auto_input
-                        column_info = {{
-                            column_name: "finish_date",
-                            is_nullable: "YES",
-                            input_type: "date"
-                        }}
-                        initial_data_object={pd_initial_form_data}
-                        adjust_data_object={dep_dates}
-                        date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
-                        send_table_data = {handle_date_change}
-                    />
-                </div> 
+                <div className="pd_input_title_box">
+                    {!dep_selected &&
+                        <button className="pd_input_add_btn general_btn">
+                            Add 
+                        </button>
+                    }
+                    <h4>{convert_text({text:department_data.name})}</h4>
+                </div>
+                
+
+                <div className="pd_input_box">
+                    <div className="project_dates pd_dates ">
+                        <Form_auto_input
+                            column_info = {{
+                                column_name: "start_date",
+                                is_nullable: "YES",
+                                input_type: "date"
+                                
+                            }}
+                            initial_data_object={pd_initial_form_data}
+                            adjust_data_object={dep_dates}
+                            date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
+                            send_table_data = {handle_date_change}
+                        />
+                        <Form_auto_input
+                            column_info = {{
+                                column_name: "finish_date",
+                                is_nullable: "YES",
+                                input_type: "date"
+                            }}
+                            initial_data_object={pd_initial_form_data}
+                            adjust_data_object={dep_dates}
+                            date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
+                            send_table_data = {handle_date_change}
+                        />
+                    </div> 
 
 
                     <Pd_budget
-                    dep_data = {dep_data}
-                />
-                <Employee_select
-                    department_data = {dep_data}
-                    dep_dates = {dep_dates}
-                />
-    
-                {/* 
-
-                
-                */}
-                
-               
+                        department_data = {department_data}
+                    />
+                    <Employee_select
+                        department_data = {department_data}
+                        dep_dates = {dep_dates}
+                    />
+                </div>
             </div>
         ); 
     }

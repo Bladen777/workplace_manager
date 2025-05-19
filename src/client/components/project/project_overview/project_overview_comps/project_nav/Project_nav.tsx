@@ -1,9 +1,10 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 
-// COMPONENT IMPORTS 
-import Animate_flip_switch from "../../../../_universal/animations/Animate_flip_switch.js";
-import Project_search from "./Project_search.js";
+// STYLE IMPORTS
+    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+    import "../../../../../styles/project_overview/projects_nav.css";
+    import "../../../../../styles/_universal/animations.css"
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
@@ -12,10 +13,9 @@ import { Use_Context_user_info } from "../../../../user_info/Context_user_info.j
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
-    import "../../../../../styles/project_overview/projects_nav.css";
-    import "../../../../../styles/_universal/animations.css"
+// COMPONENT IMPORTS 
+import Animate_flip_switch from "../../../../_universal/animations/Animate_flip_switch.js";
+import Project_search from "./Project_search.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../context/Context_initial_data.js";

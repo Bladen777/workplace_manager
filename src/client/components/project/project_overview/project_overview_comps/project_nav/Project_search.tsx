@@ -1,20 +1,19 @@
 import { useCallback } from "react";
-// COMPONENT IMPORTS 
-import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
+
+// STYLE IMPORTS
+    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
-
+// COMPONENT IMPORTS 
+import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 
 // TYPE DEFINITIONS
 interface Types_props{
     close_dd: Function;
 }
-
 
 // THE COMPONENT 
 export default function Project_search({close_dd}:Types_props) {

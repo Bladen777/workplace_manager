@@ -1,17 +1,15 @@
 import { createContext, useContext, useState, ReactNode, useRef } from "react"
 import axios from "axios";
 
-// COMPONENT IMPORTS 
+// STYLE IMPORTS
+    /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../context/Context_initial_data.js";
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
-
-
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS 
 import { Types_input_change } from "./inputs/Form_auto_input.js";
@@ -82,9 +80,10 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
     }
 
     function update_data({table_name, entry_id, entry_id_key, form_data}:Types_update_data){
-
-        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
         let update_data = {...data_ref.current}
+
+
+        //console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
         console.log(`%c EXISTING DATA `, `${ log_colors.process_data }`,`for update_data`,'\n' ,{...update_data});
         console.log(`%c SENT DATA `, `${ log_colors.process_data }`,`for form_data for ${table_name}`,'\n' ,form_data);
 
@@ -121,8 +120,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         } else {
             const form_copy = {...form_data};
             if(!update_data[table_name]){
-      
-                console.log(`%c DATA `, `${ log_colors.data }`,`for update_data[table_name]`,'\n' ,update_data[table_name]);
                 update_data[table_name] = [
                     {[form_copy.db_column]:form_copy.input}
                 ];
@@ -134,7 +131,8 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 };
             }
         }
-        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
+
+        //console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
 
         data_ref.current = update_data;
 

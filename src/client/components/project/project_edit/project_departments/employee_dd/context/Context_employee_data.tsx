@@ -1,19 +1,17 @@
 import axios from "axios";
-
 import { createContext, useContext, useState, ReactNode, useMemo, useRef } from "react"
-// COMPONENT IMPORTS 
+
+// STYLE IMPORTS
+    /* LOGS */ import { log_colors } from "../../../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../../../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../../../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../../../../_universal/Process_input_data.js";
 
-
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../../../../../styles/_log_colors.js";
-
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS 
 interface Types_context {

@@ -1,10 +1,9 @@
 import { ReactElement, useContext, useEffect, useMemo,  useRef,  useState } from "react";
 import axios from "axios";
 
-// COMPONENT IMPORTS 
-import P_employee_edit from "./P_employee_edit.js";
-import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
-
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js"
+  import "../../../../../styles/project_edit/employee_select.css"
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
@@ -12,9 +11,9 @@ import { Use_Context_active_entry } from "../../../../context/Context_active_ent
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js"
-  import "../../../../../styles/project_edit/employee_select.css"
+// COMPONENT IMPORTS 
+import P_employee_edit from "./P_employee_edit.js";
+import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../context/Context_initial_data.js";

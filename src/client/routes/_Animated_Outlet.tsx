@@ -2,14 +2,14 @@ import React from "react";
 import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
-// COMPONENT IMPORTS 
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS
 

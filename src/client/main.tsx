@@ -5,19 +5,14 @@ import {
   RouterProvider
 } from "react-router-dom";
 
+// STYLE IMPORTS
+
 // ROUTE IMPORTS
+import App from "./App.js";
 import _Routes from "./routes/_Routes.js";
 import Error_Page from "./routes/Error_Page.js";
-import App from "./App.js";
 
 
-// STYLE IMPORTS
-  /* LOGS */ import "./styles/_log_colors.js"
-import "./styles/_universal/main.css";
-import "./styles/_universal/general_styling.css"
-import "./styles/_universal/colors.css"
-import "./styles/_universal/type.css"
-import "./styles/_universal/form_auto_input.css"
 
 // PAGE ROUTING
 const router = createBrowserRouter([
@@ -34,3 +29,4 @@ createRoot(document.getElementById("root") as HTMLElement).render(
       <RouterProvider router={router}/>
   //</React.StrictMode>
 );
+

@@ -1,20 +1,19 @@
 import { useState, useContext, useMemo } from "react"
 
-// COMPONENT IMPORTS
-import Control_panel_view from "./components/Control_panel_view.js"
-import Control_panel_edit from "./components/Control_panel_edit.js"
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js"
+import "../../styles/control_panel/control_panel.css"
 
 // CONTEXT IMPORTS
-
 import { Provide_Process_input_data } from "../_universal/Process_input_data.js"
 import { Use_Context_initial_data } from "../context/Context_initial_data.js"
 import { Use_Context_active_entry } from "../context/Context_active_entry.js"
 
 // HOOK IMPORTS
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../styles/_log_colors.js"
-import "../../styles/control_panel/control_panel.css"
+// COMPONENT IMPORTS
+import Control_panel_view from "./components/Control_panel_view.js"
+import Control_panel_edit from "./components/Control_panel_edit.js"
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../context/Context_initial_data.js"

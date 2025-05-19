@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, ReactNode, useRef } from "react"
-// COMPONENT IMPORTS 
+
+// STYLE IMPORTS
+    /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS 
 interface Types_context {

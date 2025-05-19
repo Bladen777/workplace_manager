@@ -1,14 +1,14 @@
 import {memo, ReactElement, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-// COMPONENT IMPORTS
-import Money_input from "./Money_input.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS
 
 // HOOK IMPORTS
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+// COMPONENT IMPORTS
+import Money_input from "./Money_input.js";
 
 // TYPE DEFINITIONS 
 import { Types_column_info } from "../../context/Context_initial_data.js";

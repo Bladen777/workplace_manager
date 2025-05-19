@@ -138,7 +138,6 @@
     grid-row: 2;
 }
 
-
 #edit_project_dep_forms_box{
     position: relative;
     grid-row: 3;
@@ -163,6 +162,25 @@
     align-items: baseline;
 }
 
+
+.project_dates{
+    display: flex;
+}
+
+.project_dates > * {
+    margin-right: 0.5rem ;
+} 
+
+.project_group_select_box > *{
+    margin: 0.25rem 0;
+}
+
+.project_group_select_box > button{
+    margin: 0.25rem 0;
+}
+
+
+/* PROJECT BUDGET BOX */
 #project_budget_tracker{
     background-color: var(--section_primary);
     margin-left: auto;
@@ -184,12 +202,6 @@
     border: solid red 0.25rem;
 }
 
-.project_group_select_box > *{
-    margin: 0.25rem 0;
-}
 
-.project_group_select_box > button{
-    margin: 0.25rem 0;
-}
 
 

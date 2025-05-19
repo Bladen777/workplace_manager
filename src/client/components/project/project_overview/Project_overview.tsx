@@ -1,5 +1,16 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react"
 
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+import "../../../styles/project_overview/project_overview.css"
+
+// CONTEXT IMPORTS 
+import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
+import { Use_Context_user_info } from "../../user_info/Context_user_info.js"
+
+// HOOK IMPORTS 
+
 // COMPONENT IMPORTS
 import Project_nav from "./project_overview_comps/project_nav/Project_nav.js" 
 import Project_legend from "./project_overview_comps/Project_legend.js"
@@ -9,20 +20,8 @@ import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import Project_details from "./project_overview_comps/Project_details.js"
 import Animate_po_load from "./animations/Animate_po_load.js"
 
-// CONTEXT IMPORTS 
-import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
-import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
-import { Use_Context_user_info } from "../../user_info/Context_user_info.js"
-
-// HOOK IMPORTS 
-
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
-import "../../../styles/project_overview/project_overview.css"
-
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../context/Context_initial_data.js"
-
 
 // THE COMPONENT
 export default function Project_overview() {

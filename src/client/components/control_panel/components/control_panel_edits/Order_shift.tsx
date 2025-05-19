@@ -1,7 +1,8 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
 
-// COMPONENT IMPORTS
-import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+import "../../../../styles/control_panel/cp_order_shift.css"
 
 // CONTEXT IMPORTS
 import { Types_column_info, Use_Context_initial_data } from "../../../context/Context_initial_data.js";
@@ -10,9 +11,8 @@ import { Use_Process_input_data } from "../../../_universal/Process_input_data.j
 
 // HOOK IMPORTS
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
-import "../../../../styles/control_panel/cp_order_shift.css"
+// COMPONENT IMPORTS
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../context/Context_initial_data.js";

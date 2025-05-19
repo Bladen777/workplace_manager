@@ -1,5 +1,8 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-// COMPONENT IMPORTS 
+
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+import "../../../../styles/project_overview/date_tracker.css"
 
 // CONTEXT IMPORTS 
 import { Use_Context_departments_data } from "../../../context/Context_departments_data.js";
@@ -8,9 +11,7 @@ import { Use_Context_active_entry } from "../../../context/Context_active_entry.
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
-import "../../../../styles/project_overview/date_tracker.css"
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS
 import { Types_department_data } from "../../../context/Context_departments_data.js";

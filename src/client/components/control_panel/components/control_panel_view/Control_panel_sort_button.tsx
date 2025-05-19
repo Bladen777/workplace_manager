@@ -1,16 +1,15 @@
 import { useContext, useRef, useState, useEffect } from "react";
 
-// COMPONENT IMPORTS
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
 
-
 // HOOK IMPORTS
 import useFindClickPosition from "../../../hooks/useFindClickPosition.js";
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS
 
 // TYPE DEFINITIONS
 interface Types_active_sort_btn{

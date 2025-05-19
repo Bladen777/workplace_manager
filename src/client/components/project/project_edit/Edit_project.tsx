@@ -1,13 +1,11 @@
 import { ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-// COMPONENT IMPORTS 
-import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
-import Clients_dd from "./project_departments/client_and_job/Clients_dd.js";
-import Pd_input from "./project_departments/Pd_input.js";
-import Animate_edit_project from "./animations/Animate_edit_project.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
+import "../../../styles/project_edit/edit_project.css";
+import "../../../styles/_universal/form_dd.css"
 
 // CONTEXT IMPORTS 
-
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../_universal/Process_input_data.js";
@@ -18,10 +16,11 @@ import { Provide_Context_employee_data } from "./project_departments/employee_dd
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
-import "../../../styles/project_edit/edit_project.css";
-import "../../../styles/_universal/form_dd.css"
+// COMPONENT IMPORTS 
+import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
+import Clients_dd from "./project_departments/client_and_job/Clients_dd.js";
+import Pd_input from "./project_departments/Pd_input.js";
+import Animate_edit_project from "./animations/Animate_edit_project.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../context/Context_initial_data.js";
@@ -253,7 +252,7 @@ export default function Edit_project() {
             <Pd_input
             key={`pd_input_${item.name}`}
             project_dates = {project_dates}
-            dep_data = {item}
+            department_data={item}
         />
         )
     },[project_dates])

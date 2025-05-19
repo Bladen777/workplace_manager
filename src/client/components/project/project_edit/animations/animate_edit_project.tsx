@@ -1,12 +1,13 @@
-// COMPONENT IMPORTS 
+
+// STYLE IMPORTS
+    /* LOGS */ import { useEffect, useRef, useState } from "react";
+import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { useEffect, useRef, useState } from "react";
-import { log_colors } from "../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS
 

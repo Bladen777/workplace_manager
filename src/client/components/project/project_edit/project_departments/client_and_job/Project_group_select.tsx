@@ -1,17 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-// COMPONENT IMPORTS 
-import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
-import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
+
+// STYLE IMPORTS
+    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
 import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js";
 import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
+
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
+import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
+import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../../context/Context_initial_data.js";

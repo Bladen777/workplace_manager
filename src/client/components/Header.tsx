@@ -1,13 +1,12 @@
-
-// COMPONENT IMPORTS 
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
+import "../styles/header.css"
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
-import "../styles/header.css"
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS
 

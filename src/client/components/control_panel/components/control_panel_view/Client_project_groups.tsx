@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-// COMPONENT IMPORTS 
+
+// STYLE IMPORTS
+    /* LOGS */ 
+import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-    /* LOGS */ 
-import { log_colors } from "../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../../context/Context_initial_data.js";

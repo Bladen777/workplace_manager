@@ -1,9 +1,8 @@
 import { useContext, useEffect } from "react";
 
-// COMPONENT IMPORTS
-import Project_overview from "../components/project/project_overview/Project_overview.js";
-import Edit_project from "../components/project/project_edit/Edit_project.js";
-import Control_panel from "../components/control_panel/Control_panel.js"
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
+import "../styles/home.css"
 
 // CONTEXT IMPORTS
 import { Use_Context_user_info } from "../components/user_info/Context_user_info.js";
@@ -12,15 +11,15 @@ import { Provide_Context_initial_data } from "../components/context/Context_init
 import { Provide_Context_active_entry } from "../components/context/Context_active_entry.js";
 import { Provide_Process_input_data } from "../components/_universal/Process_input_data.js";
 
-
 import { Provide_Context_departments_data } from "../components/context/Context_departments_data.js";
 import { Provide_Context_project_budgets } from "../components/project/context/Context_project_budgets.js";
 
 // HOOK IMPORTS
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../styles/_log_colors.js";
-import "../styles/home.css"
+// COMPONENT IMPORTS
+import Project_overview from "../components/project/project_overview/Project_overview.js";
+import Edit_project from "../components/project/project_edit/Edit_project.js";
+import Control_panel from "../components/control_panel/Control_panel.js"
 
 // TYPE DEFINITIONS
 

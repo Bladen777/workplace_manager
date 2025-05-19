@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
-// COMPONENT IMPORTS 
-import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
-import Project_group_select from "./Project_group_select.js";
+// STYLE IMPORTS
+  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS
 import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
@@ -12,8 +11,9 @@ import { Use_Process_input_data } from "../../../../_universal/Process_input_dat
 
 // HOOK IMPORTS 
 
-// STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+// COMPONENT IMPORTS 
+import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
+import Project_group_select from "./Project_group_select.js";
 
 // TYPE DEFINITIONS
 import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";

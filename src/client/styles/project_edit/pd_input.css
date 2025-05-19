@@ -1,23 +1,32 @@
-.project_dates{
+
+.pd_input_title_box{
     display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
-.project_dates > * {
-    margin-right: 0.5rem ;
-} 
+.pd_input_add_btn{
+    margin: 0 0.5rem;
+    padding:0.5rem;
+    background-color: var(--section_primary);
+    color: var(--section_btn_text);
+}
 
 
-.project_department_input_box{
+
+
+.pd_input_container{
     border-bottom-left-radius: 1rem;
     border-top-left-radius: 1rem;
     padding: 0.5rem;
 }
 
-.project_department_input_box > *{
+
+
+.pd_input_box > *{
     margin:0.5rem
 }
 
 .pd_employee_dd{
     display: block;
-    margin: 0.5rem;
 }
