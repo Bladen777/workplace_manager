@@ -75,6 +75,7 @@ useEffect(() =>{
 // RETURNED VALUES 
     return (
         <article id="pie_chart" className="project_overview_content_box">
+            <h3>Project Budgets</h3>
             <div
                 className="pie_chart_box"
             >

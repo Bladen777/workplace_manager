@@ -60,7 +60,7 @@ export default function Project_group_select({selected_client_id}:Types_props) {
 
             }
 
-            //await update_initial_data.update_context(initial_data_update);
+            await update_initial_data.update_context(initial_data_update);
             console.log(`%c DATA `, `${ log_colors.important }`,`for initial_data_update`,'\n' ,initial_data_update);
             set_project_group_list(response.data);
             
@@ -73,9 +73,11 @@ export default function Project_group_select({selected_client_id}:Types_props) {
     function handle_new_project_group(){
         const date = new Date().toISOString().slice(0,10);
         const new_project_group_data = {
+            id: -1,
             date_added:date,
             client_id: selected_client_id
         }
+        process_data.update_data({table_name: "projects", form_data: {input:-1 , db_column:"project_group_id"}});
         process_data.update_data({table_name: "project_groups", form_data:[new_project_group_data]})
         set_new_project_group(true)
     }

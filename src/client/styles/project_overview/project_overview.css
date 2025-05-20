@@ -22,7 +22,7 @@
     width: 100%;
     max-width: 100%;
     display: grid;
-    grid-template-columns: 15% 70% 15%;
+    grid-template-columns: 10rem calc(100% - 20rem) 10rem;
     grid-template-rows:auto 35rem 14rem;
     overflow: hidden;
 }
@@ -94,7 +94,10 @@
 .legend_box_container{
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+}
+
+.legend_box_container > h3{
+    text-wrap: wrap;
 }
 
 .legend_box{
@@ -111,7 +114,7 @@
     background-color: var(--section_primary);
     grid-column: 2;
     grid-row: 2;
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .pie_chart_box{
@@ -119,8 +122,9 @@
     max-width: 31rem;
     max-height: 31rem;
     margin: 0 auto;
-
+    padding: 1rem;
 }
+
 #pie_chart_graphic{
     width: 100%;
     border-radius: 50%;

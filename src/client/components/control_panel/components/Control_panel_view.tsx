@@ -109,7 +109,7 @@ useMemo(()=>{
     selected_entry.current = null;
     set_entry_selected(false);
     set_status_message("")
-},[active_table]);
+},[active_table, initial_data]);
 
 
 // RETURNED VALUES

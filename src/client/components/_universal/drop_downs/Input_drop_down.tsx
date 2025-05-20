@@ -45,11 +45,14 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
     }
 
     const [selected_item, set_selected_item] = useState<string>(selected_entry ? selected_entry : "")
-    const empty_input = useRef<boolean>(true);
+    const entry_selected = useRef<boolean>(false);
+
     const [matched_items, set_matched_items] = useState<ReactElement[]>([])
 
     const [open_dd, set_open_dd] = useState<boolean>(false)
     const drop_down_ref = useRef<HTMLDivElement | null>(null);
+    const input_ref = useRef<HTMLInputElement | null>(null);
+
     const track_click = useFindClickPosition();
 
     const initial_render = useRef<boolean>(true);
@@ -68,38 +71,27 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
     
     
     function handle_click_track(){
+        
         open_dd && track_click({
             ele_name: table_name.specific ? table_name.specific : table_name.main,
             active: true, 
             ele_pos:drop_down_ref.current?.getBoundingClientRect(), 
             update_func:(value:boolean)=>{
-                if(value){
-                    if(empty_input.current){
-                        set_open_dd(false)
-                    } else {
-                        set_matched_items([blank_input()])
+                if(value){               
+                    if(!entry_selected.current){
+                        set_selected_item("");
+                        send_table_data({input: {id:0}});
                     }
+                    
+                    set_open_dd(false);
+                    input_ref.current!.blur();
                 }
             }
         })
     }
 
-    function handle_input_clicked(){
-        if(open_dd){
-            find_matched_items()
-            handle_click_track()
-        }
-        set_open_dd(true)
-    }
-
     function handle_input_change({value}:{value:string}){
-        if(value === "" || value === undefined){
-            empty_input.current = true;
-            set_open_dd(false)
-        }else{
-            empty_input.current = false;
-            set_open_dd(true)
-        }
+        entry_selected.current = false;
         set_selected_item(value)
     }
 
@@ -147,8 +139,9 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
                         type="button"
                         className="form_dd_list_btn"
                         onClick={()=>{
-                            set_selected_item(item.name)
+                            entry_selected.current = true;
                             set_open_dd(false)
+                            set_selected_item(item.name)
                             send_table_data({input: item})
                         }}
                     >
@@ -160,6 +153,7 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
         } else {
             set_matched_items([blank_input()])
         }
+        
     }
 
 // MEMOS AND EFFECTS
@@ -171,11 +165,6 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
         find_matched_items()
     },[selected_item, table_data])
     
-    useEffect(() =>{
-        //selected_entry && 
-
-    },[selected_entry])
-
     useMemo(()=>{
         if(!initial_render.current){
             console.log(`%c FORM_TABLE_DATA CHANGED `, `${ log_colors.data }`, !selected_item);
@@ -195,15 +184,16 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
 // RETURNED VALUES 
     return(
         <div 
-            className="form_dd_box"
             ref={drop_down_ref}
+            className="form_dd_box"
         >
             <input
+                ref = {input_ref}
                 className="form_dd_input"
                 value={selected_item}
                 placeholder={placeholder ? placeholder :`Select ${table_name.main}`}
                 type="text"
-                onClick={()=>{handle_input_clicked()}}
+                onMouseDown={()=>{set_open_dd(true)}} 
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
                     let value:string = e.target.value;
                     handle_input_change({value:value})

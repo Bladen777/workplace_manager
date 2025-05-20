@@ -82,9 +82,10 @@ export default function Pd_budget({department_data}:Types_props) {
             input_number = Number(input.slice(-2))
             new_department_budget = Number((project_budgets.total*(input_number/100)).toFixed(2));
             set_department_percent(input_number);
-            set_department_budget(new_department_budget);
+  
         }
         
+        set_department_budget(new_department_budget);
         update_department_budget.now({dep_id_name:dep_id_name, budget:(new_department_budget)})
         process_data.update_data({table_name: "project_departments", form_data:{input:new_department_budget, db_column:"budget"}, entry_id_key:"department_id" ,entry_id:department_data.id})
     

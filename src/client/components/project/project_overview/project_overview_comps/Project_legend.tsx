@@ -43,8 +43,9 @@ export default function Project_legend() {
 // RETURNED VALUES 
     return(
         <article id="project_department_legend" className="project_overview_content_box">
-            <h3>Legend</h3>
+            
             <div className="legend_box_container">
+                <h3>Department Legend</h3>
                 <div 
                     className="legend_box"
                 >

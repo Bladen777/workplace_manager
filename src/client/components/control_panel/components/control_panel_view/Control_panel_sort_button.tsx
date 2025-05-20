@@ -42,7 +42,7 @@ export default function Control_panel_sort_button({active_table}:Types_props) {
     function handle_sort_btn_clicked({order_key, direction}:Types_active_sort_btn){
         order_key && (active_sort_btn.current.order_key = order_key);
         direction && (active_sort_btn.current.direction = direction);
-        change_initial_data_order({order_key: active_sort_btn.current.order_key, order_direction: active_sort_btn.current.direction})
+        change_initial_data_order({table_name: active_table, order_key: active_sort_btn.current.order_key, order_direction: active_sort_btn.current.direction})
 
     }
     function convert_text(word:string){

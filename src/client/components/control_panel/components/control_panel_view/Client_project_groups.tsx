@@ -56,7 +56,7 @@ if(client_project_groups.length > 0){
                  return(
                     <div 
                         className="client_project_group_view_box" 
-                        key={`client_project_group_view_for_${project_group.name}`}   
+                        key={`client_project_group_view_for_${project_group.id}`}   
                     >
                         <p>{project_group.name}</p>
                     </div>

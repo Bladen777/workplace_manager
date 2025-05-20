@@ -35,17 +35,28 @@ export default function useFindClickPosition() {
         let is_open:boolean = false;
         function handle_click(e:MouseEvent){
             
-            trackers_open.current++
-            
             let is_active:boolean = active;
 
             const click_pos:Types_client_position = {
                 x: e.clientX, 
                 y: e.clientY
             }
+
+            function check_if_text_is_selected(){
+                const selected_text = window.getSelection()?.toString();
+                
+                if(selected_text !== ""){
+                    console.log(`%c TEXT SELECTED `, `${ log_colors.important_2 }`,`for selected_text`,'\n' ,selected_text);
+                    return true;
+                } else {
+                    return false;
+                };
+            }
             
             if(is_active){
-                console.log(`   %c CLICK TRACK ACTIVE `, `${ log_colors.hook }`, `for ${ele_name}`, `tracker_open: ${trackers_open.current}`, `is_open: ${is_open}` );
+                !is_open && trackers_open.current++
+                
+                console.log(`   %c CLICK TRACK ACTIVE `, `${ log_colors.hook }`, `for ${ele_name}`, `trackers_open: ${trackers_open.current}`, `is_open: ${is_open}` );
                 console.log(`   %c DATA `, `${ log_colors.data }`,`for track_ele_pos`,  ele_pos,
                     '\n', "right", ele_pos!.right,
                     '\n', "left", ele_pos!.left,
@@ -60,11 +71,14 @@ export default function useFindClickPosition() {
                     click_pos.y < ele_pos!.top ||
                     is_open && trackers_open.current > 1
                 ){
-                    console.log(`%c CLICKED OUTSIDE `, `${ log_colors.important }`);
-                    update_func!(true);
-                    is_active = false;
-                    document.body.removeEventListener("click",handle_click);
-                    trackers_open.current--
+                    const text_selected = check_if_text_is_selected();
+                    if(!text_selected){
+                        console.log(`%c CLICKED OUTSIDE `, `${ log_colors.important }`);
+                        update_func!(true);
+                        is_active = false;
+                        document.body.removeEventListener("click",handle_click);
+                        trackers_open.current--
+                    }
                 } else {
                     is_open = true;
                 }

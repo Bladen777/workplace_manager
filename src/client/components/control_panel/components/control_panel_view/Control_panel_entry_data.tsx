@@ -60,7 +60,7 @@ export default function Control_panel_entry_data({table_item, item_index, active
 // RETRURNED VALUES        
     return(
         <>
-            <h3>{`${item_index}. ${entry_name}`}</h3>
+            <h3>{`${item_index + 1}. ${entry_name}`}</h3>
             {entry_item}
         </>
     ); 

@@ -60,15 +60,11 @@ function Project_department_select({department_data, project_dates}:Types_props)
     const [dep_dates, set_dep_dates] = useState<Types_project_dates>({
         start_date: (pd_initial_form_data["start_date"] 
                         ? String(pd_initial_form_data["start_date"])  
-                        : project_dates.start_date 
-                            ? project_dates.start_date
-                            : undefined
+                        : undefined
         ),
         finish_date: (pd_initial_form_data["finish_date"] 
                         ? String(pd_initial_form_data["finish_date"])  
-                        : project_dates.finish_date 
-                            ? project_dates.finish_date
-                            : undefined
+                        : undefined
         )
     })    
 
@@ -148,13 +144,42 @@ function Project_department_select({department_data, project_dates}:Types_props)
         pd_input_box_ele.current!.style.animation = `toggle_pd_select_box 1s ease normal forwards`;
         pd_input_box_ele.current!.addEventListener("animationend", open_animation_ended);
 
+        console.log(`%c DATA `, `${ log_colors.data }`,`for dep_dates`,'\n' ,dep_dates);
+        let dep_start_date = dep_dates.start_date;
+        let dep_finish_date = dep_dates.finish_date;
+
+        if(!dep_dates.start_date){
+            if(project_dates.start_date){
+                dep_start_date = project_dates.start_date;
+                set_dep_dates((prev_vals)=>{
+                    return {
+                        ...prev_vals,
+                        start_date:project_dates.start_date
+                    }
+                })
+            }
+        }
+
+        if(!dep_dates.finish_date){
+            if(project_dates.finish_date){
+                dep_finish_date = project_dates.finish_date;
+                set_dep_dates((prev_vals)=>{
+                    return {
+                        ...prev_vals,
+                        finish_date:project_dates.finish_date
+                    }
+                })
+            }
+        }
+
         const added_pd_data:Types_form_data = {
             id: existing_department_data ? existing_department_data.id : - 1,
             department_id: department_data.id,  
-            start_date: dep_dates.start_date,
-            finish_date: dep_dates.finish_date,
+            start_date: dep_start_date,
+            finish_date: project_dates.finish_date ? project_dates.finish_date : dep_dates.finish_date,
             budget: pd_initial_form_data.budget,
         }
+
         
         const pd_data_update = await update_project_department_data.wait(added_pd_data);
 
@@ -192,6 +217,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
 
     useEffect(() =>{
         if(dep_selected){
+            //update_project_department_data.now();
             add_department();
         }
     },[dep_selected])

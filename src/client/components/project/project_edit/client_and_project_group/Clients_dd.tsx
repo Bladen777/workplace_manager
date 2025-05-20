@@ -50,8 +50,12 @@ export default function Clients_dd() {
         };
     }
     function handle_client_change({input}:{input:Types_search_item}){
-        console.log(`%c DATA `, `${ log_colors.data }`,`for input`,'\n' ,input);
-        process_data.update_data({table_name: "projects", form_data: {input:input.id , db_column:"client_id"}})
+        console.log(`%c DATA `, `${ log_colors.important }`,`for Selected Client`,'\n' ,input);
+        if(input.id === 0){
+            process_data.update_data({table_name: "projects", form_data: {input:"" , db_column:"client_id"}});
+        } else {
+            process_data.update_data({table_name: "projects", form_data: {input:input.id , db_column:"client_id"}});
+        }
         set_chosen_client_id(input.id!)
     }
 
@@ -77,10 +81,12 @@ if(client_list.length > 0){
                     }}
                 />
             </label>
-            {chosen_client_id !== 0 && 
+            {
+            chosen_client_id !== 0 && 
                 <Project_group_select 
                     selected_client_id = {chosen_client_id}
                 />
+            
             }
         </div>
     ); 

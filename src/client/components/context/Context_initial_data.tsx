@@ -225,7 +225,7 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
     }
 
     async function change_order({ table_name, sort_field, filter_key, filter_item, filter_key_2, filter_item_2, order_key, order_direction,  }:Types_change_order){
-        console.log(`%c CONTEXT ORDER CHANGE `, `${ log_colors.context }`, `for Context_initial_data`);
+        console.log(`%c CONTEXT ORDER CHANGE `, `${ log_colors.context }`, `for Context_initial_data`, '\n', send_context);
 
         try {
             const response = await axios.post("/get_table_info",{
@@ -239,7 +239,12 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
                 order_direction: order_direction 
             })
             set_send_context((prev_vals)=>{
-                const update_data = {...prev_vals, [table_name]:response.data}
+                const update_data = {...prev_vals,
+                    [table_name]: {...prev_vals[table_name],
+                        data: response.data
+                    }    
+                }
+                console.log(`%c CONTEXT ORDER CHANGE RESULT `, `${ log_colors.context }`,`for Context_initial_data`,'\n' ,update_data);
                 return update_data
             })
         } catch (error) {

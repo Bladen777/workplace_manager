@@ -2,6 +2,10 @@
     display: block;
 }
 
+.form_dd_box{
+  width: fit-content;  
+}
+
 .form_dd_list{
     max-height: 10rem;
     overflow-y: auto;

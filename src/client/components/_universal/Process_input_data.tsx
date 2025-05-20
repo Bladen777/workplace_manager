@@ -169,6 +169,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         table_names.forEach((table_name, index)=>{
             const missing_inputs:string[] = [];
             console.log(`%c DATA `, `${ log_colors.data }`,`for initial_data for ${table_name}`,'\n' ,initial_data);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for data_ref.current[table_name]`,'\n' ,data_ref.current[table_name]);
             const db_column_info:Types_column_info[] = [...initial_data[table_name].info.db_column_info];
 
             if(Array.isArray(data_ref.current[table_name])){
@@ -244,19 +245,21 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
         function add_id(f_table_name:string){
             console.log(`%c DATA `, `${ log_colors.data }`,`for table_names`,'\n' ,table_names);
-            let id_name = "";
-            if(table_names.includes("employees")){
-                id_name = "employee_id";
-            } else if (table_names.includes("projects")){
-                id_name = "project_id";
-                if(f_table_name === "projects" && table_names.includes("project_groups")){
-                    id_name = "project_group_id";
-                    console.log(`%c DATA `, `${ log_colors.data }`,`for id_name`,'\n' ,id_name);
+                if(table_names.includes(f_table_name)){
+                    let id_name = "";
+                if(table_names.includes("employees")){
+                    id_name = "employee_id";
+                } else if (table_names.includes("projects")){
+                    id_name = "project_id";
+                    if(f_table_name === "projects" && table_names.includes("project_groups")){
+                        id_name = "project_group_id";
+                        console.log(`%c DATA `, `${ log_colors.data }`,`for id_name`,'\n' ,id_name);
+                    }
                 }
+                data_ref.current[f_table_name].map((entry)=>{
+                    entry[id_name] = target_entry_id_ref.current
+                })
             }
-            data_ref.current[f_table_name].map((entry)=>{
-                entry[id_name] = target_entry_id_ref.current
-            })
         }
 
         const missing_inputs = check_empty_input({table_names:table_names});

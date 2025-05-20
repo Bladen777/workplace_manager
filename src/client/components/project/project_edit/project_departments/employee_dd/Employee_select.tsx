@@ -88,18 +88,20 @@ export default function Employee_select({department_data, department_dates}:Type
     }
 
     function add_employee({entry_id}:{entry_id:number}){
-        set_selected_employee_data((prev_vals)=>{
-            const selected_employee = initial_employee_list.find((s_entry)=>{
-                if(s_entry.id === entry_id){
-                    return s_entry;
-                }
-            })
-    
-            const update_selected_employees = [...prev_vals, selected_employee!];
-            update_employee_list({f_employee_list:update_selected_employees});
-            return update_selected_employees;
+        if(entry_id !== 0){
+            set_selected_employee_data((prev_vals)=>{
+                const selected_employee = initial_employee_list.find((s_entry)=>{
+                    if(s_entry.id === entry_id){
+                        return s_entry;
+                    }
+                })
+        
+                const update_selected_employees = [...prev_vals, selected_employee!];
+                update_employee_list({f_employee_list:update_selected_employees});
+                return update_selected_employees;
 
-        }); 
+            }); 
+        }
     }
 
     function remove_employee(id:number){

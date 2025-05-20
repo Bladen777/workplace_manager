@@ -1,3 +1,7 @@
+.auto_form_input_label{
+    max-height: 100%;
+    max-width: 100%;
+}
 
 .auto_form{
     display: flex;
@@ -10,8 +14,16 @@
 }
 
 .auto_form_input{
-    width: fit-content;
     max-width: 100%;
+}
+
+.auto_form_text, .auto_form_textarea{
+    min-width: 11rem;
+}
+
+.auto_form_textarea{
+    min-height: 4rem;
+    max-height: calc(100% - 2rem);
 }
 
 .auto_form_color{
