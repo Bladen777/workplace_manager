@@ -100,7 +100,9 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
                 total:budget
             }
         } else{
-            used_budget = Number((budgets.current!.used + (budget - update_budget.departments[dep_id_name!])).toFixed(2));
+            const exisiting_dep_budget = update_budget.departments[dep_id_name!] ? update_budget.departments[dep_id_name!] : 0; 
+            used_budget = Number((budgets.current!.used + (budget - exisiting_dep_budget)).toFixed(2));
+            console.log(`%c DATA `, `${ log_colors.data }`,`for used_budget`,'\n' ,used_budget);
             update_budget = {
                 ...update_budget,
                 used:used_budget,

@@ -64,7 +64,7 @@ export default function Animate_flip_switch() {
             }
         
             function adjust_animation_1(){
-                start.ele.classList.toggle("animate_ele_closed")
+                start.ele.classList.toggle("animate_ele_closed");
                 start.ele.style.animation = "";
                 start.ele.removeEventListener("animationend", adjust_animation_1);
         

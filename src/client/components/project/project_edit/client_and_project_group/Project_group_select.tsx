@@ -2,24 +2,24 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 // STYLE IMPORTS
-    /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+    /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS 
-import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
-import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js";
-import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
+import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
+import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
 // COMPONENT IMPORTS 
-import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
-import Form_auto_input from "../../../../_universal/inputs/Form_auto_input.js";
+import Input_drop_down from "../../../_universal/drop_downs/Input_drop_down.js";
+import Form_auto_input from "../../../_universal/inputs/Form_auto_input.js";
 
 // TYPE DEFINITIONS
-import { Types_form_data } from "../../../../context/Context_initial_data.js";
-import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
-import { Types_data_change } from "../../../../_universal/Process_input_data.js";
-import { Types_input_change } from "../../../../_universal/inputs/Form_auto_input.js";
+import { Types_form_data } from "../../../context/Context_initial_data.js";
+import { Types_search_item } from "../../../_universal/drop_downs/Input_drop_down.js";
+import { Types_data_change } from "../../../_universal/Process_input_data.js";
+import { Types_input_change } from "../../../_universal/inputs/Form_auto_input.js";
 
 interface Types_props{
     selected_client_id: number;
@@ -27,7 +27,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Project_group_select({selected_client_id}:Types_props) {
-    console.log(`%c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_group_select`, selected_client_id);
+    console.log(`           %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_group_select`, selected_client_id);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const active_entry = useContext(Use_Context_active_entry).show_context;
@@ -97,6 +97,9 @@ export default function Project_group_select({selected_client_id}:Types_props) {
 useEffect(() =>{
     fetch_project_group_list()
 },[selected_client_id])
+
+
+
 
 console.log(`%c DATA `, `${ log_colors.data }`,`for project_group_list.length`,'\n' ,project_group_list.length);
 console.log(`%c DATA `, `${ log_colors.data }`,`for existing_project_group`,'\n' ,existing_project_group);

@@ -1,5 +1,6 @@
 #project_nav{
     display: grid;
+    height:10rem;
     grid-template-columns: 15% 70% 15%;
     grid-template-rows: 50% 50%;
     z-index: 9;

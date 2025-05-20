@@ -83,7 +83,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
         let update_data = {...data_ref.current}
 
 
-        //console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
+        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
         console.log(`%c EXISTING DATA `, `${ log_colors.process_data }`,`for update_data`,'\n' ,{...update_data});
         console.log(`%c SENT DATA `, `${ log_colors.process_data }`,`for form_data for ${table_name}`,'\n' ,form_data);
 
@@ -132,7 +132,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             }
         }
 
-        //console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
+        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
 
         data_ref.current = update_data;
 
@@ -279,54 +279,63 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             }
 
 
-            if(table_name === "project_employees" && submit_method === "edit"){
-                let p_employee_add:Types_form_data[] = [];
-                let p_employee_edit:Types_form_data[] = [];
-                let p_employee_delete:Types_form_data[] = []; 
+            if((table_name === "project_employees" || table_name === "project_departments")&& submit_method === "edit"){
+                let add_entry:Types_form_data[] = [];
+                let edit_entry:Types_form_data[] = [];
 
-                const start_employees = initial_data["project_employees"].data;
-                const update_employees = data_ref.current["project_employees"];
+                const start_entries = initial_data[table_name].data;
+                const update_entries = data_ref.current[table_name];
 
-                if(start_employees.length === 0){
+                if(start_entries.length === 0){
                     console.log(`%c NO INITIAL EMPLOYEES `, `${ log_colors.important }`);
                     await access_db({
                         db_submit_method:"add", 
                         db_submit_data:data_ref.current[table_name]
                 });
-                }else if(update_employees.length === start_employees.length){
+                }else if(update_entries.length === start_entries.length){
                         await access_db({
                             db_submit_method:"edit", 
                             db_submit_data:data_ref.current[table_name]
                         });
                     
-                }else if(update_employees.length > start_employees.length){
-                        update_employees.forEach((entry)=>{
-                            if(start_employees.find((s_entry)=>{
+                }else if(update_entries.length > start_entries.length){
+                        update_entries.forEach((entry)=>{
+                            if(start_entries.find((s_entry)=>{
                                 return s_entry.id === entry.id
                             })){
-                                p_employee_edit.push(entry);
+                                edit_entry.push(entry);
                             } else {
-                                p_employee_add.push(entry);
+                                add_entry.push(entry);
                             }
                         });
                         await access_db({
                             db_submit_method:"add", 
-                            db_submit_data:p_employee_add
+                            db_submit_data:add_entry
                         });
 
                         await access_db({
                             db_submit_method:"edit", 
-                            db_submit_data:p_employee_edit
-                        });
-                        
-                    }
-                
-                } else {
-                    await access_db({
-                        db_submit_method:submit_method, 
-                        db_submit_data:data_ref.current[table_name]
+                            db_submit_data:edit_entry
+                        });   
+                } else if (update_entries.length < start_entries.length){
+                let delete_entry_id:number = -1;
+                    start_entries.forEach((entry)=>{
+                        if(update_entries.find((s_entry)=>{
+                            return s_entry.id !== entry.id
+                        })){
+                            delete_entry_id = entry.id!;
+                        }
                     });
+                    
+                    delete_entry({table_name:table_name, entry_id:delete_entry_id});
                 }
+                
+            } else {
+                await access_db({
+                    db_submit_method:submit_method, 
+                    db_submit_data:data_ref.current[table_name]
+                });
+            }
 
         
             async function access_db({db_submit_method, db_submit_data}:Types_access_db){

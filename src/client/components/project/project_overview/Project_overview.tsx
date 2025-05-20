@@ -115,16 +115,16 @@ export default function Project_overview() {
             
               
             </div>
+            <Project_nav />
             <div 
               ref = {animate_po_load_box_ref}
               className={"project_overview_box "}
-            >
-              <Project_nav />
+            >    
+              <Project_details />          
               <Project_legend/>
               <Pie_chart />
               <Budget_tracker />
               <Date_tracker />
-              <Project_details />
             </div>
           
           

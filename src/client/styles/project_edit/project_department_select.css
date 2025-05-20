@@ -1,0 +1,52 @@
+.pd_select_container{
+    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem;
+    padding: 0.5rem;
+}
+
+.pd_select_title_box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.pd_select_add_btn{
+    margin: 0 0.5rem;
+    background-color: var(--section_primary);
+}
+
+.pd_select_add_btn:hover{
+    background-color: var(--section_bg);
+}
+
+.pd_select_input_box{
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+    overflow: hidden;
+}
+
+
+@keyframes toggle_pd_select_box {
+    0%{
+        pointer-events: none;
+        max-height: 0;
+    }
+
+    99%{
+        pointer-events: none;
+    }
+
+    100%{
+        pointer-events: all;
+        max-height:30rem;
+    }
+
+}
+
+
+.pd_select_input_box > *{
+    margin:0.5rem
+}
+

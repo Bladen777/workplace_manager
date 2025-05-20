@@ -46,7 +46,7 @@ div{
 
 .general_btn:hover{
     transform: scale(1.05);
-    background-color: var(--section_btn_hover) !important;
+    background-color: var(--section_btn_hover)
 }
 
 .status_message{

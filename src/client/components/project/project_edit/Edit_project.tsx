@@ -3,7 +3,6 @@ import { ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useS
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../../styles/_log_colors.js";
 import "../../../styles/project_edit/edit_project.css";
-import "../../../styles/_universal/form_dd.css"
 
 // CONTEXT IMPORTS 
 import { Use_Context_initial_data } from "../../context/Context_initial_data.js";
@@ -13,13 +12,14 @@ import { Use_Context_project_budgets } from "../context/Context_project_budgets.
 import { Use_Context_departments_data } from "../../context/Context_departments_data.js";
 
 import { Provide_Context_employee_data } from "./project_departments/employee_dd/context/Context_employee_data.js";
+import { Provide_Context_project_department_data } from "./project_departments/context/Context_project_department_data.js";
 
 // HOOK IMPORTS 
 
 // COMPONENT IMPORTS 
 import Form_auto_input from "../../_universal/inputs/Form_auto_input.js";
-import Clients_dd from "./project_departments/client_and_job/Clients_dd.js";
-import Pd_input from "./project_departments/Pd_input.js";
+import Clients_dd from "./client_and_project_group/Clients_dd.js";
+import Project_department_select from "./project_departments/Project_department_select.js";
 import Animate_edit_project from "./animations/Animate_edit_project.js";
 
 // TYPE DEFINITIONS
@@ -203,11 +203,7 @@ export default function Edit_project() {
         update_project_budgets.now({total:true, budget:total})
     },[])
 
-    const callback_handle_project_date_change = useCallback(({ input, db_column}:Types_input_change) =>{
-        console.log(`%c ----- CALL BACK DATE CHANGED ----- `, `${ log_colors.important }`);
-            handle_project_date_change({ input, db_column})
-        },[])
-    
+
     function handle_project_date_change({input, db_column}:Types_input_change){
 
         set_project_dates((prev_vals)=>{
@@ -249,7 +245,7 @@ export default function Edit_project() {
 
     const create_pd_input = useCallback((item:Types_department_data)=>{
         return(
-            <Pd_input
+            <Project_department_select
             key={`pd_input_${item.name}`}
             project_dates = {project_dates}
             department_data={item}
@@ -259,7 +255,7 @@ export default function Edit_project() {
 
 // MEMOS AND EFFECTS    
 
-    useEffect(()=>{
+    useMemo(()=>{
         if(initial_data["projects"]){
             set_production_budget((prev_vals)=>{
                 let budget:Types_budget ={...prev_vals};
@@ -316,10 +312,10 @@ export default function Edit_project() {
                 }
             </div>
 
-            <article
-                id="edit_project_input_box"
+            <div
+                id="edit_project_animation_container"
                 ref = {edit_input_box_ref} 
-                className="edit_project_box general_section box_closed"
+                className="edit_project_input_container general_section edit_project_input_container_closed"
             >
                 {edit_btn_clicked && 
                     <div className="edit_project_input_box">
@@ -357,40 +353,40 @@ export default function Edit_project() {
                                 }
                             })}
                         </form>
-                        <form className="auto_form" id="edit_project_dep_forms_box">
-                            <div className="project_dates">
-                                <Form_auto_input
-                                    column_info = {{
-                                        column_name: "start_date",
-                                        is_nullable: "YES",
-                                        input_type: "date"
-                                    }}
-                                    label_name="Project Start Date"
-                                    initial_data_object={project_initial_form_data}
-                                    send_table_data = {callback_handle_project_date_change}
-                                />
-                                <Form_auto_input
-                                    column_info = {{
-                                        column_name: "finish_date",
-                                        is_nullable: "YES",
-                                        input_type: "date"
-                                    }}
-                                    label_name="Project Finish Date"
-                                    initial_data_object={project_initial_form_data}
-                                    send_table_data = {callback_handle_project_date_change}
-                                />
-                            </div>
-
+                        <form className="project_dates">
+                            <Form_auto_input
+                                column_info = {{
+                                    column_name: "start_date",
+                                    is_nullable: "YES",
+                                    input_type: "date"
+                                }}
+                                label_name="Project Start Date"
+                                initial_data_object={project_initial_form_data}
+                                send_table_data = {handle_project_date_change}
+                            />
+                            <Form_auto_input
+                                column_info = {{
+                                    column_name: "finish_date",
+                                    is_nullable: "YES",
+                                    input_type: "date"
+                                }}
+                                label_name="Project Finish Date"
+                                initial_data_object={project_initial_form_data}
+                                send_table_data = {handle_project_date_change}
+                            />
+                        </form>
+                        <article className="auto_form" id="edit_project_dep_forms_box">
                             <h3>Department Budgets</h3>
                             {/* departments && pd_inputs */}
-                              
-                                <Provide_Context_employee_data>
-                                    {departments.map((item:Types_department_data)=>
-                                    create_pd_input(item)
-                                )}
-                                </Provide_Context_employee_data>
+                                <Provide_Context_project_department_data>
+                                    <Provide_Context_employee_data>
+                                        {departments.map((item:Types_department_data)=>
+                                        create_pd_input(item)
+                                    )}
+                                    </Provide_Context_employee_data>
+                                </Provide_Context_project_department_data>
                             
-                        </form>
+                        </article>
                         <div className="edit_project_utility_bar">
                             <div className="utility_bar_buttons">
                                 <button id="edit_project_done_btn" type="button"
@@ -420,7 +416,7 @@ export default function Edit_project() {
                         </div> 
                     </div>  
                 }
-            </article>
+            </div>
             
         </section>
     ); 

@@ -2,22 +2,22 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 // STYLE IMPORTS
-  /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
+  /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
 
 // CONTEXT IMPORTS
-import { Use_Context_initial_data } from "../../../../context/Context_initial_data.js";
-import { Use_Context_active_entry } from "../../../../context/Context_active_entry.js"; 
-import { Use_Process_input_data } from "../../../../_universal/Process_input_data.js";
+import { Use_Context_initial_data } from "../../../context/Context_initial_data.js";
+import { Use_Context_active_entry } from "../../../context/Context_active_entry.js"; 
+import { Use_Process_input_data } from "../../../_universal/Process_input_data.js";
 
 // HOOK IMPORTS 
 
 // COMPONENT IMPORTS 
-import Input_drop_down from "../../../../_universal/drop_downs/Input_drop_down.js";
+import Input_drop_down from "../../../_universal/drop_downs/Input_drop_down.js";
 import Project_group_select from "./Project_group_select.js";
 
 // TYPE DEFINITIONS
-import { Types_search_item } from "../../../../_universal/drop_downs/Input_drop_down.js";
-import { Types_form_data } from "../../../../context/Context_initial_data.js";
+import { Types_search_item } from "../../../_universal/drop_downs/Input_drop_down.js";
+import { Types_form_data } from "../../../context/Context_initial_data.js";
 
 // THE COMPONENT 
 export default function Clients_dd() {
@@ -65,7 +65,7 @@ export default function Clients_dd() {
 // RETURNED VALUES 
 if(client_list.length > 0){
     return(
-        <>
+        <div className="client_and_project_group_container">
             <label className="form_dd auto_form_input">
                 <p>* Client:</p>
                 <Input_drop_down
@@ -82,7 +82,7 @@ if(client_list.length > 0){
                     selected_client_id = {chosen_client_id}
                 />
             }
-        </>
+        </div>
     ); 
 }
 }

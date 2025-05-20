@@ -116,11 +116,11 @@ export default function Animate_edit_project() {
         }
     
         function adjust_animation_1(){
-            start.ele.classList.toggle("box_closed")
+            start.ele.classList.toggle("edit_project_input_container_closed")
             start.ele.style.animation = "";
             start.ele.removeEventListener("animationend", adjust_animation_1);
     
-            end.ele.classList.toggle("box_closed")
+            end.ele.classList.toggle("edit_project_input_container_closed")
             end.ele.style.animation = `${end.animation} ease-out ${animation_direction} forwards`
             end.ele.addEventListener("animationend", adjust_animation_2);
         }

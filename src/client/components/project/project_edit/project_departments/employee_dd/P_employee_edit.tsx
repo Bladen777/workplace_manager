@@ -25,7 +25,7 @@ interface Types_props{
     employee_id: number; 
     dep_id:number;
     data:Types_form_data;
-    dep_dates: Types_project_dates;
+    department_dates: Types_project_dates;
     remove_employee: Function;
 }
 
@@ -36,7 +36,7 @@ interface Types_project_employees{
 }
 
 // THE COMPONENT 
-export default function P_employee_edit({dep_id, employee_id, data, dep_dates, remove_employee}:Types_props) {
+export default function P_employee_edit({dep_id, employee_id, data, department_dates, remove_employee}:Types_props) {
     console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `P_employee_edit`);
 
     const dep_id_name = `dep_id_${dep_id}`
@@ -128,9 +128,9 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
         console.log(`%c DATA `, `${ log_colors.data }`,`for remove employee`);
         update_employee_data.now({method:"delete", department_id: dep_id, employee_id:employee_id }); 
         e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease reverse forwards`;
-        e_select_box_ele.current!.addEventListener("animationend", animation_ended);
-        function animation_ended(){
-            e_select_box_ele.current!.removeEventListener("animationend", animation_ended);
+        e_select_box_ele.current!.addEventListener("animationend", open_animation_ended);
+        function open_animation_ended(){
+            e_select_box_ele.current!.removeEventListener("animationend", open_animation_ended);
             remove_employee()
         }
     }
@@ -139,7 +139,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
     useEffect(() =>{
         e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
-        e_select_box_ele.current!.addEventListener("animationend", animation_done);
+        e_select_box_ele.current!.addEventListener("animationend", close_animation_ended);
 
         console.log(`%c DATA `, `${ log_colors.data }`,`for data`,'\n' ,data);
         const added_employee_data:Types_form_data = {
@@ -153,8 +153,8 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
         
         const employee_data_update = update_employee_data.wait(added_employee_data);
 
-        function animation_done(){
-            e_select_box_ele.current!.removeEventListener("animationend", animation_done);
+        function close_animation_ended(){
+            e_select_box_ele.current!.removeEventListener("animationend", close_animation_ended);
             e_select_box_ele.current!.style.animation ="";
             update_employee_data.update_context(employee_data_update);
         }
@@ -163,8 +163,8 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
 
 
     useMemo(() =>{
-      console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for dep_dates`,'\n' ,dep_dates);
-    },[dep_dates])
+      console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for department_dates`,'\n' ,department_dates);
+    },[department_dates])
 
     /*
 
@@ -207,7 +207,7 @@ export default function P_employee_edit({dep_id, employee_id, data, dep_dates, r
                         input_type: "date"
                     }}
                     initial_data_object={initial_employee_form_data}
-                    date_range={{min: dep_dates.start_date, max: dep_dates.finish_date}}
+                    date_range={{min: department_dates.start_date, max: department_dates.finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
                 {/* INPUT FOR HOURS */}
