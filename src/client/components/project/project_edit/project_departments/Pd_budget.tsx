@@ -111,7 +111,7 @@ export default function Pd_budget({department_data}:Types_props) {
                     input_type: "budget"
                 }} 
                 initial_data_object={initial_pd_budget_form_data}
-                adjust_data_object={{budget: department_budget.toFixed(2)}}
+                adjust_data_value={department_budget.toFixed(2)}
                 send_table_data = {callback_handle_pd_budget_change}
             />
             <label className="auto_form_input_label">

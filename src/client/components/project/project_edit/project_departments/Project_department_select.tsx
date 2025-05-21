@@ -56,6 +56,16 @@ function Project_department_select({department_data, project_dates}:Types_props)
 
     const pd_input_box_ele = useRef<HTMLDivElement | null>(null);
 
+    const [adjust_dep_dates, set_adjust_dep_dates] = useState<Types_project_dates>({
+        start_date: (pd_initial_form_data["start_date"] 
+                        ? String(pd_initial_form_data["start_date"])  
+                        : undefined
+        ),
+        finish_date: (pd_initial_form_data["finish_date"] 
+                        ? String(pd_initial_form_data["finish_date"])  
+                        : undefined
+        )
+    });  
 
     const [dep_dates, set_dep_dates] = useState<Types_project_dates>({
         start_date: (pd_initial_form_data["start_date"] 
@@ -79,7 +89,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
         set_dep_dates((prev_vals)=>{
             let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
             const update_dates = {...prev_vals, [date_type]:input};
-            const pd_data_update = update_project_department_data.wait({department_id: department_data.id, [db_column]: input})
+            update_project_department_data.wait({department_id: department_data.id, [db_column]: input})
 
             //update_project_department_data.now({department_id: department_data.id, [db_column]: input})                
             return update_dates;
@@ -87,7 +97,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
    }
 
     function adjust_date(){
-        set_dep_dates((prev_vals)=>{
+        set_adjust_dep_dates((prev_vals)=>{
             
             const prev_dates = {...prev_vals};
             let update_dates = {...prev_vals};
@@ -271,7 +281,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
                                     
                                 }}
                                 initial_data_object={pd_initial_form_data}
-                                adjust_data_object={dep_dates}
+                                adjust_data_value={adjust_dep_dates.start_date}
                                 date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                                 send_table_data = {handle_date_change}
                             />
@@ -282,7 +292,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
                                     input_type: "date"
                                 }}
                                 initial_data_object={pd_initial_form_data}
-                                adjust_data_object={dep_dates}
+                                adjust_data_value={adjust_dep_dates.finish_date}
                                 date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                                 send_table_data = {handle_date_change}
                             />

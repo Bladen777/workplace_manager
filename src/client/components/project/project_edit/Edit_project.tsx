@@ -63,7 +63,6 @@ export default function Edit_project() {
     const update_initial_data = useContext(Use_Context_initial_data).update_func;
     const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
-    const [project_initial_form_data, set_project_initial_form_data] = useState<Types_form_data>({})
 
     const [status_message, set_status_message] = useState<string>("");
     const [edit_btn_clicked, set_edit_btn_clicked] = useState<boolean>(false);
@@ -110,16 +109,11 @@ export default function Edit_project() {
         set_status_message("");   
     }
 
-
     async function adjust_initial_data({submit_method}:{submit_method?:string} = {}){
-
         let project_budgets_update = {};
-        const initial_p_data = {...initial_data["projects"].info.form_data};
-        let project_initial_form_data_update = initial_p_data;
 
         // SET INITIAL VALUES FOR EDIT/ADD PROJECTS
         if(submit_method === "edit"){
-
             process_data.update_data({table_name: "projects", form_data: [initial_data["projects"].data[0]]});
             process_data.update_data({
                 table_name: "project_departments", 
@@ -134,6 +128,12 @@ export default function Edit_project() {
             process_data.update_data({table_name: "projects", form_data: [initial_data["projects"].info.form_data]});
 
         }
+
+
+        set_project_dates({
+            start_date: typeof(initial_data["projects"].data[0].start_date) !== "number" ? initial_data["projects"].data[0].start_date : undefined,
+            finish_date: typeof(initial_data["projects"].data[0].finish_date) !== "number" ? initial_data["projects"].data[0].finish_date : undefined
+        })
         
         // SET INITIAL VALUES FOR PROJECT BUDGETS
         if(submit_method === "edit"){
@@ -151,30 +151,18 @@ export default function Edit_project() {
                 used:budget_used,
                 departments: department_budgets
             }})
-            project_initial_form_data_update = initial_data["projects"].data[0];
-
         } else {
             project_budgets_update = await update_project_budgets.wait({reset:true})
 
         }
 
-
         if(submit_method && submit_method !== active_entry.submit_method){
             const active_entry_update = await update_active_entry.wait({submit_method:submit_method});
             update_active_entry.update_context(active_entry_update);
-            
         }
         await update_project_budgets.update_context(project_budgets_update);
-        set_project_dates({
-            start_date: typeof(project_initial_form_data_update.start_date) !== "number" ? project_initial_form_data_update.start_date : undefined,
-            finish_date: typeof(project_initial_form_data_update.finish_date) !== "number" ? project_initial_form_data_update.finish_date : undefined
-        })
 
         console.log(`%c UPDATE EDIT PROJECT NOW `, `${ log_colors.important }`);
-
-        set_project_initial_form_data(project_initial_form_data_update);
-
-
     }
 
     function handle_form_change({form_data}:Types_update_data){
@@ -194,11 +182,8 @@ export default function Edit_project() {
                 }
             }
         }
-
-
     }
     
-
     const callback_adjust_budget = useCallback(({total}:Types_adjust_budget)=>{
         update_project_budgets.now({total:true, budget:total})
     },[])
@@ -246,10 +231,10 @@ export default function Edit_project() {
     const create_pd_input = useCallback((item:Types_department_data)=>{
         return(
             <Project_department_select
-            key={`pd_input_${item.name}`}
-            project_dates = {project_dates}
-            department_data={item}
-        />
+                key={`pd_input_${item.name}`}
+                project_dates = {project_dates}
+                department_data={item}
+            />
         )
     },[project_dates])
 
@@ -345,8 +330,7 @@ export default function Edit_project() {
                                         <Form_auto_input
                                             key={`input_for_${column.column_name}`}
                                             column_info = {column}
-                                            initial_data_object={project_initial_form_data}
-                                            adjust_data_object={active_entry.submit_method === "edit" ? project_initial_form_data : project_initial_form_data}
+                                            initial_data_object={active_entry.submit_method === "edit" ? initial_data["projects"].data[0] : initial_data["projects"].info.form_data}
                                             send_table_data = {(form_data:Types_input_change)=>{handle_form_change({table_name: "projects", form_data:form_data})}}
                                         />
                                     )
@@ -361,7 +345,7 @@ export default function Edit_project() {
                                     input_type: "date"
                                 }}
                                 label_name="Project Start Date"
-                                initial_data_object={project_initial_form_data}
+                                initial_data_object={active_entry.submit_method === "edit" ? initial_data["projects"].data[0] : initial_data["projects"].info.form_data}
                                 send_table_data = {handle_project_date_change}
                             />
                             <Form_auto_input
@@ -371,7 +355,7 @@ export default function Edit_project() {
                                     input_type: "date"
                                 }}
                                 label_name="Project Finish Date"
-                                initial_data_object={project_initial_form_data}
+                                initial_data_object={active_entry.submit_method === "edit" ? initial_data["projects"].data[0] : initial_data["projects"].info.form_data}
                                 send_table_data = {handle_project_date_change}
                             />
                         </form>

@@ -169,13 +169,22 @@ useMemo(() =>{
 // RETURN THE CONTEXT PROVIDER 
     return (
         <Use_Context_project_department_data.Provider value={{
-           update_func:{
-               now: async (props:Types_context_function)=>{set_send_context(await update_context(props))},
-               wait: update_context,
-               update_context: set_send_context 
-           },
-           show_context:send_context}}
-        >
+                update_func:{
+                    now: async (props:Types_context_function)=>{
+                        console.log(`%c CONTEXT UPDATE NOW `, `${ log_colors.context }`, `for Context_project_department_data`);
+                        set_send_context(await update_context(props))
+                    },
+                    wait: async (props:Types_context_function) =>{
+                        console.log(`%c CONTEXT UPDATE WAIT `, `${ log_colors.context }`, `for Context_project_department_data`);
+                        return await update_context(props)
+                    },
+                    update_context: (props:Types_context_content)=>{
+                        console.log(`%c UPDATE CONTEXT DIRECTLY `, `${ log_colors.important }`, `for Context_project_department_data`);
+                        set_send_context(props) 
+                    }
+                },
+                show_context:send_context}}
+            >
             {children} 
         </Use_Context_project_department_data.Provider> 
     );

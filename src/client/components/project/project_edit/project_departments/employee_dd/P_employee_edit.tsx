@@ -35,11 +35,6 @@ interface Types_project_employees{
     budget_hours:number;
 }
 
-interface Types_employee_start_date{
-    [key:string]: string | undefined;
-    start_date: string | undefined;
-}
-
 // THE COMPONENT 
 export default function P_employee_edit({dep_id, employee_id, data, department_dates, remove_employee}:Types_props) {
     console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `P_employee_edit`);
@@ -65,12 +60,11 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
         : p_employee_data.info.form_data
     );
 
-    const [employee_start_date_adjust, set_employee_start_date_adjust] = useState<Types_employee_start_date>({
-        start_date:
+    const [employee_start_date_adjust, set_employee_start_date_adjust] = useState<string | undefined>(
         initial_employee_form_data["start_date"] 
         ? String(initial_employee_form_data["start_date"]!) 
         : undefined
-    })
+    )
 
     const [project_employees, set_project_employees] = useState<Types_project_employees>({
         budget:Number(initial_employee_form_data.budget),
@@ -131,7 +125,7 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
             start_date: input
         }
 
-        set_employee_start_date_adjust({start_date:input})
+        //set_employee_start_date_adjust({start_date:input})
         console.log(`%c DATA `, `${ log_colors.data }`,`for date_form_data`,'\n' ,date_form_data);
         update_employee_data.now(date_form_data); 
 
@@ -161,7 +155,7 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
         let employee_start_date  = initial_employee_form_data.start_date;
 
         if(!initial_employee_form_data.start_date){
-            set_employee_start_date_adjust({start_date:department_dates.start_date})
+            set_employee_start_date_adjust(department_dates.start_date)
             if(department_dates.start_date){
                 employee_start_date = department_dates.start_date;
             }
@@ -191,16 +185,16 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
     useMemo(() =>{
       console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for department_dates`,'\n' ,department_dates);
 
-        set_employee_start_date_adjust((prev_vals)=>{
+        
             
-            const prev_dates = {...prev_vals};
-            let update_dates = {...prev_vals};
+            const prev_start_date = employee_start_date_adjust!;
+            let update_start_date = employee_start_date_adjust;
 
     
             const start_date_time = (new Date(department_dates.start_date!)).getTime();
             const finish_date_time = (new Date(department_dates.finish_date!)).getTime();
     
-            const employee_start_time = (new Date(prev_dates.start_date!)).getTime();
+            const employee_start_time = (new Date(prev_start_date)).getTime();
 
 /*
             console.log(`%c ADJUST DATE VALUES `, `${ log_colors.data }`,
@@ -209,18 +203,20 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
             );
 
 */
-            if(start_date_time > employee_start_time || (department_dates.start_date !== undefined && prev_dates.start_date === undefined)){
-                update_dates = {...update_dates, start_date:department_dates.start_date}
+            if(start_date_time > employee_start_time || (department_dates.start_date !== undefined && prev_start_date === undefined)){
+                update_start_date = department_dates.start_date;
                 update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: department_dates.start_date})
             };
     
-            if(finish_date_time < employee_start_time || (department_dates.finish_date !== undefined && prev_dates.finish_date === undefined)){
-                update_dates = {...update_dates, start_date:department_dates.finish_date}
+            if(finish_date_time < employee_start_time || (department_dates.finish_date !== undefined && prev_start_date === undefined)){
+                update_start_date = department_dates.finish_date;
                 update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: department_dates.finish_date})
             };
-            console.log(`%c DATA `, `${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
-            return update_dates;
-        })
+            console.log(`%c DATA `, `${ log_colors.data }`,`for update_start_date`,'\n' ,update_start_date);
+            
+       
+
+        set_employee_start_date_adjust(update_start_date)
 
     },[department_dates])
 
@@ -259,7 +255,7 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
                         input_type: "date"
                     }}
                     initial_data_object={initial_employee_form_data}
-                    adjust_data_object={employee_start_date_adjust}
+                    adjust_data_value={employee_start_date_adjust}
                     date_range={{min: department_dates.start_date, max: department_dates.finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
@@ -271,7 +267,7 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
                         input_type: "text"
                     }}
                     initial_data_object={initial_employee_form_data}
-                    adjust_data_object={project_employees}
+                    adjust_data_value={project_employees.budget_hours}
                     send_table_data = {callback_handle_budget_change}
                 />
               
@@ -284,7 +280,7 @@ export default function P_employee_edit({dep_id, employee_id, data, department_d
                         input_type: "budget"
                     }}
                     initial_data_object={initial_employee_form_data}
-                    adjust_data_object={project_employees} 
+                    adjust_data_value={project_employees.budget} 
                     send_table_data = {callback_handle_budget_change}
                 />
 

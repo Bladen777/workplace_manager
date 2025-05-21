@@ -82,8 +82,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
     function update_data({table_name, entry_id, entry_id_key, form_data}:Types_update_data){
         let update_data = {...data_ref.current}
 
-
-        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
+        //console.log(`%c INITIAL DATA BEFORE `, `${ log_colors.important_2 }`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
         console.log(`%c EXISTING DATA `, `${ log_colors.process_data }`,`for update_data`,'\n' ,{...update_data});
         console.log(`%c SENT DATA `, `${ log_colors.process_data }`,`for form_data for ${table_name}`,'\n' ,form_data);
 
@@ -132,7 +131,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
             }
         }
 
-        console.log(`%c IMPORTANT `, `${ log_colors.important_2 }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
+        //console.log(`%c INITIAL DATA AFTER `, `${ log_colors.important_2 }`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
 
         data_ref.current = update_data;
 
@@ -283,45 +282,57 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
 
             if((table_name === "project_employees" || table_name === "project_departments")&& submit_method === "edit"){
-                let add_entry:Types_form_data[] = [];
-                let edit_entry:Types_form_data[] = [];
+                let add_entries:Types_form_data[] = [];
+                let edit_entries:Types_form_data[] = [];
 
                 const start_entries = initial_data[table_name].data;
                 const update_entries = data_ref.current[table_name];
 
+                console.log(`%c ${table_name} ENTRIES `, `${ log_colors.data }`,'\n', `start_entries`,start_entries , "vs", `update_entries`, update_entries);
+
                 if(start_entries.length === 0){
-                    console.log(`%c NO INITIAL EMPLOYEES `, `${ log_colors.important }`);
+                    console.log(`%c NO INITIAL ENTRIES `, `${ log_colors.important }`);
+                    /*
                     await access_db({
                         db_submit_method:"add", 
                         db_submit_data:data_ref.current[table_name]
-                });
+                    });
+                    */
                 }else if(update_entries.length === start_entries.length){
-                        await access_db({
-                            db_submit_method:"edit", 
-                            db_submit_data:data_ref.current[table_name]
-                        });
-                    
+                    console.log(`%c SAME NUMBER OF ENTRIES `, `${ log_colors.important }`);
+                    /*
+                    await access_db({
+                        db_submit_method:"edit", 
+                        db_submit_data:data_ref.current[table_name]
+                    });
+                    */
+                
                 }else if(update_entries.length > start_entries.length){
-                        update_entries.forEach((entry)=>{
-                            if(start_entries.find((s_entry)=>{
-                                return s_entry.id === entry.id
-                            })){
-                                edit_entry.push(entry);
-                            } else {
-                                add_entry.push(entry);
-                            }
-                        });
-                        await access_db({
-                            db_submit_method:"add", 
-                            db_submit_data:add_entry
-                        });
+                    
+                    update_entries.forEach((entry)=>{
+                        if(start_entries.find((s_entry)=>{
+                            return s_entry.id === entry.id
+                        })){
+                            edit_entries.push(entry);
+                        } else {
+                            add_entries.push(entry);
+                        }
+                    });
+                    console.log(`%c MORE NEW ENTRIES `, `${ log_colors.important }`,"\n", `add_entries`, add_entries, "vs", `edit_entries`, edit_entries);
+                    /*
+                    await access_db({
+                        db_submit_method:"add", 
+                        db_submit_data:add_entries
+                    });
 
-                        await access_db({
-                            db_submit_method:"edit", 
-                            db_submit_data:edit_entry
-                        });   
+                    await access_db({
+                        db_submit_method:"edit", 
+                        db_submit_data:edit_entries
+                    });   
+                    */
                 } else if (update_entries.length < start_entries.length){
-                let delete_entry_id:number = -1;
+                    console.log(`%c LESS NEW ENTRIES `, `${ log_colors.important }`);
+                    let delete_entry_id:number = -1;
                     start_entries.forEach((entry)=>{
                         if(update_entries.find((s_entry)=>{
                             return s_entry.id !== entry.id
@@ -334,10 +345,12 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 }
                 
             } else {
+                /*
                 await access_db({
                     db_submit_method:submit_method, 
                     db_submit_data:data_ref.current[table_name]
                 });
+                */
             }
 
         

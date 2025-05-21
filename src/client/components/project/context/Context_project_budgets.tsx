@@ -80,16 +80,16 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 
     // UPDATE THE CONTEXT 
     async function update_context({total, dep_id_name, budget, all_budgets, reset }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_budgets`, `total: `,total);
+        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_budgets`, `prev_vals: `,{...budgets.current});
         if(reset){
             const budget_update = setup_department_budgets()
             return budget_update;
         }
 
         let update_budget: Types_context_content = {
-            ...budgets.current!
+            ...budgets.current
         }
-        console.log(`%c CONTEXT `, `${ log_colors.context }`,`for update_budget`,'\n' ,update_budget);
+
         let used_budget:number;
 
         if(all_budgets){
@@ -113,7 +113,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
                 
             }
         }
-        console.log(`   %c CONTEXT DATA `, `${ log_colors.context }`,`for update_budget`,'\n' ,update_budget);
+        console.log(`   %c CONTEXT UPDATE DATA `, `${ log_colors.context }`,`for update_budget`,'\n' ,update_budget);
         budgets.current = update_budget;
         return update_budget;
     }
@@ -133,12 +133,21 @@ useMemo(() =>{
     if(ready){
         return (
             <Use_Context_project_budgets.Provider value={{
-            update_func:{
-                now: async (props:Types_context_function)=>{set_send_context(await update_context(props))},
-                wait: update_context,
-                update_context: set_send_context 
-            },
-            show_context:send_context}}
+                update_func:{
+                    now: async (props:Types_context_function)=>{
+                        console.log(`%c CONTEXT UPDATE NOW `, `${ log_colors.context }`, `for Context_project_budgets`);
+                        set_send_context(await update_context(props))
+                    },
+                    wait: async (props:Types_context_function) =>{
+                        console.log(`%c CONTEXT UPDATE WAIT `, `${ log_colors.context }`, `for Context_project_budgets`);
+                        return await update_context(props)
+                    },
+                    update_context: (props:Types_context_content)=>{
+                        console.log(`%c UPDATE CONTEXT DIRECTLY `, `${ log_colors.important }`, `for Context_project_budgets`);
+                        set_send_context(props) 
+                    }
+                },
+                show_context:send_context}}
             >
                 {children} 
             </Use_Context_project_budgets.Provider> 

@@ -177,7 +177,7 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({ table_name, entry_id, entry_id_key }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_initial_data`);
+        
 
         const update_data:Types_context_content = {...context_ref.current, 
             [table_name]:{
@@ -258,11 +258,17 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
     return (
         <Use_Context_initial_data.Provider value={{
            update_func:{
-               now: async (props:Types_context_function)=>{set_send_context(await update_context(props))},
-               wait: update_context,
-               update_context: (props:Types_context_content)=>{
-                console.log(`%c UPDATE CONTEXT SHORTCUT `, `${ log_colors.important }`);
-                set_send_context(props) 
+                now: async (props:Types_context_function)=>{
+                    console.log(`%c CONTEXT UPDATE NOW `, `${ log_colors.context }`, `for Context_initial_data`);
+                    set_send_context(await update_context(props))
+                },
+                wait: async (props:Types_context_function) =>{
+                    console.log(`%c CONTEXT UPDATE WAIT `, `${ log_colors.context }`, `for Context_initial_data`);
+                    return await update_context(props)
+                },
+                update_context: (props:Types_context_content)=>{
+                    console.log(`%c UPDATE CONTEXT DIRECTLY `, `${ log_colors.important }`, `for Context_initial_data`);
+                    set_send_context(props) 
                }
            },
            change_order: change_order,

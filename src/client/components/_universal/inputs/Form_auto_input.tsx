@@ -18,7 +18,7 @@ export interface Types_new_entry{
     label_name?:string | boolean;
     column_info: Types_column_info;
     initial_data_object:Types_form_data;
-    adjust_data_object?: Types_form_data;
+    adjust_data_value?: string | number;
     date_range?:Types_date_ranges;
     send_table_data: Function;
 }
@@ -42,7 +42,9 @@ export interface Types_input_change{
 
 
 // THE COMPONENT
-function Form_auto_input({label_name, column_info, initial_data_object, adjust_data_object, date_range, send_table_data}:Types_new_entry) {
+function Form_auto_input({label_name, column_info, initial_data_object, adjust_data_value, date_range, send_table_data}:Types_new_entry) {
+
+    const initial_render = useRef<boolean>(true);
 
     const [input_data, set_input_data] = useState<Types_form_data>(initial_data_object);
     const [input, set_input] = useState<ReactElement>();
@@ -147,31 +149,29 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
         }
 
 // MEMOS AND EFFECTS   
+    
+    useEffect(() =>{
+      initial_render.current = false;
+    },[])
+
+
+    useMemo(() =>{
+        if(adjust_data_value && !initial_render.current){
+            const key = column_info.column_name;
+            console.log(`%c ADJUST DATA OBJECT CHANGED `, `color: yellow`, adjust_data_value);
+            console.log(`%c DATA `, `${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_value: `, adjust_data_value);
+
+            set_input_data({[key]:adjust_data_value})
+        }
+    },[adjust_data_value])
         
     useMemo(()=>{
-                
-
-        if(adjust_data_object && Object.keys(adjust_data_object).length > 0){
-                        const key = column_info.column_name;
-            console.log(`%c INITIAL DATA OBJECT `, `${ log_colors.data }`,'\n' ,initial_data_object);
-/*
-            console.log(`%c ADJUST DATA OBJECT CHANGED `, `color: yellow`, adjust_data_object);
-            console.log(`%c DATA `, `${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_object: `, adjust_data_object[key]);
-
-*/
-            if( input_data[key] !== adjust_data_object[key]){
-                console.log(`%c ADJUST DATA OBJECT CHANGED `, `color: yellow`, adjust_data_object);
-                console.log(`%c DATA `, `${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_object: `, adjust_data_object[key]);
-
-                set_input_data(adjust_data_object)
-            } 
-        } 
-        
-        if((date_range?.max || date_range?.min ) && Object.keys(date_range).length > 0){
+        if((date_range?.max || date_range?.min ) && Object.keys(date_range).length > 0 && !initial_render.current){
             console.log(`%c DATE RANGE CHANGED `, `color: orange `, date_range);
+
             create_inputs()
         }
-    },[adjust_data_object, date_range])
+    },[ date_range])
 
     useMemo(() =>{
         if(input_data && Object.keys(input_data).length > 0){
@@ -182,7 +182,7 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
 
 /*
     useMemo(() =>{
-        if(adjust_data_object){current_table_data = adjust_data_object}
+        if(adjust_data_value){current_table_data = adjust_data_value}
         if(column_info.column_name){
             console.log(`%c FORM_AUTO_INPUT FIRST CREATION for ${column_info.column_name}`, `${ log_colors.important }`);
             create_inputs()
@@ -199,8 +199,8 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
     },[column_info])
 
     useEffect(() =>{
-        console.log(`%c DATA `, `${ log_colors.data }`,`for adjust_data_object`,'\n' ,adjust_data_object);
-    },[adjust_data_object])
+        console.log(`%c DATA `, `${ log_colors.data }`,`for adjust_data_value`,'\n' ,adjust_data_value);
+    },[adjust_data_value])
 
     useEffect(() =>{
         console.log(`%c DATA `, `${ log_colors.data }`,`for send_table_data`,'\n' ,send_table_data);
