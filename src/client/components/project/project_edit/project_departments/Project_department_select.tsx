@@ -172,7 +172,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
 
         console.log(`%c NEW DATES `, `${ log_colors.data }`,"\n",`dep_start_date: ${dep_start_date}`,"\n", `dep_finish_date: ${dep_finish_date}`);
         const added_pd_data:Types_form_data = {
-            id: existing_department_data ? existing_department_data.id : - 1,
+            id: pd_initial_form_data.id ? pd_initial_form_data.id : - 1,
             department_id: department_data.id,  
             start_date: dep_start_date,
             finish_date: dep_finish_date,

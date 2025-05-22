@@ -97,9 +97,13 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({ id, employee_id, department_id, start_date, budget, budget_hours, method  }:Types_context_function){
-        
+
         let update_data:Types_context_content = [...employee_data_ref.current];
         let entry_index:number | boolean = false;
+
+        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for department_id`,'\n' ,department_id);
+        console.log(`%c DATA `, `${ log_colors.data }`,`for employee_id`,'\n' ,employee_id);
 
         update_data.forEach((s_item, s_index)=>{
             if(s_item.employee_id === employee_id && s_item.department_id === department_id ){

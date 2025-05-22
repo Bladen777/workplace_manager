@@ -83,7 +83,7 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
     },[])
 
     async function handle_budget_input_change({input, db_column}:Types_input_change){
-        let budget_form_data:Types_form_data = {};
+ 
         set_p_employee_budget((prev_vals)=>{
 
             console.log(`%c DATA `, `${ log_colors.data }`,`for db_column`,'\n' ,db_column);
@@ -98,18 +98,19 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
                 update_data.budget_hours = Number((update_data.budget/employee_rate).toFixed(2));
             }
 
-            budget_form_data = {
+            const budget_form_data:Types_form_data = {
                 budget_hours: update_data.budget_hours,
                 budget: update_data.budget,
                 employee_id: employee_id,
                 department_id: dep_id,    
             }
 
+            update_employee_data.wait(budget_form_data);
             console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
             return update_data;
         })
 
-        await update_employee_data.wait(budget_form_data);
+    
     }
 
     const callback_handle_date_change = useCallback(({input, db_column}:Types_input_change) =>{
@@ -163,7 +164,7 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
 
             console.log(`%c DATA `, `${ log_colors.data }`,`for employee_data`,'\n' ,employee_data);
             const added_employee_data:Types_form_data = {
-                id: exisiting_p_employee ? exisiting_p_employee.id : - 1,
+                id: initial_employee_form_data.id ? initial_employee_form_data.id : - 1,
                 budget_hours: p_employee_budget.budget_hours,
                 budget: p_employee_budget.budget,
                 employee_id: employee_id,

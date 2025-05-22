@@ -155,7 +155,7 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
     },[])
 
     useMemo(() =>{
-        if(adjust_data_value && !initial_render.current){
+        if(!initial_render.current){
             const key = column_info.column_name;
             console.log(`%c ADJUST DATA OBJECT CHANGED `, `color: yellow`, adjust_data_value);
             console.log(`%c DATA `, `${ log_colors.data }`,` key: ${key}`,'\n',`for input_data:` ,input_data[key], ` vs `, `adjust_data_value: `, adjust_data_value);
