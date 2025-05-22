@@ -39,7 +39,7 @@ export default function Animate_po_load() {
     }
 
     async function run_animation({animate_forwards}:Types_animate_props):Promise<boolean>{
-        console.log(`%c ANIMATION RAN`, `${ log_colors.animation }`, `Animate_po_load`);
+        console.log(`%c ANIMATION RAN `, `${ log_colors.animation }`, `Animate_po_load`);
 
         const animation_direction = animate_forwards ? "normal" : "reverse"
 

@@ -58,7 +58,9 @@ export function Provide_Context_departments_data({children}:{children:ReactNode}
 
         try{
             const response = await axios.post("/get_table_info",{
-                table_name: "departments"
+                table_name: "departments",
+                order_key:"department_order",
+                order_direction: "ASC"
             })
 
             const data = response.data.map((item:Types_form_data)=>{

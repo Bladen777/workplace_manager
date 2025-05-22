@@ -10,6 +10,8 @@ import { Use_Context_active_entry } from "../../../context/Context_active_entry.
 
 import { Use_Context_project_department_data } from "./context/Context_project_department_data.js";
 import { Use_Context_employee_data } from "./employee_dd/context/Context_employee_data.js";
+import { Use_Context_project_budgets } from "../../context/Context_project_budgets.js";
+
 
 // HOOK IMPORTS 
 
@@ -39,6 +41,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
 
     const update_project_department_data = useContext(Use_Context_project_department_data).update_func;
     const update_employee_data = useContext(Use_Context_employee_data).update_func;
+    const update_department_budget = useContext(Use_Context_project_budgets).update_func;
 
     const existing_department_data = initial_data["project_departments"].data.find((entry:Types_form_data)=>{
         if(entry.department_id === department_data.id){
@@ -186,6 +189,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
     async function remove_department(){
         await update_project_department_data.wait({method:"delete", department_id: department_data.id});
         await update_employee_data.wait({method:"delete", department_id: department_data.id }); 
+        
         pd_input_box_ele.current!.style.animation = `toggle_pd_select_box 1s ease reverse forwards`;
         pd_input_box_ele.current!.addEventListener("animationend", close_animation_ended);
 
@@ -194,6 +198,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
             set_dep_animation_running(false);
             set_dep_selected(false);
         }
+        await update_department_budget.now({dep_id_name:`dep_id_${department_data.id}`, budget:0})
     }
 
 

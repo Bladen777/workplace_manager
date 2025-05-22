@@ -286,7 +286,20 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 let edit_entries:Types_form_data[] = [];
 
                 const start_entries = initial_data[table_name].data;
-                const update_entries = data_ref.current[table_name];
+                let update_entries:Types_form_data[] = [];
+
+                let table_entry:Types_form_data;
+                for await(table_entry of data_ref.current[table_name]){
+                    if(table_entry.id === -1){
+                        await access_db({
+                            db_submit_method:"add", 
+                            db_submit_data:data_ref.current[table_name]
+                        });
+                    } else {
+                        update_entries.push(table_entry)
+                    }
+                }
+
 
                 console.log(`%c ${table_name} ENTRIES `, `${ log_colors.data }`,'\n', `start_entries`,start_entries , "vs", `update_entries`, update_entries);
 
@@ -300,6 +313,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     
                 }else if(update_entries.length === start_entries.length){
                     console.log(`%c SAME NUMBER OF ENTRIES `, `${ log_colors.important }`);
+
                     
                     await access_db({
                         db_submit_method:"edit", 
@@ -308,7 +322,6 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     
                 
                 }else if(update_entries.length > start_entries.length){
-                    
                     update_entries.forEach((entry)=>{
                         if(start_entries.find((s_entry)=>{
                             return s_entry.id === entry.id
@@ -332,10 +345,12 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     
                 } else if (update_entries.length < start_entries.length){
                     console.log(`%c LESS NEW ENTRIES `, `${ log_colors.important }`);
-                    let delete_entry_id:number = -1;
+                    let delete_entry_id:number = 0;
                     start_entries.forEach((entry)=>{
-                        if(update_entries.find((s_entry)=>{
-                            return s_entry.id !== entry.id
+                        if(!update_entries.find((s_entry)=>{
+                            if(s_entry.id === entry.id){
+                                return s_entry;
+                            }
                         })){
                             delete_entry_id = entry.id!;
                         }
@@ -371,24 +386,29 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                     status_message = (`${response.data.message}`);
 
                     if(table_name === "projects"){
+                        console.log(`%c PROJECTS TABLE `, `${ log_colors.update}`);
                         target_entry_id_ref.current = response.data.entry_id;
                         if(submit_method ==="add"){
                             add_id("project_departments");
                             add_id("project_employees");
                         }
                     } else if (table_name === "project_groups" && table_names.includes("projects")){
+                        console.log(`%c PROJECT GROUPS TABLE `, `${ log_colors.update}`);
                         target_entry_id_ref.current = response.data.entry_id;
                         if(submit_method ==="add"){
                             add_id("projects");
                         }
                         console.log(`%c DATA `, `${ log_colors.data }`,`for data_ref.current["projects"]`,'\n' ,data_ref.current["projects"]);
                     } else if (table_name === "employees"){
+                        console.log(`%c EMPLOYEES TABLE `, `${ log_colors.update}`);
                         target_entry_id_ref.current = response.data.entry_id;
                         add_id("employee_departments");
                         
                     } else if( !table_names.includes("projects") && !table_names.includes("employees")){
+                        console.log(`%c NOT PROJECTS OR EMPLOYEES `, `${ log_colors.update}`);
                         target_entry_id_ref.current = response.data.entry_id;
                     }
+                    console.log(`%c DATA `, `${ log_colors.data }`,`for target_entry_id_ref.current`,'\n' ,target_entry_id_ref.current);
                 } catch (error) {
                     console.log('%cError posting info to database: ', 'darkred',error);
                     status_message =("Failed to submit data");

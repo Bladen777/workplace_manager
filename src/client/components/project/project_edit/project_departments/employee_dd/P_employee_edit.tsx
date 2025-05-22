@@ -109,8 +109,6 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
             console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
             return update_data;
         })
-
-    
     }
 
     const callback_handle_date_change = useCallback(({input, db_column}:Types_input_change) =>{
@@ -149,13 +147,9 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
             e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
             e_select_box_ele.current!.addEventListener("animationend", close_animation_ended);
 
-            console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for initial_employee_form_data.start_date`,'\n' ,initial_employee_form_data.start_date);
-            console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for department_dates`,'\n' ,department_dates);
-
             let employee_start_date  = initial_employee_form_data.start_date;
 
             if(!initial_employee_form_data.start_date){
-                console.log(`%c DATA `, `${ log_colors.important_2 }`,`for initial_employee_form_data["start_date"]`,'\n' ,initial_employee_form_data["start_date"]);
                 set_employee_start_date_adjust(department_dates.start_date)
                 if(department_dates.start_date){
                     employee_start_date = department_dates.start_date;
@@ -186,7 +180,6 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
 
     useMemo(() =>{
         if(!initial_render.current){
-            console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for department_dates`,'\n' ,department_dates);
             const prev_start_date = employee_start_date_adjust!;
             let update_start_date = employee_start_date_adjust;
 
@@ -196,13 +189,6 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
     
             const employee_start_time = (new Date(prev_start_date)).getTime();
 
-/*
-            console.log(`%c ADJUST DATE VALUES `, `${ log_colors.data }`,
-                '\n' , `start_date_time: ${start_date_time} vs employee_start_time: ${employee_start_time}`,
-                '\n' , `finish_date_time: ${finish_date_time} vs employee_start_time: ${employee_start_time}`,
-            );
-
-*/
             if(start_date_time > employee_start_time || (department_dates.start_date !== undefined && prev_start_date === undefined)){
                 update_start_date = department_dates.start_date;
                 update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: department_dates.start_date})
@@ -212,13 +198,12 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
                 update_start_date = department_dates.finish_date;
                 update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: department_dates.finish_date})
             };
-            console.log(`%c DATA `, `${ log_colors.data }`,`for update_start_date`,'\n' ,update_start_date);
+            console.log(`%c P_EMPLOYEE START DATE CHANGED `, `${ log_colors.update }`,'\n' ,update_start_date);
                 
             set_employee_start_date_adjust(update_start_date)
         }
     },[department_dates])
 
-    //dep_id, employee_id, employee_data, department_dates, remove_employee
     useMemo(() =>{
         if(!initial_render.current){
             console.log(`%c DEP_ID CHANGED `, `${ log_colors.update}`, dep_id);

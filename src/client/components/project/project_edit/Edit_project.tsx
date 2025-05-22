@@ -30,6 +30,7 @@ import { Types_column_info } from "../../context/Context_initial_data.js";
 
 import { Types_department_budgets } from "../context/Context_project_budgets.js";
 import { Types_department_data } from "../../context/Context_departments_data.js";
+import { a } from "framer-motion/client";
 
 
 interface Types_budget {
@@ -95,7 +96,7 @@ export default function Edit_project() {
     function handle_animation(submit_method:string | undefined){
         if(edit_btn_clicked){
             set_edit_btn_clicked(false)
-            process_data.clear_form();
+            //process_data.clear_form();
             animate.run_animation({animate_forwards:false})
         } else {
             set_edit_btn_clicked(true);
@@ -110,7 +111,8 @@ export default function Edit_project() {
     }
 
     async function adjust_initial_data(){
-
+        console.log(`%c EDIT PROJECT INITIAL DATA ADJUST `, `${ log_colors.important}`);
+        await process_data.clear_form();
         // SET PROCESS DATA VALUES FOR EDIT/ADD PROJECTS
         if(active_entry.submit_method === "edit"){
             process_data.update_data({table_name: "projects", form_data: [initial_data["projects"].data[0]]});
@@ -130,8 +132,12 @@ export default function Edit_project() {
 
         // SET VALUES FOR PROJECT DATES
         set_project_dates({
-            start_date: active_entry.submit_method === "edit" ? String(initial_data["projects"].data[0].start_date) : undefined,
-            finish_date: active_entry.submit_method === "edit" ? String(initial_data["projects"].data[0].finish_date) : undefined
+            start_date: active_entry.submit_method === "edit" && initial_data["projects"].data[0].start_date 
+                            ? String(initial_data["projects"].data[0].start_date) 
+                            : undefined,
+            finish_date: active_entry.submit_method === "edit" && initial_data["projects"].data[0].finish_date 
+                            ? String(initial_data["projects"].data[0].finish_date) 
+                            : undefined
         })
 
         // SET INITIAL VALUES FOR PROJECT BUDGETS
@@ -153,7 +159,8 @@ export default function Edit_project() {
         } else {
             await update_project_budgets.now({reset:true})
         }
-        handle_animation(active_entry.submit_method);
+
+        
         console.log(`%c UPDATE EDIT PROJECT NOW `, `${ log_colors.important }`);
     }
 
@@ -193,12 +200,11 @@ export default function Edit_project() {
 
       async function update_project_data(){
 
-        const active_entry_update = await update_active_entry.wait({target_id:active_entry.target_id});
         const client_id = (await update_initial_data.wait({table_name: "projects", entry_id_key:"id" ,entry_id:active_entry.target_id}))["projects"].data[0]["client_id"];
         await update_initial_data.wait({table_name: "project_groups", entry_id_key:"client_id" ,entry_id:client_id});
         await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:active_entry.target_id});
         await update_initial_data.now({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:active_entry.target_id});
-        update_active_entry.update_context(active_entry_update);
+        await adjust_initial_data()
 
     }
 
@@ -211,6 +217,8 @@ export default function Edit_project() {
         console.log(`%c POST FORM FOR PROJECTS `, `${ log_colors.important_2 }`,`for response`,'\n' ,response);
         
         if(response.message.includes("successfully")){
+            console.log(`%c DATA `, `${ log_colors.data }`,`for active_entry.target_id`,'\n' ,active_entry.target_id);
+            console.log(`%c DATA `, `${ log_colors.data }`,`for response.entry_id`,'\n' ,response.entry_id);
             if(active_entry.target_id !== response.entry_id){
                 update_active_entry.update_context({target_id:response.entry_id});
             } else {
@@ -257,11 +265,22 @@ export default function Edit_project() {
     },[project_budgets]);
 
     useMemo(() =>{
-        console.log(`%c DATA `, `${ log_colors.data }`,`for active_entry.submit_method`,'\n' ,active_entry.submit_method);
-        active_entry.submit_method && adjust_initial_data()
+        if(active_entry.submit_method){
+            (async ()=>{
+                console.log(`%c DATA `, `${ log_colors.data }`,`for active_entry.submit_method`,'\n' ,active_entry.submit_method);
+                await adjust_initial_data()
+                handle_animation(active_entry.submit_method);
+            })()
+        }
     },[active_entry.submit_method]);
 
 
+    useMemo(() =>{
+        if(active_entry.submit_method){
+            edit_btn_clicked && handle_edit_project_click()
+            active_entry.submit_method && adjust_initial_data()
+        }
+    },[initial_data]);
 /*
     useMemo(() =>{
         (async ()=>{

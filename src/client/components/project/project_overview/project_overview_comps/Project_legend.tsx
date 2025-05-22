@@ -28,16 +28,19 @@ export default function Project_legend() {
     useMemo(() =>{
         if(initial_data){
             const update_legend_items:Types_department_data[]= [];
-            initial_data["project_departments"].data.forEach((entry)=>{
-                if(entry["budget"] !== "0.00"){
-                    departments_data.find((s_entry)=>{
-                        if(entry["department_id"] === s_entry.id){
-                            update_legend_items.push(s_entry)
-                            return
-                        }
-                    })
+
+            departments_data.forEach((entry)=>{
+            const p_department = initial_data["project_departments"].data.find((s_entry)=>{
+                if(s_entry["department_id"] === entry.id){
+                    return s_entry
                 }
             })
+            if(p_department && p_department["budget"] !== "0.00"){
+                update_legend_items.push(entry)
+
+            } 
+        })
+
             set_legend_items(update_legend_items);
         }
 
@@ -46,9 +49,9 @@ export default function Project_legend() {
 // RETURNED VALUES 
     return(
         <article id="project_department_legend" className="project_overview_content_box">
-            
+            <h3>Department Legend</h3>
             <div className="legend_box_container">
-                <h3>Department Legend</h3>
+                
                 <div 
                     className="legend_box"
                 >

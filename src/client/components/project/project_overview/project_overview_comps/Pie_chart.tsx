@@ -30,24 +30,23 @@ export default function Pie_chart() {
         let current_degree = 0;
         const chart_array:Types_pie_slice[] = [];
         
-        initial_data["project_departments"].data.forEach((entry)=>{
-            if(entry["budget"] !== "0.00"){
-                const pie_color = departments_data.find((s_entry)=>{
-                    if(s_entry.id === entry["department_id"]){
-                        return s_entry
-                    }
-                })?.color!;
+        departments_data.forEach((entry)=>{
+            const p_department = initial_data["project_departments"].data.find((s_entry)=>{
+                if(s_entry["department_id"] === entry.id){
+                    return s_entry
+                }
+            })
+            if(p_department && p_department["budget"] !== "0.00"){
 
-                const pie_degree = (Number(entry["budget"]) / Number(initial_data["projects"].data[0]["production_budget"]) )*360 + current_degree;
-
+                const pie_degree = (Number(p_department["budget"]) / Number(initial_data["projects"].data[0]["production_budget"]) )*360 + current_degree;
                 current_degree = pie_degree;
                 chart_array.push({
-                    color: pie_color,
+                    color: entry.color,
                     degree: pie_degree
                 });
+            } 
+        })
 
-            }
-        });
 
         chart_array.push({
             color: "#FFFFFF",

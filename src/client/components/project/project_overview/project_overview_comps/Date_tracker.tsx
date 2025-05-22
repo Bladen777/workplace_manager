@@ -93,21 +93,22 @@ export default function Date_tracker() {
             color: "#FFFFFF"
           }
         });
-        
-        initial_data["project_departments"].data.forEach((entry)=>{
-          if(entry["start_date"] && entry["finish_date"]){
-            const dep_data:Types_department_data = departments_data.find((s_entry)=>{
-                return s_entry.id === entry["department_id"]!;
-              } 
-            )!;
-            
+
+        departments_data.forEach((entry)=>{
+          const dep_entry =  initial_data["project_departments"].data.find((s_entry)=>{
+            if((s_entry["start_date"] && s_entry["finish_date"]) && entry.id === s_entry["department_id"]){
+              return s_entry
+            }
+          })
+          if(dep_entry){
+
             function find_position(){
 
               const start_date_time = (new Date(project_date_data.start!)).getTime();
               const finish_date_time = (new Date(project_date_data.finish!)).getTime();
       
-              const dep_start_time = (new Date(entry.start_date!)).getTime();
-              const dep_finish_time = (new Date(entry.finish_date!)).getTime();
+              const dep_start_time = (new Date(dep_entry!["start_date"]!)).getTime();
+              const dep_finish_time = (new Date(dep_entry!["finish_date"]!)).getTime();
 
               const date_range = finish_date_time - start_date_time;
               const start_pos = ((dep_start_time - start_date_time)/date_range)* max_width + min_width;
@@ -124,29 +125,33 @@ export default function Date_tracker() {
 
             if((!update_unique_dates.find((s_entry)=> s_entry.position === position.start)) && position.start !== 0){
               update_unique_dates.push({
-                date:String(entry["start_date"]),
+                date:String(dep_entry["start_date"]),
                 position: position.start
               });
             }
 
             if((!update_unique_dates.find((s_entry)=> s_entry.position === position.finish)) && position.finish !== max_width + min_width){
               update_unique_dates.push({
-                date:String(entry["finish_date"]),
+                date:String(dep_entry["finish_date"]),
                 position: position.finish
               });
             }
 
             update_tracker_date_data.push({
-              [dep_data.name]:{
-                start: String(entry["start_date"]),
-                finish: String(entry["finish_date"]),
+              [entry.name]:{
+                start: String(dep_entry["start_date"]),
+                finish: String(dep_entry["finish_date"]),
                 start_pos: position.start,
                 width: position.width,
-                color: dep_data.color 
+                color: entry.color 
               }
             })
+
+
           }
-        })  
+        })
+        
+
         if((!update_unique_dates.find((s_entry)=> s_entry.position === max_width + min_width))){
               update_unique_dates.push({
                 date:project_date_data.finish,
