@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 // STYLE IMPORTS
     /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
@@ -16,7 +16,7 @@ import { Types_department_data } from "../../../context/Context_departments_data
 
 // THE COMPONENT 
 export default function Project_legend() {
-    console.log(`%c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_legend`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_legend`);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const departments_data = useContext(Use_Context_departments_data).show_context;
@@ -25,19 +25,22 @@ export default function Project_legend() {
 
 // MEMOS AND EFFECTS
 
-    useEffect(() =>{
-        const update_legend_items:Types_department_data[]= [];
-        initial_data["project_departments"].data.forEach((entry)=>{
-            if(entry["budget"] !== "0.00"){
-                departments_data.find((s_entry)=>{
-                    if(entry["department_id"] === s_entry.id){
-                        update_legend_items.push(s_entry)
-                        return
-                    }
-                })
-            }
-        })
-        set_legend_items(update_legend_items);
+    useMemo(() =>{
+        if(initial_data){
+            const update_legend_items:Types_department_data[]= [];
+            initial_data["project_departments"].data.forEach((entry)=>{
+                if(entry["budget"] !== "0.00"){
+                    departments_data.find((s_entry)=>{
+                        if(entry["department_id"] === s_entry.id){
+                            update_legend_items.push(s_entry)
+                            return
+                        }
+                    })
+                }
+            })
+            set_legend_items(update_legend_items);
+        }
+
     },[initial_data])
 
 // RETURNED VALUES 

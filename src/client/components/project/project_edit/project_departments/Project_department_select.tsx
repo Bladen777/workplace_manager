@@ -9,6 +9,7 @@ import { Use_Context_initial_data } from "../../../context/Context_initial_data.
 import { Use_Context_active_entry } from "../../../context/Context_active_entry.js";
 
 import { Use_Context_project_department_data } from "./context/Context_project_department_data.js";
+import { Use_Context_employee_data } from "./employee_dd/context/Context_employee_data.js";
 
 // HOOK IMPORTS 
 
@@ -31,13 +32,13 @@ interface Types_props{
 
 // THE COMPONENT 
 function Project_department_select({department_data, project_dates}:Types_props) {
-
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_department_select for ${department_data.name}`);
 
     const initial_data = JSON.parse(JSON.stringify(useContext(Use_Context_initial_data).show_context));
     const active_entry = useContext(Use_Context_active_entry).show_context;
 
     const update_project_department_data = useContext(Use_Context_project_department_data).update_func;
+    const update_employee_data = useContext(Use_Context_employee_data).update_func;
 
     const existing_department_data = initial_data["project_departments"].data.find((entry:Types_form_data)=>{
         if(entry.department_id === department_data.id){
@@ -85,13 +86,11 @@ function Project_department_select({department_data, project_dates}:Types_props)
         return new_text;
     }
 
-    function handle_date_change({input, db_column}:Types_input_change){
+    async function handle_date_change({input, db_column}:Types_input_change){
+        await update_project_department_data.wait({department_id: department_data.id, [db_column]: input})      
         set_dep_dates((prev_vals)=>{
             let date_type = db_column.includes("finish") ? "finish_date" :"start_date";
             const update_dates = {...prev_vals, [date_type]:input};
-            update_project_department_data.wait({department_id: department_data.id, [db_column]: input})
-
-            //update_project_department_data.now({department_id: department_data.id, [db_column]: input})                
             return update_dates;
         })
    }
@@ -101,20 +100,16 @@ function Project_department_select({department_data, project_dates}:Types_props)
             
             const prev_dates = {...prev_vals};
             let update_dates = {...prev_vals};
-            let date_type = "start_date"
-    
+
             const start_date_time = (new Date(project_dates.start_date!)).getTime();
             const finish_date_time = (new Date(project_dates.finish_date!)).getTime();
     
             const dep_start_time = (new Date(prev_dates.start_date!)).getTime();
             const dep_finish_time = (new Date(prev_dates.finish_date!)).getTime();
 
-            console.log(`%c IMPORTANT `, `${ log_colors.important }`,`for initial_data`,'\n' ,JSON.parse(JSON.stringify(initial_data)));
-            console.log(`%c DATA `, `${ log_colors.data }`,`for initial_data`,'\n' ,initial_data);
             console.log(`%c DATA `, `${ log_colors.data }`,`for initial_data["project_departments"]`,'\n',  initial_data["project_departments"]);
             console.log(`%c DATA `, `${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
             console.log(`%c DATA `, `${ log_colors.data }`,`for prev_dates`,'\n' ,prev_dates);
-            console.log(`%c DATA `, `${ log_colors.data }`,`for dep_dates`,'\n' ,dep_dates);
             console.log(`%c ADJUST DATE VALUES `, `${ log_colors.data }`,
                 '\n' , `start_date_time: ${start_date_time} vs dep_start_time: ${dep_start_time}`,
                 '\n' , `finish_date_time: ${finish_date_time} vs dep_finish_time: ${dep_finish_time}`,
@@ -122,19 +117,15 @@ function Project_department_select({department_data, project_dates}:Types_props)
 
             if(start_date_time > dep_start_time || (project_dates.start_date !== undefined && prev_dates.start_date === undefined)){
                 update_dates = {...update_dates, start_date:project_dates.start_date}
-                const pd_data_update = update_project_department_data.wait({department_id: department_data.id, start_date: project_dates.start_date})
-
-                //update_project_department_data.now({department_id: department_data.id, start_date: project_dates.start_date})
+                update_project_department_data.wait({department_id: department_data.id, start_date: project_dates.start_date})
             };
     
             if(finish_date_time < dep_finish_time || (project_dates.finish_date !== undefined && prev_dates.finish_date === undefined)){
                 update_dates = {...update_dates, finish_date:project_dates.finish_date}
-                date_type = "finish_date";
-                const pd_data_update = update_project_department_data.wait({department_id: department_data.id, finish_date: project_dates.finish_date})
-
-                //update_project_department_data.now({department_id: department_data.id, finish_date: project_dates.finish_date})
+                update_project_department_data.wait({department_id: department_data.id, finish_date: project_dates.finish_date})
             };
             console.log(`%c DATA `, `${ log_colors.data }`,`for update_dates`,'\n' ,update_dates);
+            set_dep_dates(update_dates);
             return update_dates;
         })
     }
@@ -145,14 +136,11 @@ function Project_department_select({department_data, project_dates}:Types_props)
         if(dep_selected){
             remove_department();
         } else if(!dep_selected){
-            set_dep_selected(true);
-
+            add_department();
         }
     }
 
     async function add_department(){
-        pd_input_box_ele.current!.style.animation = `toggle_pd_select_box 1s ease normal forwards`;
-        pd_input_box_ele.current!.addEventListener("animationend", open_animation_ended);
 
         console.log(`%c DATA `, `${ log_colors.data }`,`for dep_dates`,'\n' ,dep_dates);
         let dep_start_date = dep_dates.start_date;
@@ -182,35 +170,29 @@ function Project_department_select({department_data, project_dates}:Types_props)
             }
         }
 
+        console.log(`%c NEW DATES `, `${ log_colors.data }`,"\n",`dep_start_date: ${dep_start_date}`,"\n", `dep_finish_date: ${dep_finish_date}`);
         const added_pd_data:Types_form_data = {
             id: existing_department_data ? existing_department_data.id : - 1,
             department_id: department_data.id,  
             start_date: dep_start_date,
-            finish_date: project_dates.finish_date ? project_dates.finish_date : dep_dates.finish_date,
+            finish_date: dep_finish_date,
             budget: pd_initial_form_data.budget,
         }
 
-        
-        const pd_data_update = await update_project_department_data.wait(added_pd_data);
-
-        function open_animation_ended(){
-            pd_input_box_ele.current!.removeEventListener("animationend", open_animation_ended);
-            pd_input_box_ele.current!.style.animation ="";
-            //update_project_department_data.update_context(pd_data_update);
-            set_dep_animation_running(false);
-        }
-
+        await update_project_department_data.wait(added_pd_data);
+        set_dep_selected(true);
     }
 
     async function remove_department(){
+        await update_project_department_data.wait({method:"delete", department_id: department_data.id});
+        await update_employee_data.wait({method:"delete", department_id: department_data.id }); 
         pd_input_box_ele.current!.style.animation = `toggle_pd_select_box 1s ease reverse forwards`;
         pd_input_box_ele.current!.addEventListener("animationend", close_animation_ended);
-        const pd_data_update = await update_project_department_data.wait({method:"delete", department_id: department_data.id});
+
         function close_animation_ended(){
             pd_input_box_ele.current!.removeEventListener("animationend", close_animation_ended);
             set_dep_animation_running(false);
             set_dep_selected(false);
-            //update_project_department_data.now({method:"delete", department_id: department_data.id});
         }
     }
 
@@ -219,19 +201,24 @@ function Project_department_select({department_data, project_dates}:Types_props)
     useMemo(() =>{
         if(dep_selected){
             if(project_dates.start_date || project_dates.finish_date){
-                console.log(`%c PROJECT DATES CHANGED `, `${ log_colors.data }`,`for project_dates`,'\n' ,project_dates);
+                console.log(`%c PROJECT DATES CHANGED `, `${ log_colors.update }`,`for project_dates`,'\n' ,project_dates);
                 adjust_date()
             }
         }
     },[project_dates])
 
     useEffect(() =>{
-        if(dep_selected){
-            //update_project_department_data.now();
-            add_department();
-        }
-    },[dep_selected])
+      if(dep_selected){
+        pd_input_box_ele.current!.style.animation = `toggle_pd_select_box 1s ease normal forwards`;
+        pd_input_box_ele.current!.addEventListener("animationend", open_animation_ended);
 
+        function open_animation_ended(){
+            pd_input_box_ele.current!.removeEventListener("animationend", open_animation_ended);
+            pd_input_box_ele.current!.style.animation ="";
+            set_dep_animation_running(false);
+        } 
+      }
+    },[dep_selected]);
 
     useMemo(() => {
         if(active_entry.submit_method === "edit" && existing_department_data){
@@ -240,10 +227,21 @@ function Project_department_select({department_data, project_dates}:Types_props)
             
             function animation_finished(){
                     animating_ele?.removeEventListener("animationend", animation_finished);
-                    set_dep_selected(true)
+                    add_department();
             }
         }
+        
     },[])
+
+    useMemo(() =>{
+        department_data && console.log(`%c DEPARTMENT_DATA CHANGED `, `${ log_colors.update}`);
+    },[department_data]);
+
+
+    useEffect(() =>{
+      return()=>{console.log(`%c DEPARTMENT SELECT UNLOADED `, `${ log_colors.important}`)}
+    },[]);
+
 
 
 // RETURNED VALUES 
@@ -261,7 +259,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
                         type="button"
                         disabled = {dep_animation_running}    
                     >
-                        {dep_selected ? "Remove" : "Add"} 
+                        {dep_selected ? "Cancel" : "Add"} 
                     </button>
                     
                     <h4>{convert_text({text:department_data.name})}</h4>
@@ -280,7 +278,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
                                     input_type: "date"
                                     
                                 }}
-                                initial_data_object={pd_initial_form_data}
+                                initial_data_object={dep_dates}
                                 adjust_data_value={adjust_dep_dates.start_date}
                                 date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                                 send_table_data = {handle_date_change}
@@ -291,7 +289,7 @@ function Project_department_select({department_data, project_dates}:Types_props)
                                     is_nullable: "YES",
                                     input_type: "date"
                                 }}
-                                initial_data_object={pd_initial_form_data}
+                                initial_data_object={dep_dates}
                                 adjust_data_value={adjust_dep_dates.finish_date}
                                 date_range={{min: project_dates.start_date, max: project_dates.finish_date}}
                                 send_table_data = {handle_date_change}

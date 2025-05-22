@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
@@ -15,12 +15,15 @@ import { Use_Context_initial_data } from "../../../context/Context_initial_data.
 // THE COMPONENT 
 export default function Budget_tracker() {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Budget_tracker`);
-
-      const initial_data = useContext(Use_Context_initial_data).show_context;
+    const initial_render = useRef<boolean>(true);
+    
+    const initial_data = useContext(Use_Context_initial_data).show_context;
 
 
 // MEMOS AND EFFECTS
-
+    useEffect(() =>{
+      initial_render.current = false;
+    },[]);
 
 // RETURNED VALUES 
     return(

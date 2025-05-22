@@ -49,7 +49,6 @@ export function Provide_Context_active_entry({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({submit_method, target_id }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_active_entry`, `sub_method: ${submit_method}  id:${target_id}`, `previous_vals: `, {...context_ref.current});
 
         const update_data = {...context_ref.current}
 
@@ -81,7 +80,7 @@ export function Provide_Context_active_entry({children}:{children:ReactNode}) {
                     return await update_context(props)
                 },
                 update_context: (props:Types_context_content)=>{
-                    console.log(`%c UPDATE CONTEXT DIRECTLY `, `${ log_colors.important }`, `for Context_active_entry`);
+                    console.log(`%c UPDATE CONTEXT DIRECTLY `, `${ log_colors.important }`, `for Context_active_entry`,`\n`, props);
                     set_send_context(props) 
                 }
             },

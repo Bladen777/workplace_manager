@@ -95,10 +95,7 @@ export function Provide_Context_project_department_data({children}:{children:Rea
 
     // UPDATE THE CONTEXT 
     async function update_context({ id, department_id, start_date, finish_date, budget, method  }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_departments`);
         let update_data:Types_context_content = [...department_data_ref.current];
-        console.log(`%c DATA `, `${ log_colors.data }`,`for ...department_data_ref.current`,'\n' ,...department_data_ref.current);
-        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,...update_data);
 
         let entry_index:number | boolean = false;
         update_data.forEach((s_item, s_index)=>{
@@ -149,7 +146,7 @@ export function Provide_Context_project_department_data({children}:{children:Rea
             }
         }
 
-        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+        console.log(`   %c CONTEXT UPDATE DATA `, `${ log_colors.context }`,`for Context_project_department_data`,'\n' ,update_data);
         process_data.update_data({table_name: "project_departments", form_data:update_data })
         department_data_ref.current = update_data;
         return(update_data);

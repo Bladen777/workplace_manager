@@ -230,7 +230,6 @@ export default function Order_shift({ele_names, table_name}:Prop_Types) {
                                 key={`input_for_${column.column_name}`}
                                 column_info={column}
                                 initial_data_object={item}
-                                //adjust_data_object={item}
                                 send_table_data={(input:Types_input_change)=>{
                                     change_table_data({
                                         input:input.input, 

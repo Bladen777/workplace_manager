@@ -154,7 +154,6 @@ function Form_auto_input({label_name, column_info, initial_data_object, adjust_d
       initial_render.current = false;
     },[])
 
-
     useMemo(() =>{
         if(adjust_data_value && !initial_render.current){
             const key = column_info.column_name;

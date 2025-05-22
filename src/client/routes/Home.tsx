@@ -55,11 +55,14 @@ export default function Home() {
             </Provide_Context_initial_data>
           </Provide_Context_project_budgets>
 
-          <Provide_Context_initial_data>
-            <Provide_Context_active_entry>
-              {user_info.is_admin && <Control_panel />}
-            </Provide_Context_active_entry>
-          </Provide_Context_initial_data>
+
+            <Provide_Context_initial_data>
+              <Provide_Context_active_entry>
+                {user_info.is_admin && <Control_panel />}
+              </Provide_Context_active_entry>
+            </Provide_Context_initial_data>
+
+
 
         </Provide_Context_departments_data>
 

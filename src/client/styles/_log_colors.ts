@@ -10,5 +10,6 @@ export const log_colors = {
     animation: "background-color:darksalmon; color:black",
     data: "background-color:olive",
     important: "background-color:gold; color:black;",
-    important_2: "background-color:darkorange; color:black"
+    important_2: "background-color:darkorange; color:black",
+    update: "color:chartreuse"
 }

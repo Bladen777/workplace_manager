@@ -80,7 +80,7 @@ export function Provide_Context_project_budgets({children}:{children:ReactNode})
 
     // UPDATE THE CONTEXT 
     async function update_context({total, dep_id_name, budget, all_budgets, reset }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_budgets`, `prev_vals: `,{...budgets.current});
+        
         if(reset){
             const budget_update = setup_department_budgets()
             return budget_update;

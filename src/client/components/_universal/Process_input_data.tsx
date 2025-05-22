@@ -76,7 +76,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
 
     function clear_form(){
-        data_ref.current = ({})
+        data_ref.current = ({});
     }
 
     function update_data({table_name, entry_id, entry_id_key, form_data}:Types_update_data){
@@ -292,20 +292,20 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
                 if(start_entries.length === 0){
                     console.log(`%c NO INITIAL ENTRIES `, `${ log_colors.important }`);
-                    /*
+                    
                     await access_db({
                         db_submit_method:"add", 
                         db_submit_data:data_ref.current[table_name]
                     });
-                    */
+                    
                 }else if(update_entries.length === start_entries.length){
                     console.log(`%c SAME NUMBER OF ENTRIES `, `${ log_colors.important }`);
-                    /*
+                    
                     await access_db({
                         db_submit_method:"edit", 
                         db_submit_data:data_ref.current[table_name]
                     });
-                    */
+                    
                 
                 }else if(update_entries.length > start_entries.length){
                     
@@ -319,7 +319,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                         }
                     });
                     console.log(`%c MORE NEW ENTRIES `, `${ log_colors.important }`,"\n", `add_entries`, add_entries, "vs", `edit_entries`, edit_entries);
-                    /*
+                    
                     await access_db({
                         db_submit_method:"add", 
                         db_submit_data:add_entries
@@ -329,7 +329,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                         db_submit_method:"edit", 
                         db_submit_data:edit_entries
                     });   
-                    */
+                    
                 } else if (update_entries.length < start_entries.length){
                     console.log(`%c LESS NEW ENTRIES `, `${ log_colors.important }`);
                     let delete_entry_id:number = -1;
@@ -345,12 +345,12 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 }
                 
             } else {
-                /*
+                
                 await access_db({
                     db_submit_method:submit_method, 
                     db_submit_data:data_ref.current[table_name]
                 });
-                */
+                
             }
 
         

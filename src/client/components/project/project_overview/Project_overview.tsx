@@ -25,7 +25,8 @@ import { Types_form_data } from "../../context/Context_initial_data.js"
 
 // THE COMPONENT
 export default function Project_overview() {
-  console.log(`%c COMPONENT `, `${log_colors.component}`, `Project_overview`);
+  const [ready, set_ready] = useState<boolean>(false);
+  console.log(`%c COMPONENT `+ `%c Project_overview ` + `%c ${ready ? "READY" : "LOADING"} `, `${log_colors.component}`, '',`${log_colors.important}`);
 
   const initial_data = useContext(Use_Context_initial_data).show_context;
   const active_entry = useContext(Use_Context_active_entry).show_context;
@@ -34,20 +35,18 @@ export default function Project_overview() {
   const update_initial_data = useContext(Use_Context_initial_data).update_func;
   const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
-  const [ready, set_ready] = useState<boolean>(false);
-
   // CONSTS FOR ANIMATING
       const animate_po_load = Animate_po_load();
       const animate_po_load_box_ref = useRef<HTMLDivElement | null>(null);
       const animate_po_load_hide_box_ref = useRef<HTMLDivElement | null>(null);
       
 
-  if(!ready){
-    (async ()=>{
+    async function initial_load(){
       const all_projects = await update_initial_data.wait({table_name: "projects"});
       const user_projects = await update_initial_data.wait({table_name: "project_employees", entry_id:user_data.id, entry_id_key:"employee_id"});
-      console.log(`%c DATA `, `${ log_colors.important_2 }`,`for all_projects`,'\n' ,all_projects);
+      //console.log(`%c DATA `, `${ log_colors.important_2 }`,`for all_projects`,'\n' ,all_projects);
       if(all_projects["projects"].data.length === 0){
+        console.log(`%c NO EXISTING PROJECTS `, `${ log_colors.important_2 }`);
         await update_initial_data.wait({table_name: "project_departments"});
         await update_initial_data.wait({table_name: "project_employees"});
         await update_initial_data.wait({table_name: "project_groups"});
@@ -55,34 +54,36 @@ export default function Project_overview() {
         await update_active_entry.now({submit_method:"add"})
       } else if(user_projects["project_employees"].data.length > 0){
         const latest_project_id:number = user_projects["project_employees"].data[user_projects["project_employees"].data.length -1].project_id; 
-        console.log(`%c DATA `, `${ log_colors.important_2 }`,`for latest_project_id`,'\n' ,latest_project_id);
+        console.log(`%c LATEST USER PROJECT ID `, `${ log_colors.important_2 }`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
       } else{
         const latest_project_id:number = all_projects["projects"].data[all_projects["projects"].data.length -1].id; 
-        console.log(`%c DATA `, `${ log_colors.important_2 }`,`for latest_project_id`,'\n' ,latest_project_id);
+        console.log(`%c LATEST PROJECT ID `, `${ log_colors.important_2 }`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
       } 
       set_ready(true)
-      //console.log(`%c DATA `, `${ log_colors.data }`,`for skipped`);      
-  })()
-  
+      console.log(`%c DATA `, `${ log_colors.data }`,`for skipped`);      
   }
-
+  
   async function update_project_data({project_id}:{project_id:number}){
     ready && await animate_po_load.run_animation({animate_forwards:true});
     console.log(`%c PROJECT OVERVIEW UPDATE PROJECT DATA `, `${ log_colors.important_2 }`);
     
     const active_entry_update = await update_active_entry.wait({target_id:project_id});
+    const client_id = (await update_initial_data.wait({table_name: "projects", entry_id_key:"id" ,entry_id:project_id}))["projects"].data[0]["client_id"];
+    await update_initial_data.wait({table_name: "project_groups", entry_id_key:"client_id" ,entry_id:client_id});
     await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:project_id});
-    await update_initial_data.wait({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:project_id});
-    await update_initial_data.now({table_name: "projects", entry_id_key:"id" ,entry_id:project_id});
+    await update_initial_data.now({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:project_id});
     update_active_entry.update_context(active_entry_update);
 
     ready && await animate_po_load.run_animation({animate_forwards:false})
-
   }
 
 // MEMOS AND EFFECTS
+  useMemo(() =>{
+    initial_load()
+  },[])
+
   useEffect(() =>{
     if(ready){
       animate_po_load.initiate_animation({
@@ -90,8 +91,6 @@ export default function Project_overview() {
           box_ele: animate_po_load_box_ref.current!,
       })
     }
-    console.log(`%c DATA `, `${ log_colors.data }`,`for ready`,'\n' ,ready);
-    console.log(`%c DATA `, `${ log_colors.data }`,`for animate_po_load_box_ref.current`,'\n' ,animate_po_load_box_ref.current);
   },[ready])
 
   useEffect(() =>{
@@ -113,7 +112,6 @@ export default function Project_overview() {
             > 
             <p className="loading_text">LOADING</p>
             
-              
             </div>
             <Project_nav />
             <div 

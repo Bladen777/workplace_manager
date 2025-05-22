@@ -63,7 +63,7 @@ export default function Date_tracker() {
         const finish_date_time = (new Date(project_date_data.finish!)).getTime();
 
         const number_of_days = (finish_date_time - start_date_time)/(1000*60*60*24)
-        console.log(`%c DATA `, `${ log_colors.data }`,`for number_of_days`,'\n' ,number_of_days);
+        //console.log(`%c DATA `, `${ log_colors.data }`,`for number_of_days`,'\n' ,number_of_days);
 
 
         return number_of_days * min_width;
@@ -71,10 +71,12 @@ export default function Date_tracker() {
 
       const max_width = find_max_width();
 
+/*
       console.log(`%c DATA `, `${ log_colors.data }`,`for project_date_data`,'\n' ,project_date_data);
       console.log(`%c DATA `, `${ log_colors.data }`,`for tracker_width_ref.current`,'\n' ,tracker_width_ref.current);
       console.log(`%c DATA `, `${ log_colors.data }`,`for tracker_pos_ref.current`,'\n' ,tracker_pos_ref.current);
 
+*/
       if(project_date_data.start && project_date_data.finish){
 
         update_unique_dates.push({
@@ -154,21 +156,25 @@ export default function Date_tracker() {
 
       }
 
+/*
       console.log(`%c DATA `, `${ log_colors.data }`,`for update_unique_dates`,'\n' ,update_unique_dates);
       console.log(`%c DATA `, `${ log_colors.data }`,`for update_tracker_date_data`,'\n' ,update_tracker_date_data);
 
+*/
       set_unique_dates(update_unique_dates);
       set_date_data(update_tracker_date_data);
     }
 
 
 // MEMOS AND EFFECTS
-useEffect(() =>{
-  tracker_width_ref.current = tracker_ele_ref.current && tracker_ele_ref.current.offsetWidth;
-  tracker_pos_ref.current = tracker_ele_ref.current && tracker_ele_ref.current.getBoundingClientRect();
-  change_date_data()
-  
-},[initial_data])
+
+  useEffect(() =>{
+    tracker_width_ref.current = tracker_ele_ref.current && tracker_ele_ref.current.offsetWidth;
+    tracker_pos_ref.current = tracker_ele_ref.current && tracker_ele_ref.current.getBoundingClientRect();
+    if(initial_data){
+      change_date_data()
+    };
+  },[initial_data]);
 
 // RETURNED VALUES 
   return (

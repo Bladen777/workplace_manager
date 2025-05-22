@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../../../styles/_log_colors.js";
@@ -21,7 +21,6 @@ interface Types_pie_slice{
 // THE COMPONENT 
 export default function Pie_chart() {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pie_chart`);
-
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const departments_data = useContext(Use_Context_departments_data).show_context;
 
@@ -62,30 +61,33 @@ export default function Pie_chart() {
             .join(", ")
         })`;
 
+        console.log(`%c DATA `, `${ log_colors.data }`,`for gradient`,'\n' ,gradient);
         set_chart_gradient(gradient);
     }
 
 
-    console.log(`%c DATA `, `${ log_colors.data }`,`for gradient`,'\n' ,chart_gradient);
+
 // MEMOS AND EFFECTS
-useEffect(() =>{
-        create_chart_data()
-},[initial_data])
+
+    useMemo(() =>{
+        initial_data && create_chart_data()
+    },[initial_data])
 
 // RETURNED VALUES 
-    return (
-        <article id="pie_chart" className="project_overview_content_box">
-            <h3>Project Budgets</h3>
-            <div
-                className="pie_chart_box"
-            >
-                <div    
-                    id="pie_chart_graphic"
-                    style={{backgroundImage: chart_gradient}}
-                />
-         
-            </div>
+    if(chart_gradient){
+        return (
+            <article id="pie_chart" className="project_overview_content_box">
+                <h3>Project Budgets</h3>
+                <div
+                    className="pie_chart_box"
+                >
+                    <div    
+                        id="pie_chart_graphic"
+                        style={{backgroundImage: chart_gradient}}
+                    />
             
-        </article>
-    );
+                </div>
+            </article>
+        );
+    }
 }

@@ -17,11 +17,9 @@
     max-width: 100%;
 }
 
-.auto_form_text, .auto_form_textarea{
-    min-width: 11rem;
-}
 
 .auto_form_textarea{
+    min-width: 11rem;
     min-height: 4rem;
     max-height: calc(100% - 2rem);
 }

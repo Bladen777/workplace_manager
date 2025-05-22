@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 // STYLE IMPORTS
@@ -20,7 +20,7 @@ import { Types_search_item } from "../../../_universal/drop_downs/Input_drop_dow
 import { Types_form_data } from "../../../context/Context_initial_data.js";
 
 // THE COMPONENT 
-export default function Clients_dd() {
+function Clients_dd() {
     console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `clients_dd`);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
@@ -67,28 +67,29 @@ export default function Clients_dd() {
 
 
 // RETURNED VALUES 
-if(client_list.length > 0){
-    return(
-        <div className="client_and_project_group_container">
-            <label className="form_dd auto_form_input">
-                <p>* Client:</p>
-                <Input_drop_down
-                    table_name={{main:"Client"}}
-                    selected_entry = {existing_client.name ? String(existing_client.name) : ""}
-                    form_table_data={client_list}
-                    send_table_data={({input}:{input:Types_search_item})=>{
-                            handle_client_change({input:input})
-                    }}
-                />
-            </label>
-            {
-            chosen_client_id !== 0 && 
-                <Project_group_select 
-                    selected_client_id = {chosen_client_id}
-                />
-            
-            }
-        </div>
-    ); 
+    if(client_list.length > 0){
+        return(
+            <div className="client_and_project_group_container">
+                <label className="form_dd auto_form_input">
+                    <p>* Client:</p>
+                    <Input_drop_down
+                        table_name={{main:"Client"}}
+                        selected_entry = {existing_client.name ? String(existing_client.name) : ""}
+                        form_table_data={client_list}
+                        send_table_data={({input}:{input:Types_search_item})=>{
+                                handle_client_change({input:input})
+                        }}
+                    />
+                </label>
+                {
+                chosen_client_id !== 0 && 
+                    <Project_group_select 
+                        selected_client_id = {chosen_client_id}
+                    />
+                
+                }
+            </div>
+        ); 
+    }
 }
-}
+export default memo(Clients_dd)

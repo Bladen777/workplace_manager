@@ -37,17 +37,17 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
     console.log(`       %c INPUT DROP DOWN `, `${ log_colors.input_component }`, `for ${table_name.specific ? table_name.specific : table_name.main}`);
     //console.log(`%c DATA `, `${ log_colors.data }`,`for selected_entry`,'\n' ,selected_entry);
 
-    let table_data: string[] | Types_form_data[] = [];
-    if(string_table_data){
-        table_data = string_table_data;
-    } else if(form_table_data){
-        table_data = form_table_data;
-    }
+    const table_data: string[] | Types_form_data[] = (
+        string_table_data
+        ? string_table_data
+        : form_table_data!
+    );
+
 
     const [selected_item, set_selected_item] = useState<string>(selected_entry ? selected_entry : "")
-    const entry_selected = useRef<boolean>(false);
+    const entry_selected = useRef<boolean>(selected_entry ? true : false);
 
-    const [matched_items, set_matched_items] = useState<ReactElement[]>([])
+    const [matched_items, set_matched_items] = useState<ReactElement[]>(find_matched_items())
 
     const [open_dd, set_open_dd] = useState<boolean>(false)
     const drop_down_ref = useRef<HTMLDivElement | null>(null);
@@ -77,7 +77,8 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
             active: true, 
             ele_pos:drop_down_ref.current?.getBoundingClientRect(), 
             update_func:(value:boolean)=>{
-                if(value){               
+                if(value){     
+                    console.log(`%c DATA `, `${ log_colors.data }`,`for entry_selected.current`,'\n' ,entry_selected.current);          
                     if(!entry_selected.current){
                         set_selected_item("");
                         send_table_data({input: {id:0}});
@@ -91,6 +92,7 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
     }
 
     function handle_input_change({value}:{value:string}){
+        console.log(`%c DATA `, `${ log_colors.data }`,`for value`,'\n' ,value);
         entry_selected.current = false;
         set_selected_item(value)
     }
@@ -98,6 +100,7 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
 
     function find_matched_items(){
         console.log(`       %c DATA `, `${ log_colors.data }`,`for DD Table Data`,'\n  ',table_data);
+        console.log(`       %c DATA `, `${ log_colors.data }`,`for DD selected_entry`,'\n  ',selected_entry);
         
         const searched_items: Types_search_item[] = [];
 
@@ -149,32 +152,46 @@ export default function Input_drop_down({placeholder, selected_entry, table_name
                     </button>
                 )
             })
-            set_matched_items(new_list)
+            return(new_list)
         } else {
-            set_matched_items([blank_input()])
+            return([blank_input()])
         }
         
     }
 
 // MEMOS AND EFFECTS
+
+
     useEffect(() =>{
       initial_render.current = false;
     },[])
 
     useMemo(()=>{
-        find_matched_items()
-    },[selected_item, table_data])
-    
+        if(!initial_render.current){
+            console.log(`%c TABLE_DATA CHANGED `, `${ log_colors.update}`);
+            if(table_data.length > 0){
+                set_matched_items(find_matched_items());
+            }
+        }
+    },[table_data])
+
+    useMemo(() =>{
+        if(!initial_render.current){
+            console.log(`%c SELECTED ITEM CHANGED `, `${ log_colors.update}`,"\n", "selected_entry:", selected_entry ? selected_entry : "no entry", "vs selected_item:", selected_item );
+            set_matched_items(find_matched_items());
+        }
+    },[selected_item]);
+
     useMemo(()=>{
         if(!initial_render.current){
-            console.log(`%c FORM_TABLE_DATA CHANGED `, `${ log_colors.data }`, !selected_item);
+            console.log(`%c FORM_TABLE_DATA CHANGED `, `${ log_colors.update }`);
             set_selected_item("");
         }
     },[form_table_data])
 
     useMemo(() =>{
         if(!initial_render.current){
-            console.log(`%c OPEN_DD CHANGED `, `${ log_colors.data }`);
+            console.log(`%c OPEN_DD CHANGED `, `${ log_colors.update }`);
             handle_click_track()
         }
     },[open_dd])

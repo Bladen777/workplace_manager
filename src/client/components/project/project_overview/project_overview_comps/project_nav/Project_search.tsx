@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 // STYLE IMPORTS
     /* LOGS */ import { log_colors } from "../../../../../styles/_log_colors.js";
@@ -18,13 +18,15 @@ interface Types_props{
 // THE COMPONENT 
 export default function Project_search({close_dd}:Types_props) {
     console.log(`%c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_search`);
+    const initial_render = useRef<boolean>(true);
 
 
-
-const callback_handle_date_change = useCallback(()=>{},[])    
+    const callback_handle_date_change = useCallback(()=>{},[])    
 
 // MEMOS AND EFFECTS
-
+    useEffect(() =>{
+        initial_render.current = false;
+    },[]);
 
 // RETURNED VALUES 
     return(

@@ -178,7 +178,6 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
     // UPDATE THE CONTEXT 
     async function update_context({ table_name, entry_id, entry_id_key }:Types_context_function){
         
-
         const update_data:Types_context_content = {...context_ref.current, 
             [table_name]:{
                 info: await fetch_info({table_name: table_name}),
@@ -219,7 +218,7 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
         //console.log(`%c DATA `, `${ log_colors.data }`,`for copy_data_array`,'\n' ,copy_data_array);
         //console.log(`%c DATA `, `${ log_colors.data }`,`for copy_data`,'\n' ,copy_data);
         //console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
-        console.log(`   %c CONTEXT UPDATE DATA `, `${ log_colors.context }`, `for Context_initial_data`, context_ref.current);
+        console.log(`   %c CONTEXT UPDATE DATA `, `${ log_colors.context }`, `for Context_initial_data for ${table_name}`, context_ref.current);
 
         return copy_data;
     }
@@ -259,15 +258,15 @@ export function Provide_Context_initial_data({children}:{children:ReactNode}) {
         <Use_Context_initial_data.Provider value={{
            update_func:{
                 now: async (props:Types_context_function)=>{
-                    console.log(`%c CONTEXT UPDATE NOW `, `${ log_colors.context }`, `for Context_initial_data`);
+                    console.log(`%c CONTEXT UPDATE NOW `, `${ log_colors.context }`, `for Context_initial_data for ${props.table_name}`);
                     set_send_context(await update_context(props))
                 },
                 wait: async (props:Types_context_function) =>{
-                    console.log(`%c CONTEXT UPDATE WAIT `, `${ log_colors.context }`, `for Context_initial_data`);
+                    console.log(`%c CONTEXT UPDATE WAIT `, `${ log_colors.context }`, `for Context_initial_data for ${props.table_name}`);
                     return await update_context(props)
                 },
                 update_context: (props:Types_context_content)=>{
-                    console.log(`%c UPDATE CONTEXT DIRECTLY `, `${ log_colors.important }`, `for Context_initial_data`);
+                    console.log(`%c UPDATE CONTEXT DIRECTLY `, `${ log_colors.important }`, `for Context_initial_data`, props);
                     set_send_context(props) 
                }
            },

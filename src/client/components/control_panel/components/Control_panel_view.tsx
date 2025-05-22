@@ -143,6 +143,7 @@ useMemo(()=>{
                     <h4>Edit</h4>  
                 </button>
                 }
+{/*
                 {entry_selected &&
                 <button id="cpv_delete_btn" className="cp_utility_bar_btn general_btn"
                         onClick={()=>{handle_edit_btn_click({submit_method:"delete"})}}
@@ -150,6 +151,7 @@ useMemo(()=>{
                     <h4>Delete</h4>  
                 </button>
                 }
+*/}
                 {status_message !== "" &&
                     <h3>{status_message}</h3>
                 }

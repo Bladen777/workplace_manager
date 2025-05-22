@@ -21,7 +21,7 @@ import { Types_form_data } from "../../../../context/Context_initial_data.js";
 
 // THE COMPONENT 
 export default function Project_nav() {
-    console.log(`%c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_nav`);
+    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_nav`);
 
         const user_data = useContext(Use_Context_user_info).show_context;
         const initial_data = useContext(Use_Context_initial_data).show_context;
@@ -136,33 +136,31 @@ export default function Project_nav() {
         console.log(`%c DATA `, `${ log_colors.data }`,`for selected_index`,'\n' ,selected_index);
         console.log(`%c DATA `, `${ log_colors.data }`,`for all_projects`,'\n' ,all_projects);
 // MEMOS AND EFFECTS
-
-    useEffect(() =>{
-        (async () => {
-            if(user_data.is_admin){
-                const update_all_projects = await fetch_all_projects();
-                if(update_all_projects.length !== all_projects!.length){
-                    set_all_projects(update_all_projects);
-                    set_selected_projects(update_all_projects);
-                    set_selected_index(update_all_projects.length -1)
-                }
-    
-            } else {
-                const update_selected_projects = await fetch_user_projects();
-                if(update_selected_projects.length !== selected_projects.length){
-                    set_selected_projects(update_selected_projects);
-                    set_selected_index(update_selected_projects.length -1)
-                }
-            }
-        })()
-    },[initial_data])
-
-    useEffect(() =>{
+    useMemo(() =>{
         animate_fs.initiate_animation({
-                        btn_ele: animate_fs_btn_ref.current!, 
-                        box_ele: animate_fs_box_ref.current!, 
-                    })
-    },[])
+            btn_ele: animate_fs_btn_ref.current!, 
+            box_ele: animate_fs_box_ref.current!, 
+        })
+        if(initial_data){
+            (async () => {
+                if(user_data.is_admin){
+                    const update_all_projects = await fetch_all_projects();
+                    if(update_all_projects.length !== all_projects!.length){
+                        set_all_projects(update_all_projects);
+                        set_selected_projects(update_all_projects);
+                        set_selected_index(update_all_projects.length -1)
+                    }
+        
+                } else {
+                    const update_selected_projects = await fetch_user_projects();
+                    if(update_selected_projects.length !== selected_projects.length){
+                        set_selected_projects(update_selected_projects);
+                        set_selected_index(update_selected_projects.length -1)
+                    }
+                }
+            })()
+        }
+    },[initial_data]);
 
 // RETURNED VALUES 
     return(

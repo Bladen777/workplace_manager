@@ -97,14 +97,14 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
 
     // UPDATE THE CONTEXT 
     async function update_context({ id, employee_id, department_id, start_date, budget, budget_hours, method  }:Types_context_function){
-        console.log(`%c CONTEXT UPDATE `, `${ log_colors.context }`, `for Context_project_employees`);
+        
         let update_data:Types_context_content = [...employee_data_ref.current];
-        console.log(`%c DATA `, `${ log_colors.data }`,`for ...employee_data_ref.current`,'\n' ,...employee_data_ref.current);
-        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,...update_data);
-
         let entry_index:number | boolean = false;
+
         update_data.forEach((s_item, s_index)=>{
-            if(s_item.department_id === department_id && s_item.employee_id === employee_id){
+            if(s_item.employee_id === employee_id && s_item.department_id === department_id ){
+                entry_index = s_index;
+            } else if (!employee_id && s_item.department_id === department_id){
                 entry_index = s_index;
             }
         })
@@ -145,7 +145,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
         }
 
         
-        console.log(`%c DATA `, `${ log_colors.data }`,`for update_data`,'\n' ,update_data);
+        console.log(`   %c CONTEXT UPDATE DATA `, `${ log_colors.context }`,`for Context_employee_data`,'\n' ,update_data);
         process_data.update_data({table_name: "project_employees", form_data:update_data })
         employee_data_ref.current = update_data;
         return(update_data);

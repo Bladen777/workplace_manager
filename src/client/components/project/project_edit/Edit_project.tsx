@@ -63,7 +63,6 @@ export default function Edit_project() {
     const update_initial_data = useContext(Use_Context_initial_data).update_func;
     const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
-
     const [status_message, set_status_message] = useState<string>("");
     const [edit_btn_clicked, set_edit_btn_clicked] = useState<boolean>(false);
     const [project_dates, set_project_dates] = useState<Types_project_dates>({
@@ -82,21 +81,23 @@ export default function Edit_project() {
     const edit_input_box_ref = useRef<HTMLDivElement | null>(null);
     const edit_btn_ref = useRef<HTMLButtonElement | null>(null);
     const add_btn_ref = useRef<HTMLButtonElement | null>(null);
-    const btn_type = useRef<string>("");
 
+    async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){
+        set_status_message(""); 
 
-    async function handle_edit_project_click({submit_method}:{submit_method?:string} = {}){ 
-        if(submit_method){
-            await adjust_initial_data({submit_method:submit_method});
+        if(submit_method && submit_method !== active_entry.submit_method){
+            await update_active_entry.now({submit_method:submit_method});
+        } else {
+            handle_animation(submit_method)
         }
-        
+    }
+
+    function handle_animation(submit_method:string | undefined){
         if(edit_btn_clicked){
             set_edit_btn_clicked(false)
-            process_data.clear_form("projects");
+            process_data.clear_form();
             animate.run_animation({animate_forwards:false})
-
         } else {
-            btn_type.current = submit_method!; 
             set_edit_btn_clicked(true);
             animate.initiate_animation({
                 btn_box_ele: edit_btn_box_ref.current!, 
@@ -106,14 +107,12 @@ export default function Edit_project() {
                 edit_btn_ele: edit_btn_ref.current!
             })
         }
-        set_status_message("");   
     }
 
-    async function adjust_initial_data({submit_method}:{submit_method?:string} = {}){
-        let project_budgets_update = {};
+    async function adjust_initial_data(){
 
-        // SET INITIAL VALUES FOR EDIT/ADD PROJECTS
-        if(submit_method === "edit"){
+        // SET PROCESS DATA VALUES FOR EDIT/ADD PROJECTS
+        if(active_entry.submit_method === "edit"){
             process_data.update_data({table_name: "projects", form_data: [initial_data["projects"].data[0]]});
             process_data.update_data({
                 table_name: "project_departments", 
@@ -129,14 +128,14 @@ export default function Edit_project() {
 
         }
 
-
+        // SET VALUES FOR PROJECT DATES
         set_project_dates({
-            start_date: typeof(initial_data["projects"].data[0].start_date) !== "number" ? initial_data["projects"].data[0].start_date : undefined,
-            finish_date: typeof(initial_data["projects"].data[0].finish_date) !== "number" ? initial_data["projects"].data[0].finish_date : undefined
+            start_date: active_entry.submit_method === "edit" ? String(initial_data["projects"].data[0].start_date) : undefined,
+            finish_date: active_entry.submit_method === "edit" ? String(initial_data["projects"].data[0].finish_date) : undefined
         })
-        
+
         // SET INITIAL VALUES FOR PROJECT BUDGETS
-        if(submit_method === "edit"){
+        if(active_entry.submit_method === "edit"){
             const department_budgets:Types_department_budgets = {};
             let budget_used:number = 0;
             initial_data["project_departments"].data.forEach((entry)=>{
@@ -146,22 +145,15 @@ export default function Edit_project() {
             })
             console.log(`%c DATA `, `${ log_colors.important }`,`for budget_used`,'\n' ,budget_used);
 
-            project_budgets_update = await update_project_budgets.wait({all_budgets:{
+            await update_project_budgets.now({all_budgets:{
                 total:Number(initial_data["projects"].data[0]["production_budget"]),
                 used:budget_used,
                 departments: department_budgets
             }})
         } else {
-            project_budgets_update = await update_project_budgets.wait({reset:true})
-
+            await update_project_budgets.now({reset:true})
         }
-
-        if(submit_method && submit_method !== active_entry.submit_method){
-            const active_entry_update = await update_active_entry.wait({submit_method:submit_method});
-            update_active_entry.update_context(active_entry_update);
-        }
-        await update_project_budgets.update_context(project_budgets_update);
-
+        handle_animation(active_entry.submit_method);
         console.log(`%c UPDATE EDIT PROJECT NOW `, `${ log_colors.important }`);
     }
 
@@ -199,12 +191,13 @@ export default function Edit_project() {
         process_data.update_data({table_name: "projects", form_data: {input:input ,db_column:db_column}})
     }
 
-    async function update_project_data({project_id}:{project_id:number}){
+      async function update_project_data(){
 
-        const active_entry_update = await update_active_entry.wait({target_id:project_id});
-        await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:project_id});
-        await update_initial_data.wait({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:project_id});
-        await update_initial_data.now({table_name: "projects", entry_id_key:"id" ,entry_id:project_id});
+        const active_entry_update = await update_active_entry.wait({target_id:active_entry.target_id});
+        const client_id = (await update_initial_data.wait({table_name: "projects", entry_id_key:"id" ,entry_id:active_entry.target_id}))["projects"].data[0]["client_id"];
+        await update_initial_data.wait({table_name: "project_groups", entry_id_key:"client_id" ,entry_id:client_id});
+        await update_initial_data.wait({table_name: "project_departments", entry_id_key:"project_id" ,entry_id:active_entry.target_id});
+        await update_initial_data.now({table_name: "project_employees", entry_id_key:"project_id" ,entry_id:active_entry.target_id});
         update_active_entry.update_context(active_entry_update);
 
     }
@@ -218,8 +211,12 @@ export default function Edit_project() {
         console.log(`%c POST FORM FOR PROJECTS `, `${ log_colors.important_2 }`,`for response`,'\n' ,response);
         
         if(response.message.includes("successfully")){
-            update_active_entry.update_context({target_id:response.entry_id});
-            update_project_data({project_id:response.entry_id})
+            if(active_entry.target_id !== response.entry_id){
+                update_active_entry.update_context({target_id:response.entry_id});
+            } else {
+                update_project_data()
+            }
+            
         }
         set_status_message(response.message);
         setTimeout(() => {
@@ -228,6 +225,7 @@ export default function Edit_project() {
 
     }
 
+/*
     const create_pd_input = useCallback((item:Types_department_data)=>{
         return(
             <Project_department_select
@@ -237,6 +235,7 @@ export default function Edit_project() {
             />
         )
     },[project_dates])
+*/
 
 // MEMOS AND EFFECTS    
 
@@ -255,7 +254,12 @@ export default function Edit_project() {
             })
         } 
         console.log(`%c PROJECT BUDGETS CHANGED `, `${ log_colors.data }`);
-    },[project_budgets])
+    },[project_budgets]);
+
+    useMemo(() =>{
+        console.log(`%c DATA `, `${ log_colors.data }`,`for active_entry.submit_method`,'\n' ,active_entry.submit_method);
+        active_entry.submit_method && adjust_initial_data()
+    },[active_entry.submit_method]);
 
 
 /*
@@ -364,9 +368,15 @@ export default function Edit_project() {
                             {/* departments && pd_inputs */}
                                 <Provide_Context_project_department_data>
                                     <Provide_Context_employee_data>
-                                        {departments.map((item:Types_department_data)=>
-                                        create_pd_input(item)
-                                    )}
+                                        {departments.map((item:Types_department_data)=>{
+                                        return (
+                                            <Project_department_select
+                                                key={`pd_input_${item.name}`}
+                                                project_dates = {project_dates}
+                                                department_data={item}
+                                            />
+                                        )
+                                    })}
                                     </Provide_Context_employee_data>
                                 </Provide_Context_project_department_data>
                             
@@ -405,3 +415,4 @@ export default function Edit_project() {
         </section>
     ); 
 }
+

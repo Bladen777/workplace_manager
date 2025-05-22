@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
 // STYLE IMPORTS
@@ -26,19 +26,29 @@ interface Types_props{
 }
 
 // THE COMPONENT 
-export default function Project_group_select({selected_client_id}:Types_props) {
+function Project_group_select({selected_client_id}:Types_props) {
     console.log(`           %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Project_group_select`, selected_client_id);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const active_entry = useContext(Use_Context_active_entry).show_context;
     const process_data = useContext(Use_Process_input_data);
 
-    const update_initial_data = useContext(Use_Context_initial_data).update_func;
+    const [project_group_list, set_project_group_list] = useState<Types_form_data[]>(initial_data["project_groups"].data);
 
-    const [project_group_list, set_project_group_list] = useState<Types_form_data[]>([]);
-    const [existing_project_group, set_existing_project_group] = useState<Types_form_data>({});
+    const existing_project_group:Types_form_data | undefined = (
+        active_entry.submit_method === "edit"
+        ? (
+            project_group_list.find((entry)=>{
+                console.log(`%c DATA `, `${ log_colors.data }`,`for entry`,'\n' ,entry);
+                if(entry.id === initial_data["projects"].data[0]["project_group_id"]){
+                    return entry
+                }
+            })
+        )
+        : undefined
+    );
+    
     const [new_project_group, set_new_project_group] = useState<boolean>(false)
-
 
     async function fetch_project_group_list(){
         try{
@@ -47,27 +57,11 @@ export default function Project_group_select({selected_client_id}:Types_props) {
                 filter_key: "client_id",
                 filter_item: selected_client_id
             })
-
-            let initial_data_update = await update_initial_data.wait({table_name: "project_groups"});
-
-            let item:Types_form_data;
-
-            for await (item of response.data){
-                if(active_entry.submit_method === "edit" && item["client_id"] === initial_data["projects"].data[0].client_id){
-                    set_existing_project_group(item);
-                    initial_data_update = await update_initial_data.wait({table_name: "project_groups", entry_id_key:"client_id" ,entry_id:item["client_id"]});
-                }
-
-            }
-
-            await update_initial_data.update_context(initial_data_update);
-            console.log(`%c DATA `, `${ log_colors.important }`,`for initial_data_update`,'\n' ,initial_data_update);
             set_project_group_list(response.data);
             
         } catch (error){
           console.log(`%c  has the following error: `, 'background-color:darkred', error); 
         };
-
     }
 
     function handle_new_project_group(){
@@ -96,15 +90,13 @@ export default function Project_group_select({selected_client_id}:Types_props) {
 
 // MEMOS AND EFFECTS
 
-useEffect(() =>{
-    fetch_project_group_list()
+useMemo(() =>{
+    if(selected_client_id && selected_client_id !== project_group_list[0]["client_id"]){
+        console.log(`%c SELECTED_CLIENT_ID CHANGED `, `${ log_colors.important }`,`for selected_client_id`,'\n' ,selected_client_id);
+        fetch_project_group_list()
+    }
 },[selected_client_id])
 
-
-
-
-console.log(`%c DATA `, `${ log_colors.data }`,`for project_group_list.length`,'\n' ,project_group_list.length);
-console.log(`%c DATA `, `${ log_colors.data }`,`for existing_project_group`,'\n' ,existing_project_group);
 // RETURNED VALUES 
     return(
         <div className="project_group_select_box">
@@ -115,7 +107,7 @@ console.log(`%c DATA `, `${ log_colors.data }`,`for existing_project_group`,'\n'
             {project_group_list.length > 0 && !new_project_group &&
                 <Input_drop_down
                     table_name={{main:"project_group"}}
-                    selected_entry = {existing_project_group.name ? String(existing_project_group.name) : ""}
+                    selected_entry = {existing_project_group ? String(existing_project_group.name) : ""}
                     form_table_data={project_group_list}
                     send_table_data={({input}:{input:Types_search_item})=>{
                             handle_project_group_change({input:input})
@@ -149,3 +141,5 @@ console.log(`%c DATA `, `${ log_colors.data }`,`for existing_project_group`,'\n'
         </div>
     ); 
 }
+
+export default memo(Project_group_select)
