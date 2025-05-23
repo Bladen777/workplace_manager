@@ -57,3 +57,41 @@
     }
 }
 
+.initial_hide{
+    max-height: 0rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow:hidden;
+}
+
+@keyframes big_initial_load {
+    0%{
+        max-height: 0;
+    }
+
+    5%{
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    100%{
+        padding:1rem ;
+        max-height: 80rem;
+    }
+}
+
+@keyframes small_initial_load {
+    0%{
+        max-height: 0;
+    }
+
+    5%{
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    100%{
+        max-height:15rem;
+    }
+}
+

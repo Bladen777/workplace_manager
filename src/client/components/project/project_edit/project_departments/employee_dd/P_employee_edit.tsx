@@ -25,7 +25,8 @@ interface Types_props{
     employee_id: number; 
     dep_id:number;
     employee_data:Types_form_data;
-    department_dates: Types_project_dates;
+    dep_start_date: string | undefined;
+    dep_finish_date: string | undefined;
     remove_employee: Function;
 }
 
@@ -36,9 +37,9 @@ interface Types_p_employee_budget{
 }
 
 // THE COMPONENT 
-export default function P_employee_edit({dep_id, employee_id, employee_data, department_dates, remove_employee}:Types_props) {
+export default function P_employee_edit({dep_id, employee_id, employee_data, dep_start_date, dep_finish_date, remove_employee}:Types_props) {
     const initial_render = useRef<boolean>(true);
-    console.log(`       %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `P_employee_edit`);
+    console.log(`          %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `P_employee_edit`, employee_data.id);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const active_entry = useContext(Use_Context_active_entry).show_context;
@@ -51,6 +52,8 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
             return entry;
         };
     });
+
+    
     const initial_employee_form_data = (
         exisiting_p_employee && active_entry.submit_method === "edit" 
         ? exisiting_p_employee 
@@ -122,7 +125,7 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
             start_date: input
         }
 
-        //set_employee_start_date_adjust({start_date:input})
+        set_employee_start_date_adjust(input)
         console.log(`%c DATA `, `${ log_colors.data }`,`for date_form_data`,'\n' ,date_form_data);
         await update_employee_data.wait(date_form_data); 
 
@@ -135,24 +138,22 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
         e_select_box_ele.current!.addEventListener("animationend", open_animation_ended);
         function open_animation_ended(){
             e_select_box_ele.current!.removeEventListener("animationend", open_animation_ended);
-            remove_employee()
+            remove_employee(employee_id)
         }
     }
 
 
 // MEMOS AND EFFECTS
 
-    useEffect(() =>{
+    useMemo(() =>{
         (async()=>{
-            e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
-            e_select_box_ele.current!.addEventListener("animationend", close_animation_ended);
-
             let employee_start_date  = initial_employee_form_data.start_date;
-
+            console.log(`%c DATA `, `${ log_colors.data }`,`for initial_employee_form_data`,'\n' ,initial_employee_form_data);
             if(!initial_employee_form_data.start_date){
-                set_employee_start_date_adjust(department_dates.start_date)
-                if(department_dates.start_date){
-                    employee_start_date = department_dates.start_date;
+                console.log(`%c UPDATED E START DATE `, `${ log_colors.data }`,`for dep_start_date`,'\n' ,dep_start_date);
+                set_employee_start_date_adjust(dep_start_date)
+                if(dep_start_date){
+                    employee_start_date = dep_start_date;
                 }
             }
 
@@ -165,17 +166,22 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
                 department_id: dep_id,  
                 start_date: employee_start_date
             }
-            
+            console.log(`%c DATA `, `${ log_colors.data }`,`for added_employee_data`,'\n' ,added_employee_data);
             await update_employee_data.wait(added_employee_data);
+        })()
+    },[]);
+
+    useEffect(() =>{
+            e_select_box_ele.current!.style.animation = `toggle_e_select_box 1s ease normal forwards`;
+            e_select_box_ele.current!.addEventListener("animationend", close_animation_ended);
+
 
             function close_animation_ended(){
                 e_select_box_ele.current!.removeEventListener("animationend", close_animation_ended);
                 e_select_box_ele.current!.style.animation ="";
             }
 
-            initial_render.current = false;
-
-        })()
+            initial_render.current = false;  
     },[])
 
     useMemo(() =>{
@@ -183,26 +189,41 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
             const prev_start_date = employee_start_date_adjust!;
             let update_start_date = employee_start_date_adjust;
 
-    
-            const start_date_time = (new Date(department_dates.start_date!)).getTime();
-            const finish_date_time = (new Date(department_dates.finish_date!)).getTime();
+            const start_date_time = (new Date(dep_start_date!)).getTime();
+            const finish_date_time = (new Date(dep_finish_date!)).getTime();
     
             const employee_start_time = (new Date(prev_start_date)).getTime();
 
-            if(start_date_time > employee_start_time || (department_dates.start_date !== undefined && prev_start_date === undefined)){
-                update_start_date = department_dates.start_date;
-                update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: department_dates.start_date})
+            if(start_date_time > employee_start_time || (dep_start_date !== undefined && prev_start_date === undefined)){
+                update_start_date = dep_start_date;
+                update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: dep_start_date})
             };
     
-            if(finish_date_time < employee_start_time || (department_dates.finish_date !== undefined && prev_start_date === undefined)){
-                update_start_date = department_dates.finish_date;
-                update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: department_dates.finish_date})
+            if(finish_date_time < employee_start_time || (dep_finish_date !== undefined && prev_start_date === undefined)){
+                update_start_date = dep_finish_date;
+                update_employee_data.wait({department_id: dep_id, employee_id:employee_id, start_date: dep_finish_date})
             };
             console.log(`%c P_EMPLOYEE START DATE CHANGED `, `${ log_colors.update }`,'\n' ,update_start_date);
                 
             set_employee_start_date_adjust(update_start_date)
         }
-    },[department_dates])
+    },[dep_start_date, dep_finish_date])
+
+
+
+/*
+    useMemo(() =>{
+        if(!initial_render.current){
+            console.log(`%c EXISTING P EMPLOYEE CHANGED `, `${ log_colors.update}`, dep_id);
+        }
+    },[exisiting_p_employee]);
+
+    useMemo(() =>{
+        if(!initial_render.current){
+            console.log(`%c EMPLOYEE_START_DATE_ADJUST CHANGED`, `${ log_colors.update}`, employee_start_date_adjust);
+        }
+    },[employee_start_date_adjust]);
+
 
     useMemo(() =>{
         if(!initial_render.current){
@@ -224,9 +245,9 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
 
     useMemo(() =>{
         if(!initial_render.current){
-            console.log(`%c DEPARTMENT_DATES CHANGED `, `${ log_colors.update}`, department_dates);
+            console.log(`%c DEPARTMENT_DATES CHANGED `, `${ log_colors.update}`);
         }
-    },[department_dates]);
+    },[dep_start_date, dep_finish_date]);
 
     useMemo(() =>{
         if(!initial_render.current){
@@ -234,9 +255,12 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
         }
     },[remove_employee]);
 
-
-
-// RETURNED VALUES 
+    useEffect(() =>{
+      return (()=>{console.log(`%c P_EMPLOYEE_EDIT UNLOADED `, `${ log_colors.important}`);})
+    },[]);
+*/
+       
+  // RETRURNED VALUES  
     return(
         <div 
             ref = {e_select_box_ele}
@@ -262,9 +286,9 @@ export default function P_employee_edit({dep_id, employee_id, employee_data, dep
                         is_nullable: "YES",
                         input_type: "date"
                     }}
-                    initial_data_object={initial_employee_form_data}
+                    initial_data_object={{start_date:employee_start_date_adjust}}
                     adjust_data_value={employee_start_date_adjust}
-                    date_range={{min: department_dates.start_date, max: department_dates.finish_date}}
+                    date_range={{min: dep_start_date, max: dep_finish_date}}
                     send_table_data = {callback_handle_date_change}
                 />
                 {/* INPUT FOR HOURS */}

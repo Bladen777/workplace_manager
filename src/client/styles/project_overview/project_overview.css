@@ -1,7 +1,4 @@
 #project_overview{
-    width: 80vw;
-    margin: 1rem auto;
-    padding: 10px;
     display: flex;
     flex-direction: column;
 }

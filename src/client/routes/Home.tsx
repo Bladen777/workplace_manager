@@ -17,6 +17,7 @@ import { Provide_Context_project_budgets } from "../components/project/context/C
 // HOOK IMPORTS
 
 // COMPONENT IMPORTS
+import Discription_hero from "../components/_show_discriptions/Discription_hero.js";
 import Project_overview from "../components/project/project_overview/Project_overview.js";
 import Edit_project from "../components/project/project_edit/Edit_project.js";
 import Control_panel from "../components/control_panel/Control_panel.js"
@@ -39,7 +40,7 @@ export default function Home() {
   if(user_info.email !== "wait"){
     return (
       <>
-
+        <Discription_hero/>
         <Provide_Context_departments_data>
 
           <Provide_Context_project_budgets>

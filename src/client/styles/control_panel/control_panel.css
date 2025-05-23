@@ -1,8 +1,5 @@
 #control_panel{
     height: 45rem;
-    width: 80vw;
-    margin: 1rem auto;
-    padding: 1rem;
     display: grid;
     grid-template-columns: 20% 80%;
     grid-template-rows: 15% 80% 5%;

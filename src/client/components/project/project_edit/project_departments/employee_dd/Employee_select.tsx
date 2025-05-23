@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useContext, useEffect, useMemo,  useRef,  useState } from "react";
+import { memo, ReactElement, useCallback, useContext, useEffect, useMemo,  useRef,  useState } from "react";
 import axios from "axios";
 
 // STYLE IMPORTS
@@ -23,13 +23,14 @@ import { Types_project_dates } from "../../Edit_project.js";
 
 interface Types_props{
     department_data: Types_department_data;
-    department_dates: Types_project_dates;
+    dep_start_date: string | undefined;
+    dep_finish_date: string | undefined;
 }
 
 
 // THE COMPONENT 
-export default function Employee_select({department_data, department_dates}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `employee_select for: `, department_data.name);
+function Employee_select({department_data, dep_start_date, dep_finish_date}:Types_props) {
+    console.log(`      %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `employee_select for: `, department_data.name);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const active_entry = useContext(Use_Context_active_entry).show_context;
@@ -134,12 +135,7 @@ export default function Employee_select({department_data, department_dates}:Type
     }
 
     const callback_remove_employee = useCallback((id:number)=>{
-        remove_employee(id);
-    },[])
-
-    function remove_employee(id:number){
         console.log(`%c DATA `, `${ log_colors.data }`,`for id`,'\n' ,id);
-
         let remaining_selected_employees:Types_form_data[] = [];
         selected_employee_data.forEach((item)=>{
             if(item.id !== id){
@@ -149,17 +145,21 @@ export default function Employee_select({department_data, department_dates}:Type
 
         update_employee_list({f_employee_list:remaining_selected_employees});
         set_selected_employee_data(remaining_selected_employees);
-    }
+    },[selected_employee_data])
 
 
 // MEMOS AND EFFECTS    
+
+
     useMemo(() => { 
         fetch_initial_employee_list()
     },[])
 
+/*
     useMemo(() =>{
-        console.log(`%c DEPARTMENT_DATES CHANGED `, `${ log_colors.update}`, department_dates); 
-    },[department_dates]);
+        console.log(`%c DEPARTMENT_DATES CHANGED `, `${ log_colors.update}`); 
+    },[dep_start_date, dep_finish_date]);
+*/
 
 
 // RETURNED VALUES
@@ -175,7 +175,8 @@ export default function Employee_select({department_data, department_dates}:Type
                                     dep_id = {department_data.id}
                                     employee_id={entry.id!}
                                     employee_data = {entry}
-                                    department_dates = {department_dates}
+                                    dep_start_date = {dep_start_date}
+                                    dep_finish_date = {dep_finish_date}
                                     remove_employee = {callback_remove_employee}
                                 />
                             )
@@ -201,3 +202,4 @@ export default function Employee_select({department_data, department_dates}:Type
     }
     
 }
+export default memo(Employee_select);

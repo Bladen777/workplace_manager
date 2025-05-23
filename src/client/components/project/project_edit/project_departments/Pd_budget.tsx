@@ -25,7 +25,7 @@ interface Types_props{
 
 // THE COMPONENT 
 export default function Pd_budget({department_data}:Types_props) {
-    console.log(`   %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
+    console.log(`      %c SUB_COMPONENT `, `${ log_colors.sub_component }`, `Pd_budget for ${department_data.name}`);
 
     const initial_data = useContext(Use_Context_initial_data).show_context;
     const active_entry = useContext(Use_Context_active_entry).show_context;

@@ -85,9 +85,11 @@
 }
 
 .edit_project_input_container{
+    background-color: var(--section_bg);
+    border-radius: 1rem;
+    padding: 1rem;
     overflow: hidden;
     height: 40rem;
-    padding: 1rem;
 }
 
 @keyframes toggle_input_box_visibility {

@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from "react"
+import { useState, useContext, useMemo, useRef, useEffect } from "react"
 
 // STYLE IMPORTS
   /* LOGS */ import { log_colors } from "../../styles/_log_colors.js"
@@ -14,6 +14,7 @@ import { Use_Context_active_entry } from "../context/Context_active_entry.js"
 // COMPONENT IMPORTS
 import Control_panel_view from "./components/Control_panel_view.js"
 import Control_panel_edit from "./components/Control_panel_edit.js"
+import Animate_initial_load from "../_universal/animations/Animate_initial_load.js"
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../context/Context_initial_data.js"
@@ -31,7 +32,11 @@ export default function Control_panel() {
     const update_initial_data = useContext(Use_Context_initial_data).update_func;
     const initial_data = useContext(Use_Context_initial_data).show_context;
 
-    // HANDLING NAVIGATIOIN ON CONTROL PANEL
+    // CONSTS FOR ANIMATING
+    const animate_initial_load = Animate_initial_load() 
+    const initial_animation_box = useRef<HTMLDivElement | null>(null);
+
+    // HANDLING NAVIGATION ON CONTROL PANEL
     const [edit_section, set_edit_section] = useState<boolean>(false);
     const [active_table, set_active_table] = useState<string>("clients");
     const [content_is_loading, set_content_is_loading] = useState<boolean>(true);
@@ -55,15 +60,22 @@ export default function Control_panel() {
 
 // MEMOS AND EFFECTS
     useMemo(() =>{
+        
         (async ()=>{
             await update_initial_data.now({table_name: active_table});
             set_content_is_loading(false);
         })()
     },[])
 
+    useMemo(() =>{  
+        animate_initial_load.initiate_animation({box_ele:initial_animation_box.current!}); 
+        console.log(`%c CONTENT IS LOADING `, `${ log_colors.important}`, content_is_loading);
+        !content_is_loading && animate_initial_load.run_animation({size:"big"});
+    },[content_is_loading]);
+
 // RETRURNED VALUES      
     return (
-        <section id="control_panel" className="general_section">
+        <section id="control_panel" className="general_section initial_hide" ref={initial_animation_box}>
             <h1 id="control_panel_title">Control Panel</h1>
 
             <div id="control_panel_nav">

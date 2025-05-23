@@ -108,7 +108,7 @@ export function Provide_Context_employee_data({children}:{children:ReactNode}) {
         update_data.forEach((s_item, s_index)=>{
             if(s_item.employee_id === employee_id && s_item.department_id === department_id ){
                 entry_index = s_index;
-            } else if (!employee_id && s_item.department_id === department_id){
+            } else if (!employee_id && employee_id !== -1 && s_item.department_id === department_id){
                 entry_index = s_index;
             }
         })

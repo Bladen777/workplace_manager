@@ -18,7 +18,9 @@ import Pie_chart from "./project_overview_comps/Pie_chart.js"
 import Budget_tracker from "./project_overview_comps/Budget_tracker.js"
 import Date_tracker from "./project_overview_comps/Date_tracker.js"
 import Project_details from "./project_overview_comps/Project_details.js"
+
 import Animate_po_load from "./animations/Animate_po_load.js"
+import Animate_initial_load from "../../_universal/animations/Animate_initial_load.js";
 
 // TYPE DEFINITIONS
 import { Types_form_data } from "../../context/Context_initial_data.js"
@@ -36,6 +38,9 @@ export default function Project_overview() {
   const update_active_entry = useContext(Use_Context_active_entry).update_func;
 
   // CONSTS FOR ANIMATING
+      const animate_initial_load = Animate_initial_load() 
+      const initial_animation_box = useRef<HTMLDivElement | null>(null);
+
       const animate_po_load = Animate_po_load();
       const animate_po_load_box_ref = useRef<HTMLDivElement | null>(null);
       const animate_po_load_hide_box_ref = useRef<HTMLDivElement | null>(null);
@@ -52,11 +57,16 @@ export default function Project_overview() {
         await update_initial_data.wait({table_name: "project_groups"});
         await update_initial_data.now({table_name: "projects"});
         await update_active_entry.now({submit_method:"add"})
-      } else if(user_projects["project_employees"].data.length > 0){
+      } 
+/*
+      else if(user_projects["project_employees"].data.length > 0){
         const latest_project_id:number = user_projects["project_employees"].data[user_projects["project_employees"].data.length -1].project_id; 
         console.log(`%c LATEST USER PROJECT ID `, `${ log_colors.important_2 }`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
-      } else{
+      } 
+*/
+      
+      else{
         const latest_project_id:number = all_projects["projects"].data[all_projects["projects"].data.length -1].id; 
         console.log(`%c LATEST PROJECT ID `, `${ log_colors.important_2 }`,'\n' ,latest_project_id);
         await update_project_data({project_id:latest_project_id});
@@ -86,10 +96,12 @@ export default function Project_overview() {
 
   useEffect(() =>{
     if(ready){
+      animate_initial_load.initiate_animation({box_ele:initial_animation_box.current!})
       animate_po_load.initiate_animation({
           hide_ele:animate_po_load_hide_box_ref.current!,
           box_ele: animate_po_load_box_ref.current!,
       })
+      animate_initial_load.run_animation({size:"big"})
     }
   },[ready])
 
@@ -103,7 +115,7 @@ export default function Project_overview() {
 // RETURNED VALUES
   if(ready && initial_data["projects"].data.length > 0){
     return (
-      <section id="project_overview" className="general_section">
+      <section id="project_overview" className="general_section initial_hide" ref={initial_animation_box}>
         <h2 id="project_overview_title">Project Overview</h2>
           <div className="project_overview_container">
             <div

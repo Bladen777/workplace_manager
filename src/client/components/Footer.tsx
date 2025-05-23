@@ -22,6 +22,10 @@ export default function Footer() {
     return(
       <footer>
         Footer
+        <div className="copyright">
+          Copyright: Braden Kowalchuk 2025
+
+        </div>
       </footer>
     ); 
 }

@@ -31,7 +31,10 @@ div{
 /* GENERAL SECTION STYLING */
 .general_section{
     background-color: var(--section_bg);
+    width: 80vw;
+    margin: 1rem auto;
     border-radius: 1rem;
+    padding: 1rem;
 }
 
 .general_btn{

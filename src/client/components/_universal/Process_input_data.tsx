@@ -282,81 +282,50 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
 
 
             if((table_name === "project_employees" || table_name === "project_departments")&& submit_method === "edit"){
+                
+                const start_entries = initial_data[table_name].data;
                 let add_entries:Types_form_data[] = [];
                 let edit_entries:Types_form_data[] = [];
 
-                const start_entries = initial_data[table_name].data;
-                let update_entries:Types_form_data[] = [];
-
+                
                 let table_entry:Types_form_data;
                 for await(table_entry of data_ref.current[table_name]){
                     if(table_entry.id === -1){
-                        await access_db({
-                            db_submit_method:"add", 
-                            db_submit_data:data_ref.current[table_name]
-                        });
+                        add_entries.push(table_entry)
                     } else {
-                        update_entries.push(table_entry)
+                        edit_entries.push(table_entry)
                     }
                 }
 
-
-                console.log(`%c ${table_name} ENTRIES `, `${ log_colors.data }`,'\n', `start_entries`,start_entries , "vs", `update_entries`, update_entries);
-
-                if(start_entries.length === 0){
-                    console.log(`%c NO INITIAL ENTRIES `, `${ log_colors.important }`);
-                    
-                    await access_db({
-                        db_submit_method:"add", 
-                        db_submit_data:data_ref.current[table_name]
-                    });
-                    
-                }else if(update_entries.length === start_entries.length){
-                    console.log(`%c SAME NUMBER OF ENTRIES `, `${ log_colors.important }`);
-
-                    
-                    await access_db({
-                        db_submit_method:"edit", 
-                        db_submit_data:data_ref.current[table_name]
-                    });
-                    
-                
-                }else if(update_entries.length > start_entries.length){
-                    update_entries.forEach((entry)=>{
-                        if(start_entries.find((s_entry)=>{
-                            return s_entry.id === entry.id
+                if (edit_entries.length < start_entries.length){
+                    console.log(`%c LESS NEW ENTRIES `, `${ log_colors.important }`);
+                    let entry_delete:Types_form_data;
+                    for await(entry_delete of start_entries){
+                        if(!edit_entries.find((s_entry)=>{
+                            if(s_entry.id === entry_delete.id){
+                                return s_entry;
+                            }
                         })){
-                            edit_entries.push(entry);
-                        } else {
-                            add_entries.push(entry);
+                            console.log(`%c DELETE ENTRY `, `${ log_colors.important}`), add_entries;
+                            await delete_entry({table_name:table_name, entry_id:entry_delete.id!});
                         }
-                    });
-                    console.log(`%c MORE NEW ENTRIES `, `${ log_colors.important }`,"\n", `add_entries`, add_entries, "vs", `edit_entries`, edit_entries);
-                    
+                    }
+                }
+
+                if(add_entries.length > 0){
+                    console.log(`%c ADD ENTIRES `, `${ log_colors.important}`), add_entries;
                     await access_db({
                         db_submit_method:"add", 
                         db_submit_data:add_entries
                     });
+                }
 
-                    await access_db({
+                if(edit_entries.length > 0){
+                        console.log(`%c EDIT ENTIRES `, `${ log_colors.important}`), edit_entries;
+                        await access_db({
                         db_submit_method:"edit", 
                         db_submit_data:edit_entries
                     });   
-                    
-                } else if (update_entries.length < start_entries.length){
-                    console.log(`%c LESS NEW ENTRIES `, `${ log_colors.important }`);
-                    let delete_entry_id:number = 0;
-                    start_entries.forEach((entry)=>{
-                        if(!update_entries.find((s_entry)=>{
-                            if(s_entry.id === entry.id){
-                                return s_entry;
-                            }
-                        })){
-                            delete_entry_id = entry.id!;
-                        }
-                    });
-                    
-                    delete_entry({table_name:table_name, entry_id:delete_entry_id});
                 }
                 
             } else {
@@ -368,7 +337,7 @@ export function Provide_Process_input_data({children}:{children:ReactNode}) {
                 
             }
 
-        
+    
             async function access_db({db_submit_method, db_submit_data}:Types_access_db){
                 console.log(`%c DATA SENT TO BACKEND `, `${ log_colors.important }`,`${db_submit_method} ${table_name}`,'\n' ,db_submit_data);
 
