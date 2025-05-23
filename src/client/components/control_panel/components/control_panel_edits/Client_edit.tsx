@@ -73,6 +73,7 @@ export default function Client_edit({initial_data_object}:Types_props) {
                 })
             }
             </form>
+{/*
             {initial_data["project_groups"] && initial_data["project_groups"].data.length > 0 &&
                 <div 
                     className="client_project_group_edit_box"
@@ -101,6 +102,7 @@ export default function Client_edit({initial_data_object}:Types_props) {
                 }
                 </div>
             }
+*/}
 
         </div>
     ); 

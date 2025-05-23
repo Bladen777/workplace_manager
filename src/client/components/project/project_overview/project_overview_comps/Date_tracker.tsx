@@ -151,7 +151,6 @@ export default function Date_tracker() {
           }
         })
         
-
         if((!update_unique_dates.find((s_entry)=> s_entry.position === max_width + min_width))){
               update_unique_dates.push({
                 date:project_date_data.finish,

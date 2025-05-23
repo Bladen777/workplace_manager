@@ -51,13 +51,6 @@ export default function Project_legend() {
         <article id="project_department_legend" className="project_overview_content_box">
             <h3>Department Legend</h3>
             <div className="legend_box_container">
-                
-                <div 
-                    className="legend_box"
-                >
-                    <p>Remaining </p>
-                    <div className="legend_color" style={{backgroundColor:"#FFFFFF"}}></div>
-                </div>
                 {legend_items.map((entry)=>{
                     return(
                         <div 

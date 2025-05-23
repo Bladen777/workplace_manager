@@ -313,7 +313,7 @@ function Project_department_select({department_data, project_start_date, project
                         type="button"
                         disabled = {dep_animation_running}    
                     >
-                        {dep_selected ? "Cancel" : "Add"} 
+                        {dep_selected ? "Remove" : "Add"} 
                     </button>
                     
                     <h4>{dep_name_string}</h4>

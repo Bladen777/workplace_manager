@@ -77,6 +77,12 @@ export default function Pie_chart() {
         return (
             <article id="pie_chart" className="project_overview_content_box">
                 <h3>Project Budgets</h3>
+                <div 
+                    className="pie_legend_box"
+                >
+                    <p>Remaining </p>
+                    <div className="legend_color" style={{backgroundColor:"#FFFFFF"}}></div>
+                </div>
                 <div
                     className="pie_chart_box"
                 >
